@@ -4,11 +4,10 @@ import android.app.Application;
 
 import com.fb.pearsapplication.models.Group;
 import com.fb.pearsapplication.models.User;
+
 import com.parse.Parse;
 import com.parse.ParseObject;
 
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 
 public class ParseApp extends Application {
 
