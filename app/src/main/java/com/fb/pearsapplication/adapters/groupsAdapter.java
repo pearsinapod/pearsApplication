@@ -22,12 +22,12 @@ import com.parse.ParseFile;
 
 import java.util.List;
 
-public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
+public class groupsAdapter extends RecyclerView.Adapter<groupsAdapter.ViewHolder>{
 
     private Context context;
     private List<Group> groups;
 
-    public PostsAdapter(Context context, List<Group> groups) {
+    public groupsAdapter(Context context, List<Group> groups) {
         this.context = context;
         this.groups = groups;
     }
@@ -76,9 +76,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
             super(itemView);
             // lookup view objects by id
             // TODO handle_tv = itemView.findViewById(R.id.handle_tv);
-            image_iv = itemView.findViewById(R.id.image_iv);
-            description_tv = itemView.findViewById(R.id.description_tv);
-            timestamp_tv = itemView.findViewById(R.id.timestamp_tv);
+            // TODO image_iv = itemView.findViewById(R.id.image_iv);
+            // TODO description_tv = itemView.findViewById(R.id.description_tv);
+            // TODO timestamp_tv = itemView.findViewById(R.id.timestamp_tv);
             // add this as the itemView's OnClickListener
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -95,7 +95,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder>{
                         Fragment fragment = new groupDetailsFragment();
                         fragment.setArguments(bundle);
 
-                        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
+                        // TODO fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
                     }
                 }
             });
