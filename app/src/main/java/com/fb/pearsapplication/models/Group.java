@@ -9,7 +9,6 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.io.Serializable;
-import java.util.Date;
 
 @ParseClassName("Group")
 public class Group extends ParseObject implements Serializable {
@@ -25,8 +24,8 @@ public class Group extends ParseObject implements Serializable {
         return getString(KEY_DESCRIPTION);
     }
 
-    public void setDescription(String Description) {
-        put(KEY_DESCRIPTION, Description);
+    public void setDescription(String description) {
+        put(KEY_DESCRIPTION, description);
     }
 
     // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
@@ -42,8 +41,8 @@ public class Group extends ParseObject implements Serializable {
         return getParseFile(KEY_GROUP_IMAGE);
     }
 
-    public void setImage(ParseFile Image) {
-        put(KEY_GROUP_IMAGE, Image);
+    public void setImage(ParseFile image) {
+        put(KEY_GROUP_IMAGE, image);
     }
 
     public ParseUser getUser() {
@@ -54,20 +53,20 @@ public class Group extends ParseObject implements Serializable {
         put(KEY_USERS, user);
     }
 
-    public ParseFile getGroupName () {
-        return getParseFile(KEY_GROUP_NAME);
+    public String getGroupName () {
+        return getString(KEY_GROUP_NAME);
     }
 
-    public void setGroupName () {
-        // TODO    put(KEY_GROUP_NAME, privateStatus);
+    public void setGroupName (String name) {
+        put(KEY_GROUP_NAME, name);
     }
 
-    public ParseFile getPrivateStatus() {
-        return getParseFile(KEY_PRIVATE_STATUS);
+    public Boolean getPrivateStatus() {
+        return getBoolean(KEY_PRIVATE_STATUS);
     }
 
-    public void setPrivateStatus () {
-        // TODO   put(KEY_PRIVATE_STATUS, privateStatus);
+    public void setPrivateStatus (boolean b) {
+        put(KEY_PRIVATE_STATUS, b);
     }
 
 
