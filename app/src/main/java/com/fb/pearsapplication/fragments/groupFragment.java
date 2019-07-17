@@ -84,7 +84,7 @@ public class groupFragment extends Fragment {
         groupQuery.setLimit(20);
         groupQuery.addDescendingOrder(Group.KEY_CREATED_AT);
         if (mGroups.size()>0){
-            Group.whereLessThan(Group.KEY_CREATED_AT, mGroups.get(mGroups.size()-1).getCreatedAt());
+            groupQuery.whereLessThan(Group.KEY_CREATED_AT, mGroups.get(mGroups.size()-1).getCreatedAt());
         }
         groupQuery.findInBackground(new FindCallback<Group>() {
             @Override
