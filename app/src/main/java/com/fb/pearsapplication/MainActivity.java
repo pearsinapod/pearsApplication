@@ -6,13 +6,17 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.fb.pearsapplication.fragments.exploreFragment;
+import com.fb.pearsapplication.fragments.groupFragment;
+import com.fb.pearsapplication.fragments.profileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
-    BottomNavigationView bottomNavigation;
+    BottomNavigationView bottomNavigationView;
     final FragmentManager fragmentManager = getSupportFragmentManager();
 
 
@@ -21,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bottomNavigation = findViewById(R.id.bottomNavigation);
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
         setUpBottomNavigationView();
 
 
@@ -29,27 +33,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setUpBottomNavigationView(){
-        bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                Fragment fragment = new groupFragment();
                 switch (menuItem.getItemId()) {
                     case R.id.groupFragment:
                         Log.d("groupFragment", "clicked set up");
-                        // TODO fragment = new groupFragment;
+                        fragment = new groupFragment();
                         break;
                     case R.id.profileFragment:
                         Log.d("profileFragment", "clicked set up");
-                        //TODO fragment = new profileFragment;
+                        fragment = new profileFragment();
                         break;
                     case R.id.exploreFragment:
                         Log.d("exploreFragment", "clicked set up");
-                        //TODO fragment = new exploreFragment;
+                        fragment = new exploreFragment();
                         break;
                 }
-                //TODO fragmentManager.beginTransaction().replace(R.id.flContainter, fragment).commit();
+                fragmentManager.beginTransaction().replace(R.id.flContainter, fragment).commit();
                 return true;
             }
         });
+
+        bottomNavigationView.setSelectedItemId(R.id.groupFragment);
     }
 
 
