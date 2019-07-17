@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.adapters.exploreAdapter;
@@ -26,6 +27,7 @@ public class exploreFragment extends Fragment {
     protected ArrayList<Group> exploreGroups;
     protected exploreAdapter eAdapter;
     private RecyclerView rvExploreGroups;
+    private SwipeRefreshLayout swipeContainer;
 
 
     @Nullable
@@ -43,14 +45,40 @@ public class exploreFragment extends Fragment {
         rvExploreGroups.setAdapter(eAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rvExploreGroups.setLayoutManager(linearLayoutManager);
-        showPosts();
+
+        swipeContainer = view.findViewById(R.id.swipeContainer);
+
+
+        showGroups();
+        setUpSwipeContainer();
     }
 
-    protected void showPosts(){
-        Group.Query posts = new Group.Query();
-        posts.getTop().withUser();
-        posts.addDescendingOrder(Group.KEY_CREATED_AT);
-        posts.findInBackground(new FindCallback<Group>() {
+    public void setUpSwipeContainer(){
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                eAdapter.clear();
+                exploreGroups.clear();
+                showGroups();
+                swipeContainer.setRefreshing(false);
+
+            }
+        });
+
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+
+    }
+
+    protected void showGroups(){
+        Group.Query groupsQuery = new Group.Query();
+        groupsQuery.getTop().withUser();
+        groupsQuery.addDescendingOrder(Group.KEY_CREATED_AT);
+        groupsQuery.findInBackground(new FindCallback<Group>() {
             @Override
             public void done(List<Group> objects, ParseException e) {
                 if (e == null){
