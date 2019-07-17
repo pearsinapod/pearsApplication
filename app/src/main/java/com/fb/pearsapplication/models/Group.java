@@ -37,7 +37,7 @@ public class Group extends ParseObject implements Serializable {
         return relativeDate;
     }
 
-    public ParseFile getImage() {
+    public ParseFile getGroupImage() {
         return getParseFile(KEY_GROUP_IMAGE);
     }
 
