@@ -57,7 +57,7 @@ public class Group extends ParseObject implements Serializable {
     }
 
     public void setGroupName () {
-        put(KEY_GROUP_NAME, privateStatus);
+        // TODO    put(KEY_GROUP_NAME, privateStatus);
     }
 
     public ParseFile getPrivateStatus() {
@@ -65,7 +65,7 @@ public class Group extends ParseObject implements Serializable {
     }
 
     public void setPrivateStatus () {
-        put(KEY_PRIVATE_STATUS, privateStatus);
+        // TODO   put(KEY_PRIVATE_STATUS, privateStatus);
     }
 
 
