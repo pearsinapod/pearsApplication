@@ -9,7 +9,6 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.io.Serializable;
-import java.util.Date;
 
 @ParseClassName("Group")
 public class Group extends ParseObject implements Serializable {
@@ -38,7 +37,7 @@ public class Group extends ParseObject implements Serializable {
         return relativeDate;
     }
 
-    public ParseFile getImage() {
+    public ParseFile getGroupImage() {
         return getParseFile(KEY_GROUP_IMAGE);
     }
 
@@ -54,8 +53,8 @@ public class Group extends ParseObject implements Serializable {
         put(KEY_USERS, user);
     }
 
-    public ParseFile getGroupName () {
-        return getParseFile(KEY_GROUP_NAME);
+    public String getGroupName () {
+        return getString("groupName");
     }
 
     public void setGroupName () {
