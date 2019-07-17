@@ -39,10 +39,6 @@ public class Group extends ParseObject implements Serializable {
         return getParseFile(KEY_GROUP_IMAGE);
     }
 
-    public ParseFile getImage() {
-        return getParseFile(KEY_GROUP_IMAGE);
-    }
-
     public void setImage(ParseFile groupImage) {
         put(KEY_GROUP_IMAGE, groupImage);
     }
