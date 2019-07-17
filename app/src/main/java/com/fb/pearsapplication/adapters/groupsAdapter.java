@@ -107,13 +107,13 @@ public class groupsAdapter extends RecyclerView.Adapter<groupsAdapter.ViewHolder
 
         public void bind(Group group) {
             tvGroupName.setText(group.getGroupName());
-            ParseFile image = group.getImage();
+            ParseFile image = group.getGroupImage();
             if (image != null) {
                 Glide.with(context).load(image.getUrl()).into(ivGroupImage);
             }
-            tvGroupNumber.setText(group.getList(Group.KEY_USERS).size());
-            tvGroupDescription.setText(group.getDescription());
-            String timeAgo = group.getRelativeTimeAgo();
+            //tvGroupNumber.setText(group.getList(Group.KEY_USERS).size());
+           // tvGroupDescription.setText(group.getDescription());
+          //  String timeAgo = group.getRelativeTimeAgo();
         }
 
 
