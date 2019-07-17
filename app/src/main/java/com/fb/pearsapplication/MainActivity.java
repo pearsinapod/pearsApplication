@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.exploreFragment:
                         Log.d("exploreFragment", "exploreFragment clicked");
-                        fragment = new groupFragment();
+                        fragment = new exploreFragment();
                         break;
                 }
                 fragmentManager.beginTransaction().replace(R.id.flContainter, fragment).commit();

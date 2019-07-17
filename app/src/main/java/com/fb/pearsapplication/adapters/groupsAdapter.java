@@ -87,7 +87,7 @@ public class groupsAdapter extends RecyclerView.Adapter<groupsAdapter.ViewHolder
                     int position = getAdapterPosition();
                     // make sure the position is valid, i.e. actually exists in the view
                     if (position != RecyclerView.NO_POSITION) {
-                        // get the movie at the position, this won't work if the class is static
+                        // get the group at the position, this won't work if the class is static
                         Group post = groups.get(position);
                         FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
                         Bundle bundle = new Bundle();
@@ -95,20 +95,20 @@ public class groupsAdapter extends RecyclerView.Adapter<groupsAdapter.ViewHolder
                         Fragment fragment = new groupDetailsFragment();
                         fragment.setArguments(bundle);
 
-                        // TODO fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
+                        fragmentManager.beginTransaction().replace(R.id.flContainter, fragment).addToBackStack(null).commit();
                     }
                 }
             });
         }
 
-        public void bind(Group post) {
-            handle_tv.setText(post.getUser().getUsername());
-            ParseFile image = post.getImage();
+        public void bind(Group group) {
+            handle_tv.setText(group.getUser().getUsername());
+            ParseFile image = group.getImage();
             if (image != null) {
                 Glide.with(context).load(image.getUrl()).into(image_iv);
             }
-            description_tv.setText(post.getDescription());
-            String timeAgo = post.getRelativeTimeAgo();
+            description_tv.setText(group.getDescription());
+            String timeAgo = group.getRelativeTimeAgo();
             timestamp_tv.setText(timeAgo);
         }
 
