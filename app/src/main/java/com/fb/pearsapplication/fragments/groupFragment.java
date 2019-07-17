@@ -10,8 +10,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.fb.pearsapplication.EndlessRecyclerViewScrollListener;
 import com.fb.pearsapplication.R;
@@ -23,6 +25,8 @@ import com.parse.ParseQuery;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.parse.Parse.getApplicationContext;
 
 public class groupFragment extends Fragment {
 
@@ -55,10 +59,10 @@ public class groupFragment extends Fragment {
 
         // Configure the RecyclerView
         RecyclerView rvGroups = (RecyclerView) view.findViewById(R.id.rvGroups);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        rvGroups.setLayoutManager(linearLayoutManager);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
+        rvGroups.setLayoutManager(gridLayoutManager);
         // Retain an instance so that you can call `resetState()` for fresh searches
-        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+        scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 // Triggered only when new data needs to be appended to the list
