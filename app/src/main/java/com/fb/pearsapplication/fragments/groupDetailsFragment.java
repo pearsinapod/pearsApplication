@@ -15,4 +15,5 @@ import com.fb.pearsapplication.R;
 public class groupDetailsFragment extends Fragment {
 
 
+
 }

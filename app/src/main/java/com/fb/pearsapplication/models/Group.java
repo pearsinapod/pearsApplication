@@ -9,6 +9,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @ParseClassName("Group")
 public class Group extends ParseObject implements Serializable {
@@ -18,6 +19,7 @@ public class Group extends ParseObject implements Serializable {
     public static final String KEY_PRIVATE_STATUS = "privateStatus";
     public static final String KEY_USERS = "users";
     public static final String KEY_CREATED_AT = "createdAt";
+
 
     public String getDescription(){
         return getString(KEY_DESCRIPTION);
