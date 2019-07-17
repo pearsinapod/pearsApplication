@@ -28,21 +28,31 @@ public class Group extends ParseObject implements Serializable {
         put(KEY_DESCRIPTION, description);
     }
 
-    // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
-    public String getRelativeTimeAgo() {
-        String relativeDate = "";
-        long dateMillis = getCreatedAt().getTime();
-        relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
-                System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
-        return relativeDate;
+    public String getGroupName () {
+        return getString(KEY_GROUP_NAME);
     }
 
+    public void setGroupName (String name) {
+        put(KEY_GROUP_NAME, name);
+    }
     public ParseFile getGroupImage() {
         return getParseFile(KEY_GROUP_IMAGE);
     }
 
-    public void setImage(ParseFile image) {
-        put(KEY_GROUP_IMAGE, image);
+    public ParseFile getImage() {
+        return getParseFile(KEY_GROUP_IMAGE);
+    }
+
+    public void setImage(ParseFile groupImage) {
+        put(KEY_GROUP_IMAGE, groupImage);
+    }
+
+    public Boolean getPrivateStatus() {
+        return getBoolean(KEY_PRIVATE_STATUS);
+    }
+
+    public void setPrivateStatus (Boolean bool) {
+        put(KEY_PRIVATE_STATUS, bool);
     }
 
     public ParseUser getUser() {
@@ -53,22 +63,14 @@ public class Group extends ParseObject implements Serializable {
         put(KEY_USERS, user);
     }
 
-    public String getGroupName () {
-        return getString(KEY_GROUP_NAME);
+    // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
+    public String getRelativeTimeAgo() {
+        String relativeDate = "";
+        long dateMillis = getCreatedAt().getTime();
+        relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
+                System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
+        return relativeDate;
     }
-
-    public void setGroupName (String name) {
-        put(KEY_GROUP_NAME, name);
-    }
-
-    public Boolean getPrivateStatus() {
-        return getBoolean(KEY_PRIVATE_STATUS);
-    }
-
-    public void setPrivateStatus (boolean b) {
-        put(KEY_PRIVATE_STATUS, b);
-    }
-
 
     public static class Query extends ParseQuery<Group> {
         public Query() {
