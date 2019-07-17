@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -67,18 +68,21 @@ public class groupsAdapter extends RecyclerView.Adapter<groupsAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         //track view objects
-        private TextView handle_tv;
-        private ImageView image_iv;
-        private TextView description_tv;
-        private TextView timestamp_tv;
+        private ImageView ivGroupImage;
+        private TextView tvGroupName;
+        private TextView tvGroupNumber;
+        private TextView tvGroupDescription;
+        private Button btnJoin;
 
         public ViewHolder(View itemView) {
             super(itemView);
             // lookup view objects by id
-            // TODO handle_tv = itemView.findViewById(R.id.handle_tv);
-            // TODO image_iv = itemView.findViewById(R.id.image_iv);
-            // TODO description_tv = itemView.findViewById(R.id.description_tv);
-            // TODO timestamp_tv = itemView.findViewById(R.id.timestamp_tv);
+            ivGroupImage = itemView.findViewById(R.id.ivGroupImage);
+            tvGroupName = itemView.findViewById(R.id.tvGroupName);
+            tvGroupNumber = itemView.findViewById(R.id.tvGroupNumber);
+            tvGroupDescription = itemView.findViewById(R.id.tvDescription);
+            btnJoin = itemView.findViewById(R.id.btnJoin);
+
             // add this as the itemView's OnClickListener
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -102,14 +106,14 @@ public class groupsAdapter extends RecyclerView.Adapter<groupsAdapter.ViewHolder
         }
 
         public void bind(Group group) {
-            handle_tv.setText(group.getUser().getUsername());
+            tvGroupName.setText(group.getGroupName());
             ParseFile image = group.getImage();
             if (image != null) {
-                Glide.with(context).load(image.getUrl()).into(image_iv);
+                Glide.with(context).load(image.getUrl()).into(ivGroupImage);
             }
-            description_tv.setText(group.getDescription());
+            tvGroupNumber.setText(group.getList(Group.KEY_USERS).size());
+            tvGroupDescription.setText(group.getDescription());
             String timeAgo = group.getRelativeTimeAgo();
-            timestamp_tv.setText(timeAgo);
         }
 
 
