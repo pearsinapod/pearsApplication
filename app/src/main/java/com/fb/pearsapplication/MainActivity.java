@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
     final FragmentManager fragmentManager = getSupportFragmentManager();
+    androidx.appcompat.widget.Toolbar toolbar;
 
 
     @Override
@@ -28,7 +29,9 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         setUpBottomNavigationView();
 
-
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("temp");
 
     }
 
@@ -39,15 +42,15 @@ public class MainActivity extends AppCompatActivity {
                 Fragment fragment = new groupFragment();
                 switch (menuItem.getItemId()) {
                     case R.id.groupFragment:
-                        Log.d("groupFragment", "clicked set up");
+                        Log.d("groupFragment", "groupFragment clicked");
                         fragment = new groupFragment();
                         break;
                     case R.id.profileFragment:
-                        Log.d("profileFragment", "clicked set up");
+                        Log.d("profileFragment", "profileFragment clicked");
                         fragment = new profileFragment();
                         break;
                     case R.id.exploreFragment:
-                        Log.d("exploreFragment", "clicked set up");
+                        Log.d("exploreFragment", "exploreFragment clicked");
                         fragment = new exploreFragment();
                         break;
                 }
