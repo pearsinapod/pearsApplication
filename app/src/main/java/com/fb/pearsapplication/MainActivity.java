@@ -1,7 +1,9 @@
 package com.fb.pearsapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -9,10 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.fb.pearsapplication.fragments.exploreFragment;
 import com.fb.pearsapplication.fragments.groupFragment;
 import com.fb.pearsapplication.fragments.profileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.parse.ParseUser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.exploreFragment:
                         Log.d("exploreFragment", "exploreFragment clicked");
-                        fragment = new groupFragment();
+                        fragment = new exploreFragment();
                         break;
                 }
                 fragmentManager.beginTransaction().replace(R.id.flContainter, fragment).commit();
@@ -61,6 +63,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
         bottomNavigationView.setSelectedItemId(R.id.groupFragment);
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu_toolbar,menu);
+        return true;
+    }
+
+    public void onClickLogout (MenuItem item){
+        Log.d("Main Activity", "Logged out");
+        ParseUser.logOut();
+        Intent i = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(i);
+        finish();
     }
 
 
