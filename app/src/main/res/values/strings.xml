@@ -2,4 +2,7 @@
     <string name="app_name">pearsApplication</string>
     <string name="profile_me">My Profile Pic</string>
     <string name="profile_other">Other profile pic</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="facebook_app_id">814272222306117</string>
+    <string name="fb_login_protocol_scheme">fb814272222306117</string>
 </resources>

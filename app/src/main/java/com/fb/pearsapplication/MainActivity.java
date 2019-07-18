@@ -1,7 +1,9 @@
 package com.fb.pearsapplication;
 
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,11 +13,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+//import com.facebook.AccessToken;
 import com.fb.pearsapplication.fragments.exploreFragment;
 import com.fb.pearsapplication.fragments.groupFragment;
 import com.fb.pearsapplication.fragments.profileFragment;
+import com.fb.pearsapplication.models.Group;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
+import com.parse.SignUpCallback;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void setUpBottomNavigationView(){
+    public void setUpBottomNavigationView() {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -66,12 +82,12 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.groupFragment);
     }
 
-    public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.menu_toolbar,menu);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_toolbar, menu);
         return true;
     }
 
-    public void onClickLogout (MenuItem item){
+    public void onClickLogout(MenuItem item) {
         Log.d("Main Activity", "Logged out");
         ParseUser.logOut();
         Intent i = new Intent(MainActivity.this, LoginActivity.class);
@@ -79,10 +95,31 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
+    public void populateGroupDatabase(ArrayList<String> groupNames) {
+        boolean priv = true;
+        for (String h : groupNames) {
+            Group newGroup = new Group();
+            newGroup.setGroupName(h);
+            newGroup.setPrivateStatus(priv);
+            newGroup.setDescription("This group is about " + h);
+            newGroup.setUsers(new ArrayList());
+            priv = !priv;
 
-
-
+            newGroup.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        Log.d("XYZ", "success");
+                    } else {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    }
 }
+
+
 
 
 
