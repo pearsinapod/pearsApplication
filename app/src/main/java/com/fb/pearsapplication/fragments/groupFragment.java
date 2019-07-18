@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.fb.pearsapplication.EndlessRecyclerViewScrollListener;
 import com.fb.pearsapplication.R;
@@ -101,7 +100,7 @@ public class groupFragment extends Fragment {
                 mGroups.addAll(objects);
                 adapter.notifyDataSetChanged();
                 for (int i = 0; i < objects.size(); i++) {
-                    Log.d(TAG, "Group: " + objects.get(i).getDescription() + ", username: " + objects.get(i).getUser().getUsername());
+                   // Log.d(TAG, "Group: " + objects.get(i).getDescription() + ", username: " + objects.get(i).getUser().getUsername());
                 }
             }
         });

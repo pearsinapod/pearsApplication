@@ -22,6 +22,7 @@ import com.fb.pearsapplication.adapters.exploreAdapter;
 import com.fb.pearsapplication.models.Group;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseQuery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,7 @@ public class exploreFragment extends Fragment {
         btnSearchSubmit = view.findViewById(R.id.btnSearchSubmit);
 
 
-        showGroups();
+        updatingListAdapter(initialQuery());
         setUpOnSubmitListener();
         setUpSwipeContainer();
     }
@@ -69,7 +70,7 @@ public class exploreFragment extends Fragment {
 
                 eAdapter.clear();
                 exploreGroups.clear();
-                showGroups();
+                updatingListAdapter(initialQuery());
                 swipeContainer.setRefreshing(false);
 
             }
@@ -79,7 +80,30 @@ public class exploreFragment extends Fragment {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
+    }
 
+    public void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    public String getSearchedText(){
+        return etSearch.getText().toString();
+    }
+
+    protected ParseQuery initialQuery(){
+        Group.Query groupsQuery = new Group.Query();
+        groupsQuery.getTop();
+        groupsQuery.addDescendingOrder(Group.KEY_CREATED_AT);
+        updatingListAdapter(groupsQuery);
+        return groupsQuery;
+    }
+
+    protected ParseQuery specificQuery(){
+        Group.Query groupsQuery = new Group.Query();
+        // can be used to alphabatize : groupsQuery.addAscendingOrder(Group.KEY_GROUP_NAME);
+       groupsQuery.whereContains(Group.KEY_GROUP_NAME, getSearchedText());
+       return groupsQuery;
 
     }
 
@@ -87,39 +111,26 @@ public class exploreFragment extends Fragment {
         btnSearchSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                etSearch.setText("");
                 hideSoftKeyboard(getActivity());
                 Log.d("Search Submit","Clicked");
+                updatingListAdapter(specificQuery());
+                etSearch.setText("");
 
             }
         });
 
     }
 
-    public String getSearchedText(){
-        return etSearch.getText().toString();
-    }
-
-    public static void hideSoftKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
-    }
-
-
-    protected void showGroups(){
-        Group.Query groupsQuery = new Group.Query();
-        // can be used to alphabatize : groupsQuery.addAscendingOrder(Group.KEY_GROUP_NAME);
-        if (getSearchedText().equals("")){
-            groupsQuery.getTop();
-            groupsQuery.addDescendingOrder(Group.KEY_CREATED_AT);
-        }else{
-            //TODO soon!
-        }
+    protected void updatingListAdapter(ParseQuery groupsQuery){
+        exploreGroups.clear();
         groupsQuery.findInBackground(new FindCallback<Group>() {
             @Override
             public void done(List<Group> objects, ParseException e) {
                 if (e == null){
-                    exploreGroups.addAll(objects);
+                    for (int i =0; i<objects.size();i++){
+                        exploreGroups.add(objects.get(i));
+                        Log.d("Position "+i+":",objects.get(i).getGroupName());
+                    }
                     eAdapter.notifyDataSetChanged();
                 }
                 else{
@@ -128,11 +139,8 @@ public class exploreFragment extends Fragment {
             }
         });
     }
-
-
-
-
-
-
-
+    /*TODO:
+        problem: onRefresh will go back to initialQuery
+        problem: click only submit without anything - error in hiding keyboard!!!!
+    */
 }
