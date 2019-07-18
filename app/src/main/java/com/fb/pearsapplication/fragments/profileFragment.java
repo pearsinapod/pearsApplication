@@ -2,9 +2,12 @@ package com.fb.pearsapplication.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,14 +21,19 @@ import com.bumptech.glide.request.RequestOptions;
 import com.fb.pearsapplication.LoginActivity;
 import com.fb.pearsapplication.MainActivity;
 import com.fb.pearsapplication.R;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 public class profileFragment extends Fragment {
 
     public ImageView ivImage;
     public TextView tvName;
-
+    public TextView tvDescription;
+    public ImageButton btnEdit;
+    public EditText etDescription;
+    public ImageButton btnDone;
 
     @Nullable
     @Override
@@ -40,11 +48,65 @@ public class profileFragment extends Fragment {
 
         ivImage = view.findViewById(R.id.ivImage);
         tvName = view.findViewById(R.id.tvName);
+        tvDescription = view.findViewById(R.id.tvDescription);
+        etDescription = view.findViewById(R.id.etDescription);
+        btnEdit = view.findViewById(R.id.btnEdit);
+        btnDone = view.findViewById(R.id.btnDone);
 
-        tvName.setText(user.getUsername());
+        etDescription.setVisibility(View.GONE);
+        btnDone.setVisibility(View.GONE);
+
+
+        tvName.setText(user.getUsername() + ", " + user.getNumber("age"));
+        String description = user.getString("description");
+        if (description != null) {
+            tvDescription.setText(description);
+        } else {
+            tvDescription.setText("How would your best friend describe you?");
+            Log.d("XYZ", "im sad");
+        }
         ParseFile profileImage = user.getParseFile("profileImage");
         if (profileImage != null) {
             Glide.with(getContext()).load(profileImage.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivImage);
+        } else {
+            Glide.with(getContext()).load(R.drawable.user).apply(RequestOptions.circleCropTransform()).into(ivImage);
         }
+
+        btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tvDescription.setVisibility(View.GONE);
+                btnEdit.setVisibility(View.GONE);
+                etDescription.setVisibility(View.VISIBLE);
+                btnDone.setVisibility(View.VISIBLE);
+                etDescription.setText(ParseUser.getCurrentUser().getString("description"));
+                btnDone.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        changeDescription();
+                    }
+                });
+            }
+        });
+    }
+
+    private void changeDescription() {
+        final String description = etDescription.getText().toString();
+        ParseUser user = ParseUser.getCurrentUser();
+        user.put("description", description);
+        user.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    etDescription.setVisibility(View.GONE);
+                    btnDone.setVisibility(View.GONE);
+                    tvDescription.setVisibility(View.VISIBLE);
+                    btnEdit.setVisibility(View.VISIBLE);
+                    tvDescription.setText(description);
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

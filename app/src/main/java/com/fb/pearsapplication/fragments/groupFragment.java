@@ -56,6 +56,8 @@ public class groupFragment extends Fragment {
         // set the layout manager on the recycler view
         rvGroups.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        queryGroups();
+
 
         // Configure the RecyclerView
         RecyclerView rvGroups = (RecyclerView) view.findViewById(R.id.rvGroups);
@@ -100,9 +102,9 @@ public class groupFragment extends Fragment {
                 }
                 mGroups.addAll(objects);
                 adapter.notifyDataSetChanged();
-                for (int i = 0; i < objects.size(); i++) {
-                    Log.d(TAG, "Group: " + objects.get(i).getDescription() + ", username: " + objects.get(i).getUser().getUsername());
-                }
+//                for (int i = 0; i < objects.size(); i++) {
+//                    Log.d(TAG, "Group: " + objects.get(i).getDescription() + ", username: " + objects.get(i).getUser().getUsername());
+//                }
             }
         });
     }
