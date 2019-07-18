@@ -8,9 +8,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+//import com.facebook.AccessToken;
+//import com.facebook.CallbackManager;
+//import com.facebook.FacebookCallback;
+//import com.facebook.FacebookException;
+//import com.facebook.login.LoginManager;
+//import com.facebook.login.LoginResult;
+//import com.facebook.login.widget.LoginButton;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
+
+import java.util.Arrays;
+
+//import static com.facebook.appevents.UserDataStore.EMAIL;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -20,9 +31,40 @@ public class LoginActivity extends AppCompatActivity {
     public Button btnSignup;
     public ParseUser user;
 
+//    public CallbackManager callbackManager;
+//    public LoginButton btnFBLogin;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+//        callbackManager = CallbackManager.Factory.create();
+//        setContentView(R.layout.activity_login);
+//
+//        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+//            @Override
+//            public void onSuccess(LoginResult loginResult) {
+//                setResult(RESULT_OK);
+//                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+//                startActivity(mainIntent);
+//                finish();
+//            }
+//
+//            @Override
+//            public void onCancel() {
+//                setResult(RESULT_CANCELED);
+//                finish();
+//            }
+//
+//            @Override
+//            public void onError(FacebookException exception) {
+//                exception.printStackTrace();
+//            }
+//        });
+//
+
+
+
         user = ParseUser.getCurrentUser();
         if (user != null) {
             Intent mainIntent = new Intent(this, MainActivity.class);
@@ -56,6 +98,13 @@ public class LoginActivity extends AppCompatActivity {
 
 
     }
+
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        callbackManager.onActivityResult(requestCode, resultCode, data);
+//        super.onActivityResult(requestCode, resultCode, data);
+//    }
+
 
     public void login(String email, String password) {
         ParseUser.logInInBackground(email, password, new LogInCallback() {
