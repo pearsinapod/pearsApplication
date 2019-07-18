@@ -9,7 +9,9 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 @ParseClassName("Group")
 public class Group extends ParseObject implements Serializable {
@@ -52,13 +54,19 @@ public class Group extends ParseObject implements Serializable {
         put(KEY_PRIVATE_STATUS, bool);
     }
 
-    public ParseUser getUser() {
-        return getParseUser(KEY_USERS);
+    public ArrayList getUsers() {
+        if (getList(KEY_USERS) == null) {
+            put(KEY_USERS, new ArrayList<>());
+            saveInBackground();
+        }
+        return (ArrayList) getList(KEY_USERS);
     }
 
-    public void setUsers(ArrayList users) {
+    public void addUser(ParseUser user) {
+        ArrayList users = (ArrayList) getUsers();
+        users.add(user);
         put(KEY_USERS, users);
-    }
+        saveInBackground();
 
     // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
     public String getRelativeTimeAgo() {
