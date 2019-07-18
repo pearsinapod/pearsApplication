@@ -19,7 +19,9 @@ import com.fb.pearsapplication.fragments.groupFragment;
 import com.fb.pearsapplication.fragments.profileFragment;
 import com.fb.pearsapplication.models.Group;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
@@ -53,6 +55,22 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("temp");
 
+        String fbUserEmail = getIntent().getStringExtra("email");
+
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.whereEqualTo("email", fbUserEmail);
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                    return;
+                }
+                if (objects.isEmpty()) {
+                    Log.d("XYZ", "need to sign-up user");
+                }
+            }
+        });
     }
 
     public void setUpBottomNavigationView() {
