@@ -74,7 +74,7 @@ public class Group extends ParseObject implements Serializable {
         }
 
         public Query getTop() {
-            setLimit(20);
+            setLimit(20); //sets limit of both list and view!
             return this;
         }
 

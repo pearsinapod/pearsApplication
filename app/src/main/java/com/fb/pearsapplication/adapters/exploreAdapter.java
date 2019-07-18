@@ -56,7 +56,6 @@ public class exploreAdapter extends RecyclerView.Adapter<exploreAdapter.ViewHold
             super(itemView);
             tvExploreName= itemView.findViewById(R.id.tvExploreName);
             ivExploreImage = itemView.findViewById(R.id.ivExploreImage);
-
         }
     }
 
