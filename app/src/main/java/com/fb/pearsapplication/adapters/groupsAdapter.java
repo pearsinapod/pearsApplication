@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.fragments.groupDetailsFragment;
 import com.fb.pearsapplication.models.Group;
@@ -53,7 +54,7 @@ public class groupsAdapter extends RecyclerView.Adapter<groupsAdapter.ViewHolder
 
 
 
-    // Clean all elements of the recycler
+    //Clean all elements of the recycler
     public void clear() {
         groups.clear();
         notifyDataSetChanged();
@@ -70,18 +71,18 @@ public class groupsAdapter extends RecyclerView.Adapter<groupsAdapter.ViewHolder
         //track view objects
         private ImageView ivGroupImage;
         private TextView tvGroupName;
-        private TextView tvGroupNumber;
-        private TextView tvGroupDescription;
-        private Button btnJoin;
+        //private TextView tvGroupNumber;
+        //private TextView tvGroupDescription;
+        //private Button btnJoin;
 
         public ViewHolder(View itemView) {
             super(itemView);
             // lookup view objects by id
             ivGroupImage = itemView.findViewById(R.id.ivGroupImage);
             tvGroupName = itemView.findViewById(R.id.tvGroupName);
-            tvGroupNumber = itemView.findViewById(R.id.tvGroupNumber);
-            tvGroupDescription = itemView.findViewById(R.id.tvDescription);
-            btnJoin = itemView.findViewById(R.id.btnJoin);
+            //tvGroupNumber = itemView.findViewById(R.id.tvGroupNumber);
+            //tvGroupDescription = itemView.findViewById(R.id.tvDescription);
+            //btnJoin = itemView.findViewById(R.id.btnJoin);
 
             // add this as the itemView's OnClickListener
 
@@ -92,10 +93,10 @@ public class groupsAdapter extends RecyclerView.Adapter<groupsAdapter.ViewHolder
                     // make sure the position is valid, i.e. actually exists in the view
                     if (position != RecyclerView.NO_POSITION) {
                         // get the group at the position, this won't work if the class is static
-                        Group post = groups.get(position);
+                        Group group = groups.get(position);
                         FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
                         Bundle bundle = new Bundle();
-                        bundle.putSerializable("anything", post);
+                        bundle.putSerializable("anything", group);
                         Fragment fragment = new groupDetailsFragment();
                         fragment.setArguments(bundle);
 
@@ -109,11 +110,11 @@ public class groupsAdapter extends RecyclerView.Adapter<groupsAdapter.ViewHolder
             tvGroupName.setText(group.getGroupName());
             ParseFile image = group.getImage();
             if (image != null) {
-                Glide.with(context).load(image.getUrl()).into(ivGroupImage);
+                Glide.with(context).load(image.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivGroupImage);
             }
-            tvGroupNumber.setText(group.getList(Group.KEY_USERS).size());
-            tvGroupDescription.setText(group.getDescription());
-            String timeAgo = group.getRelativeTimeAgo();
+//            tvGroupNumber.setText(group.getUsers().size());
+//            tvGroupDescription.setText(group.getDescription());
+//            String timeAgo = group.getRelativeTimeAgo();
         }
 
 
