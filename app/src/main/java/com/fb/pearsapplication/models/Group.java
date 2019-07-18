@@ -38,8 +38,7 @@ public class Group extends ParseObject implements Serializable {
     public void setGroupName (String name) {
         put(KEY_GROUP_NAME, name);
     }
-
-    public ParseFile getImage() {
+    public ParseFile getGroupImage() {
         return getParseFile(KEY_GROUP_IMAGE);
     }
 
@@ -68,7 +67,6 @@ public class Group extends ParseObject implements Serializable {
         users.add(user);
         put(KEY_USERS, users);
         saveInBackground();
-    }
 
     // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
     public String getRelativeTimeAgo() {
@@ -77,6 +75,7 @@ public class Group extends ParseObject implements Serializable {
         relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
                 System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
         return relativeDate;
+    }
 
     public static class Query extends ParseQuery<Group> {
         public Query() {
