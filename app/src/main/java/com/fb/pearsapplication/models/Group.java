@@ -9,7 +9,6 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.io.Serializable;
-import java.util.Date;
 
 @ParseClassName("Group")
 public class Group extends ParseObject implements Serializable {
@@ -25,25 +24,32 @@ public class Group extends ParseObject implements Serializable {
         return getString(KEY_DESCRIPTION);
     }
 
-    public void setDescription(String Description) {
-        put(KEY_DESCRIPTION, Description);
+    public void setDescription(String description) {
+        put(KEY_DESCRIPTION, description);
     }
 
-    // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
-    public String getRelativeTimeAgo() {
-        String relativeDate = "";
-        long dateMillis = getCreatedAt().getTime();
-        relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
-                System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
-        return relativeDate;
+    public String getGroupName () {
+        return getString(KEY_GROUP_NAME);
+    }
+
+    public void setGroupName (String name) {
+        put(KEY_GROUP_NAME, name);
     }
 
     public ParseFile getImage() {
         return getParseFile(KEY_GROUP_IMAGE);
     }
 
-    public void setImage(ParseFile Image) {
-        put(KEY_GROUP_IMAGE, Image);
+    public void setImage(ParseFile groupImage) {
+        put(KEY_GROUP_IMAGE, groupImage);
+    }
+
+    public Boolean getPrivateStatus() {
+        return getBoolean(KEY_PRIVATE_STATUS);
+    }
+
+    public void setPrivateStatus (Boolean bool) {
+        put(KEY_PRIVATE_STATUS, bool);
     }
 
     public ParseUser getUser() {
@@ -54,22 +60,13 @@ public class Group extends ParseObject implements Serializable {
         put(KEY_USERS, user);
     }
 
-    public ParseFile getGroupName () {
-        return getParseFile(KEY_GROUP_NAME);
-    }
-
-    public void setGroupName () {
-        // TODO    put(KEY_GROUP_NAME, privateStatus);
-    }
-
-    public ParseFile getPrivateStatus() {
-        return getParseFile(KEY_PRIVATE_STATUS);
-    }
-
-    public void setPrivateStatus () {
-        // TODO   put(KEY_PRIVATE_STATUS, privateStatus);
-    }
-
+    // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
+    public String getRelativeTimeAgo() {
+        String relativeDate = "";
+        long dateMillis = getCreatedAt().getTime();
+        relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
+                System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
+        return relativeDate;
 
     public static class Query extends ParseQuery<Group> {
         public Query() {
