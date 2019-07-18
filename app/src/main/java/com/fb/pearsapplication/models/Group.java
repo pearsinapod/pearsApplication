@@ -9,6 +9,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 @ParseClassName("Group")
 public class Group extends ParseObject implements Serializable {
@@ -55,8 +56,8 @@ public class Group extends ParseObject implements Serializable {
         return getParseUser(KEY_USERS);
     }
 
-    public void setUser(ParseUser user) {
-        put(KEY_USERS, user);
+    public void setUsers(ArrayList users) {
+        put(KEY_USERS, users);
     }
 
     // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
