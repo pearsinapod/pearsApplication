@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.fb.pearsapplication.fragments.exploreFragment;
+import com.fb.pearsapplication.fragments.exploreFragmentParent;
 import com.fb.pearsapplication.fragments.groupFragment;
 import com.fb.pearsapplication.fragments.profileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -54,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
                         fragment = new profileFragment();
                         break;
                     case R.id.exploreFragment:
-                        Log.d("exploreFragment", "exploreFragment clicked");
-                        fragment = new exploreFragment();
+                        Log.d("exploreFragmentParent", "exploreFragmentParent clicked");
+                        fragment = new exploreFragmentParent();
                         break;
                 }
                 fragmentManager.beginTransaction().replace(R.id.flContainter, fragment).commit();
