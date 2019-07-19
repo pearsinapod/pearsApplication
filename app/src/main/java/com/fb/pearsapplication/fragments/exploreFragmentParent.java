@@ -2,12 +2,13 @@ package com.fb.pearsapplication.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
@@ -33,14 +34,12 @@ public class exploreFragmentParent extends Fragment {
    private RecyclerView rvExploreGroups;
    private SwipeRefreshLayout swipeContainer;
    EditText etSearch;
-   Button btnSearchSubmit;
 
    @Nullable
    @Override
    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
        return inflater.inflate(R.layout.fragment_explore, container, false);
    }
-
 
    @Override
    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -53,12 +52,11 @@ public class exploreFragmentParent extends Fragment {
 
        swipeContainer = view.findViewById(R.id.swipeContainer);
        etSearch = view.findViewById(R.id.etSearch);
-       btnSearchSubmit = view.findViewById(R.id.btnSearchSubmit);
 
 
        updatingListAdapter(getQuery(),true);
-       setUpOnSubmitListener();
        setUpSwipeContainer();
+       setUpOnTextChanged();
    }
 
    public void setUpSwipeContainer(){
@@ -100,18 +98,20 @@ public class exploreFragmentParent extends Fragment {
        // can be used to alphabatize : groupsQuery.addAscendingOrder(Group.KEY_GROUP_NAME);
        //groupsQuery.whereContains(Group.KEY_GROUP_NAME, getSearchedText());
 
-   public void setUpOnSubmitListener(){
-       btnSearchSubmit.setOnClickListener(new View.OnClickListener() {
+   public void setUpOnTextChanged(){
+       etSearch.addTextChangedListener(new TextWatcher() {
            @Override
-           public void onClick(View view) {
-               hideSoftKeyboard(getActivity());
-               Log.d("Search Submit","Clicked");
-              // setNoUserSearch(false);
-               updatingListAdapter(getQuery(), false);
+           public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) { }
+
+           @Override
+           public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+               updatingListAdapter(getQuery(),false);
 
            }
-       });
 
+           @Override
+           public void afterTextChanged(Editable editable) { }
+       });
    }
 
    protected void updatingListAdapter(ParseQuery groupsQuery, final boolean noUserSearch){
@@ -135,7 +135,6 @@ public class exploreFragmentParent extends Fragment {
                                }
                            }
                        }
-                   etSearch.setText("");
                    }
                else{
                    Log.d("Explore Fragment","Loading items failed");
