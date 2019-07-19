@@ -7,4 +7,10 @@
         android:title="Logout"
         android:onClick="onClickLogout"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/message"
+        android:title="Messages"
+        android:onClick="onClickMessages"
+        app:showAsAction="always"/>
 </menu>
