@@ -14,7 +14,7 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -27,6 +27,8 @@ import com.parse.ParseQuery;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.parse.Parse.getApplicationContext;
 
 public class exploreFragmentParent extends Fragment {
     protected ArrayList<Group> exploreGroups;
@@ -47,8 +49,8 @@ public class exploreFragmentParent extends Fragment {
        exploreGroups = new ArrayList<>();
        eAdapter = new exploreAdapter(exploreGroups);
        rvExploreGroups.setAdapter(eAdapter);
-       LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-       rvExploreGroups.setLayoutManager(linearLayoutManager);
+       GridLayoutManager exploreGridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
+       rvExploreGroups.setLayoutManager(exploreGridLayoutManager);
 
        swipeContainer = view.findViewById(R.id.swipeContainer);
        etSearch = view.findViewById(R.id.etSearch);
@@ -106,7 +108,6 @@ public class exploreFragmentParent extends Fragment {
            @Override
            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                updatingListAdapter(getQuery(),false);
-
            }
 
            @Override
