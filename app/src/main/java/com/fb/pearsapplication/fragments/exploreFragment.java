@@ -57,8 +57,7 @@ public class exploreFragment extends Fragment {
         etSearch = view.findViewById(R.id.etSearch);
         btnSearchSubmit = view.findViewById(R.id.btnSearchSubmit);
 
-
-        updatingListAdapter(initialQuery());
+        updatingListAdapter(getQuery(),true);
         setUpOnSubmitListener();
         setUpSwipeContainer();
     }
@@ -70,7 +69,7 @@ public class exploreFragment extends Fragment {
 
                 eAdapter.clear();
                 exploreGroups.clear();
-                updatingListAdapter(initialQuery());
+                updatingListAdapter(getQuery(),true);
                 swipeContainer.setRefreshing(false);
 
             }
@@ -91,20 +90,16 @@ public class exploreFragment extends Fragment {
         return etSearch.getText().toString();
     }
 
-    protected ParseQuery initialQuery(){
-        Group.Query groupsQuery = new Group.Query();
-        groupsQuery.getTop();
-        groupsQuery.addDescendingOrder(Group.KEY_CREATED_AT);
-        updatingListAdapter(groupsQuery);
-        return groupsQuery;
+    public int lengthSearchedText(){
+        return getSearchedText().length();
     }
 
-    protected ParseQuery specificQuery(){
-        Group.Query groupsQuery = new Group.Query();
+    protected ParseQuery getQuery(){
         // can be used to alphabatize : groupsQuery.addAscendingOrder(Group.KEY_GROUP_NAME);
-       groupsQuery.whereContains(Group.KEY_GROUP_NAME, getSearchedText());
-       return groupsQuery;
-
+        //groupsQuery.whereContains(Group.KEY_GROUP_NAME, getSearchedText());
+        Group.Query groupsQuery = new Group.Query();
+        groupsQuery.addDescendingOrder(Group.KEY_CREATED_AT);
+        return groupsQuery;
     }
 
     public void setUpOnSubmitListener(){
@@ -113,25 +108,35 @@ public class exploreFragment extends Fragment {
             public void onClick(View view) {
                 hideSoftKeyboard(getActivity());
                 Log.d("Search Submit","Clicked");
-                updatingListAdapter(specificQuery());
-                etSearch.setText("");
+                updatingListAdapter(getQuery(), false);
 
             }
         });
 
     }
 
-    protected void updatingListAdapter(ParseQuery groupsQuery){
+    protected void updatingListAdapter(ParseQuery groupsQuery, final boolean noUserSearch){
         exploreGroups.clear();
+        eAdapter.notifyDataSetChanged();
         groupsQuery.findInBackground(new FindCallback<Group>() {
             @Override
             public void done(List<Group> objects, ParseException e) {
-                if (e == null){
-                    for (int i =0; i<objects.size();i++){
-                        exploreGroups.add(objects.get(i));
-                        Log.d("Position "+i+":",objects.get(i).getGroupName());
+                if (e == null) {
+                    if(noUserSearch) {
+                        exploreGroups.addAll(objects);
+                        eAdapter.notifyDataSetChanged();
                     }
-                    eAdapter.notifyDataSetChanged();
+                    else {
+                        for (int i = 0; i < objects.size(); i++) {
+                            Group group = objects.get(i);
+                            String lowercaseGroupName = group.getGroupName().toLowerCase();
+                            if (lowercaseGroupName.length()>= lengthSearchedText() && lowercaseGroupName.substring(0,lengthSearchedText()).equals(getSearchedText())){
+                                exploreGroups.add(group);
+                                eAdapter.notifyDataSetChanged();
+                            }
+                        }
+                    }
+                    etSearch.setText("");
                 }
                 else{
                     Log.d("Explore Fragment","Loading items failed");
@@ -139,8 +144,12 @@ public class exploreFragment extends Fragment {
             }
         });
     }
-    /*TODO:
-        problem: onRefresh will go back to initialQuery
-        problem: click only submit without anything - error in hiding keyboard!!!!
-    */
+
+/* TODO- goals:
+        Problem 1: onSwipeRefresh will go back to initial query
+        Problem 2: potential hide keyboard error?
+        Problem 3: should explicitly say there are no groups when the user searches something that is not in our database
+        Goal: infinite scrolling
+ */
+
 }
