@@ -40,8 +40,9 @@ public class exploreFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_explore, container, false);
+        return inflater.inflate(R.layout.fragment_explore_parent, container, false);
     }
+
 
 
     @Override
@@ -56,6 +57,8 @@ public class exploreFragment extends Fragment {
         swipeContainer = view.findViewById(R.id.swipeContainer);
         etSearch = view.findViewById(R.id.etSearch);
         btnSearchSubmit = view.findViewById(R.id.btnSearchSubmit);
+
+
 
         updatingListAdapter(getQuery(),true);
         setUpOnSubmitListener();
