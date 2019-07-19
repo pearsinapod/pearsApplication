@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/ivProfileOther"
-        android:contentDescription="@string/profile_other"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:src="@mipmap/ic_launcher" />
+        android:contentDescription="@string/profile_other"
+        android:src="@mipmap/ic_launcher"
+        app:srcCompat="@drawable/user" />
     <TextView
         android:textSize="18sp"
         android:id="@+id/tvBody"
@@ -22,11 +24,13 @@
         android:layout_weight="1"
         android:layout_marginRight="64dp">
     </TextView>
+
     <ImageView
         android:id="@+id/ivProfileMe"
-        android:contentDescription="@string/profile_me"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:src="@mipmap/ic_launcher" />
+        android:contentDescription="@string/profile_me"
+        android:src="@mipmap/ic_launcher"
+        app:srcCompat="@drawable/user" />
 
 </LinearLayout>

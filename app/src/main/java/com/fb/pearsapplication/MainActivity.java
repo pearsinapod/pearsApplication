@@ -1,9 +1,7 @@
 package com.fb.pearsapplication;
 
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,16 +22,8 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-import com.parse.SignUpCallback;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -108,9 +98,15 @@ public class MainActivity extends AppCompatActivity {
     public void onClickLogout(MenuItem item) {
         Log.d("Main Activity", "Logged out");
         ParseUser.logOut();
-        Intent i = new Intent(MainActivity.this, LoginActivity.class);
-        startActivity(i);
+        Intent logoutIntent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(logoutIntent);
         finish();
+    }
+
+    public void onClickMessages(MenuItem item) {
+        Log.d("Main Activity", "went to messages");
+        Intent messageIntent = new Intent(MainActivity.this, conversationsActivity.class);
+        startActivity(messageIntent);
     }
 
     public void populateGroupDatabase(ArrayList<String> groupNames) {
@@ -120,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             newGroup.setGroupName(h);
             newGroup.setPrivateStatus(priv);
             newGroup.setDescription("This group is about " + h);
-            newGroup.setUsers(new ArrayList());
+            newGroup.addUser(new ArrayList());
             priv = !priv;
 
             newGroup.saveInBackground(new SaveCallback() {

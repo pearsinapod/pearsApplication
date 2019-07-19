@@ -52,7 +52,7 @@ public class groupDetailsFragment extends Fragment {
         tvGroupNumber = (TextView) view.findViewById(R.id.tvGroupNumber);
 
         tvGroupName.setText(group.getGroupName());
-        ParseFile image = group.getImage();
+        ParseFile image = group.getGroupImage();
         if (image != null) {
             Glide.with(getContext()).load(image.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivGroupImage);
         }
@@ -64,14 +64,14 @@ public class groupDetailsFragment extends Fragment {
         tvDescription.setText(group.getDescription());
         String timeAgo = group.getRelativeTimeAgo();
 
-        btnMatch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                insertNestedFragment();
-
-            }
-        });
+//        btnMatch.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                insertNestedFragment();
+//
+//            }
+//        });
     }
     // Embeds the child fragment dynamically
     private void insertNestedFragment() {

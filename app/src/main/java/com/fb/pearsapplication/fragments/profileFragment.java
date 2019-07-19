@@ -1,12 +1,10 @@
 package com.fb.pearsapplication.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -18,8 +16,6 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.fb.pearsapplication.LoginActivity;
-import com.fb.pearsapplication.MainActivity;
 import com.fb.pearsapplication.R;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -46,7 +42,7 @@ public class profileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ParseUser user = ParseUser.getCurrentUser();
 
-        ivImage = view.findViewById(R.id.ivImage);
+        ivImage = view.findViewById(R.id.ivProfileOther);
         tvName = view.findViewById(R.id.tvName);
         tvDescription = view.findViewById(R.id.tvDescription);
         etDescription = view.findViewById(R.id.etDescription);
