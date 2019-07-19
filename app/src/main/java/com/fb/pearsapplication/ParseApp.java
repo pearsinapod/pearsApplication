@@ -6,6 +6,7 @@ import com.fb.pearsapplication.models.Group;
 import com.fb.pearsapplication.models.User;
 
 import com.parse.Parse;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
 
 
@@ -26,6 +27,7 @@ public class ParseApp extends Application {
                 .build();
 
         Parse.initialize(configuration);
+        ParseFacebookUtils.initialize(this);
     }
 
 }
