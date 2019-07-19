@@ -45,8 +45,6 @@ public class exploreAdapter extends RecyclerView.Adapter<exploreAdapter.ViewHold
                     .into(holder.ivExploreImage);
         }
     }
-
-
     @Override
     public int getItemCount() {
         return mGroups.size();
@@ -58,7 +56,16 @@ public class exploreAdapter extends RecyclerView.Adapter<exploreAdapter.ViewHold
             super(itemView);
             tvExploreName= itemView.findViewById(R.id.tvExploreName);
             ivExploreImage = itemView.findViewById(R.id.ivExploreImage);
-
         }
+    }
+
+    public void clear() {
+        mGroups.clear();
+        notifyDataSetChanged();
+    }
+
+    public void addAll(List<Group> list) {
+        mGroups.addAll(list);
+        notifyDataSetChanged();
     }
 }
