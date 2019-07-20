@@ -19,7 +19,6 @@ public class PearMessage extends ParseObject implements Serializable {
         put("receiverId", receiverId);
     }
 
-
     public String getUserId() {
         return getString(USER_ID_KEY);
     }
