@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -57,6 +59,7 @@ public class exploreFragment extends Fragment {
 
 
        updatingListAdapter(getQuery(),true);
+       setUpEditorListener();
        setUpSwipeContainer();
        setUpOnTextChanged();
    }
@@ -82,6 +85,16 @@ public class exploreFragment extends Fragment {
    public void hideSoftKeyboard(Activity activity) {
        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+   }
+
+   public void setUpEditorListener(){
+       etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+           @Override
+           public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+               hideSoftKeyboard(getActivity());
+               return true;
+           }
+       });
    }
 
    public String getSearchedText(){
@@ -144,11 +157,8 @@ public class exploreFragment extends Fragment {
        });
    }
 /*   TODO:
-       problem: onRefresh will go back to noSearchQuery
-       problem: click only submit without anything - error in hiding keyboard!!!! user searches .. should not contain their groups
-              problem: onRefresh will go back to noSearchQuery
-       problem: click only submit without anything - error in hiding keyboard!!!!
        user searches .. should not contain their groups
+              problem: onRefresh will go back to noSearchQuery
 */
 
 
