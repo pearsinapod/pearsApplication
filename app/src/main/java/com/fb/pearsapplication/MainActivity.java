@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-//import com.facebook.AccessToken;
 import com.fb.pearsapplication.fragments.exploreFragment;
 import com.fb.pearsapplication.fragments.groupFragment;
 import com.fb.pearsapplication.fragments.profileFragment;
@@ -24,6 +23,9 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
+import java.util.List;
+
+//import com.facebook.AccessToken;
 
 public class MainActivity extends AppCompatActivity {
 
