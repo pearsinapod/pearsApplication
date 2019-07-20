@@ -22,7 +22,6 @@ public class Group extends ParseObject implements Serializable {
     public static final String KEY_USERS = "users";
     public static final String KEY_CREATED_AT = "createdAt";
 
-
     public String getDescription() {
         return getString(KEY_DESCRIPTION);
     }
@@ -57,15 +56,19 @@ public class Group extends ParseObject implements Serializable {
 
     public ArrayList getUsers() {
         if (getList(KEY_USERS) == null) {
-            put(KEY_USERS, new ArrayList<>());
-            saveInBackground();
+            setUsers(new ArrayList());
         }
         return (ArrayList) getList(KEY_USERS);
     }
 
-    public void addUser(ArrayList user) {
+    public void addUser(ParseUser user) {
         ArrayList users = (ArrayList) getUsers();
         users.add(user);
+        put(KEY_USERS, users);
+        saveInBackground();
+    }
+
+    public void setUsers(ArrayList<ParseUser> users) {
         put(KEY_USERS, users);
         saveInBackground();
     }

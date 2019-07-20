@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -25,11 +26,16 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.fb.pearsapplication.models.Group;
+import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 //import com.parse.ParseFacebookUtils;
+
+//import com.parse.ParseFacebookUtils;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
 import org.json.JSONException;
@@ -43,122 +49,137 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 
 public class LoginActivity extends AppCompatActivity {
 
-    private CallbackManager callbackManager;
-    private AccessTokenTracker accessTokenTracker;
-    private ProfileTracker profileTracker;
-    private LoginButton loginButton;
-    private String firstName,lastName, email,birthday,gender;
-    private URL profilePicture;
+    private Button FBloginButton;
+    private String firstName, lastName, email, birthday, gender, profilePicture;
     private String userId;
     private String TAG = "LoginActivity";
+
+    private EditText etEmail;
+    private EditText etPassword;
+    private Button btnLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FacebookSdk.sdkInitialize(this);
         setContentView(R.layout.activity_login);
-        callbackManager = CallbackManager.Factory.create();
-        loginButton = (LoginButton) findViewById(R.id.login_button);
-        Log.d("XYZ", "im confused");
-        loginButton.setHeight(100);
-        loginButton.setTextColor(Color.WHITE);
-        loginButton.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
-        loginButton.setCompoundDrawablePadding(0);
+        FacebookSdk.sdkInitialize(this);
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        etEmail = findViewById(R.id.etEmail);
+        etPassword = findViewById(R.id.etPassword);
+        btnLogin = findViewById(R.id.btnLogin);
+        // fb-specific button
+        FBloginButton = findViewById(R.id.login);
+
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+        if (isLoggedIn) {
+            Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(mainIntent);
+            finish();
+        }
+
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String email = etEmail.getText().toString();
+                    String password = etPassword.getText().toString();
+                    login(email, password);
+                }
+            });
+
+        final List<String> permissions = Arrays.asList("public_profile", "email");
+        FBloginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<String> permissions = new ArrayList();
-                permissions.add("email");
-                permissions.add("birthday");
-                ParseFacebookUtils.logInWithReadPermissionsInBackground(LoginActivity.this, permissions,
-                        new LogInCallback() {
-                            @Override
-                            public void done(ParseUser user, ParseException err) {
-                                if (err != null) {
-                                    Log.d("MyApp", "Uh oh. Error occurred" + err.toString());
-                                } else if (user == null) {
-                                    Log.d("MyApp", "Uh oh. The user cancelled the Facebook login.");
-                                } else if (user.isNew()) {
-                                    Log.d("MyApp", "User signed up and logged in through Facebook!");
-                                } else {
-                                    Toast.makeText(LoginActivity.this, "Logged in", Toast.LENGTH_SHORT)
-                                            .show();
-                                    Log.d("MyApp", "User logged in through Facebook!");
-                                }
-                            }
-                        });
+                Log.d("MyApp", "clicked!");
+                ParseFacebookUtils.logInWithReadPermissionsInBackground(LoginActivity.this, permissions, new LogInCallback() {
+                    @Override
+                    public void done(ParseUser user, ParseException err) {
+                        Log.d("MyApp", "inside done!");
+                        if (user == null) {
+                            Log.d("MyApp", "Uh oh. The user cancelled the Facebook login.");
+                        } else if (user.isNew()) {
+                            Log.d("MyApp", "User signed up and logged in through Facebook!");
+                            getFBInfo();
+                        } else {
+                            Log.d("MyApp", "User logged in through Facebook!");
+                            getFBInfo();
+                        }
+                    }
+                });
             }
         });
-
-//        FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
-//            @Override
-//            public void onSuccess(LoginResult loginResult) {
-//                Log.d("XYZ", "inside onSuccess");
-//                GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
-//                    @Override
-//                    public void onCompleted(JSONObject object, GraphResponse response) {
-//                        Log.d("XYZ", "inside onCompleted");
-//                        try {
-//                            userId = object.getString("id");
-//                            profilePicture = new URL("https://graph.facebook.com/" + userId + "/picture?width=500&height=500");
-//                            if (object.has("first_name"))
-//                                firstName = object.getString("first_name");
-//                            if (object.has("last_name"))
-//                                lastName = object.getString("last_name");
-//                            if (object.has("email"))
-//                                email = object.getString("email");
-//                            if (object.has("birthday"))
-//                                birthday = object.getString("birthday");
-//                            if (object.has("gender"))
-//                                gender = object.getString("gender");
-//
-//                            Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
-//                            mainIntent.putExtra("name", firstName);
-//                            mainIntent.putExtra("email", email);
-//                            mainIntent.putExtra("birthday", birthday);
-//                            mainIntent.putExtra("imageUrl", profilePicture.toString());
-//                            startActivity(mainIntent);
-//                            finish();
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        } catch (MalformedURLException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                });
-//                Bundle parameters = new Bundle();
-//                parameters.putString("fields", "id, first_name, last_name, email, birthday, gender");
-//                request.setParameters(parameters);
-//                request.executeAsync();
-//            }
-//            @Override
-//            public void onCancel() {
-//            }
-//
-//            @Override
-//            public void onError(FacebookException error) {
-//                error.printStackTrace();
-//                Log.d("XYZ", "error");
-//            }
-//        };
-//
-//        loginButton.setReadPermissions("email");
-//        loginButton.registerCallback(callbackManager, callback);
-
     }
-
+//
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
     }
 
+    public void getFBInfo() {
+        GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        Log.d("XYZ", "inside onCompleted");
+                        ParseUser user = ParseUser.getCurrentUser();
+                        try {
+                            userId = object.getString("id");
+                            profilePicture = "https://graph.facebook.com/" + userId + "/picture?width=500&height=500";
+                            user.put("profilePicString", profilePicture);
+                            if (object.has("first_name")) {
+                                firstName = object.getString("first_name");
+                                user.setUsername(firstName);
+                            }
+                            if (object.has("email")) {
+                                email = object.getString("email");
+                                user.setEmail(email);
+                            }
+                            if (object.has("birthday")) {
+                                birthday = object.getString("birthday");
+                            }
+                            user.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    Log.d("MyApp", "New user created successfully!");
+                                }
+                            });
+                            Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(mainIntent);
+                            finish();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id, first_name, last_name, email, birthday, gender");
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
+
+    public void login(String email, String password) {
+        ParseUser.logInInBackground(email, password, new LogInCallback() {
+            @Override
+            public void done(ParseUser user, ParseException e) {
+                if (e == null) {
+                    Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(mainIntent);
+                    finish();
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    // used to populate the database
     public void populateUserDatabase(ArrayList<String> userNames) {
         Random randomInt = new Random();
         for (String userName : userNames) {
@@ -184,6 +205,31 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    public void populateGroupDatabase(ArrayList<String> groupNames) {
+        boolean priv = true;
+        for (String h : groupNames) {
+            Group newGroup = new Group();
+            newGroup.setGroupName(h);
+            newGroup.setPrivateStatus(priv);
+            newGroup.setDescription("This group is about " + h);
+            newGroup.setUsers(new ArrayList());
+            priv = !priv;
+
+            newGroup.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        Log.d("XYZ", "success");
+                    } else {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    }
+
+
+    // used to populate the database
     public ArrayList<String> fileToStringArray(String filename) {
         ArrayList<String> list = new ArrayList<String>();
         AssetManager assetManager = getResources().getAssets();
@@ -206,4 +252,3 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 }
-
