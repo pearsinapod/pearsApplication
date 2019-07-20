@@ -9,7 +9,13 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.io.Serializable;
+<<<<<<< HEAD
 import java.util.ArrayList;
+=======
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+>>>>>>> master
 
 @ParseClassName("Group")
 public class Group extends ParseObject implements Serializable {
@@ -60,8 +66,8 @@ public class Group extends ParseObject implements Serializable {
         }
         return (ArrayList) getList(KEY_USERS);
     }
-
-    public void addUser(ParseUser user) {
+    
+    public void addUser(ArrayList user) {
         ArrayList users = (ArrayList) getUsers();
         users.add(user);
         put(KEY_USERS, users);

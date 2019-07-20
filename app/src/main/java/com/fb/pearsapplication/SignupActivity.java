@@ -4,12 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
 public class SignupActivity extends AppCompatActivity {
@@ -29,6 +32,7 @@ public class SignupActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         btnSignup = findViewById(R.id.btnSignup);
+        etAge = findViewById(R.id.etAge);
 
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -36,13 +40,15 @@ public class SignupActivity extends AppCompatActivity {
                 String name = etName.getText().toString();
                 String email = etEmail.getText().toString();
                 String password = etPassword.getText().toString();
-                createUser(name, email, password);
+                String age = etAge.getText().toString();
+                createUser(name, email, password, age);
             }
         });
     }
 
-    public void createUser(String name, String email, String password) {
-        ParseUser user = new ParseUser();
+    public void createUser(String name, String email, String password, String age) {
+        final ParseUser user = new ParseUser();
+        final String age2 = age;
         user.setUsername(name);
         user.setEmail(email);
         user.setPassword(password);
@@ -51,6 +57,8 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
+                    Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_LONG).show();
+                    addAge(user, age2);
                     Intent mainIntent = new Intent(SignupActivity.this, MainActivity.class);
                     startActivity(mainIntent);
                     finish();
@@ -59,6 +67,19 @@ public class SignupActivity extends AppCompatActivity {
                 }
             }
         });
+    }
 
+    public void addAge(ParseUser user, String age) {
+        user.put("age", Integer.valueOf(age));
+        user.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.d("XYZ", "age success!");
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }
