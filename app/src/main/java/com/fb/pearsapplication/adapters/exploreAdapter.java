@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Group;
 import com.parse.ParseFile;
@@ -29,7 +30,7 @@ public class exploreAdapter extends RecyclerView.Adapter<exploreAdapter.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
-        View exploreView = LayoutInflater.from(context).inflate(R.layout.item_explore_group,parent,false);
+        View exploreView = LayoutInflater.from(context).inflate(R.layout.item_group,parent,false);
         ViewHolder viewHolder =  new ViewHolder(exploreView);
         return viewHolder;
     }
@@ -42,6 +43,7 @@ public class exploreAdapter extends RecyclerView.Adapter<exploreAdapter.ViewHold
         if (image!=null){
             Glide.with(context)
                     .load(image.getUrl())
+                    .apply(RequestOptions.circleCropTransform())
                     .into(holder.ivExploreImage);
         }
     }
@@ -54,8 +56,8 @@ public class exploreAdapter extends RecyclerView.Adapter<exploreAdapter.ViewHold
         public ImageView ivExploreImage;
         public ViewHolder(View itemView){
             super(itemView);
-            tvExploreName= itemView.findViewById(R.id.tvExploreName);
-            ivExploreImage = itemView.findViewById(R.id.ivExploreImage);
+            tvExploreName= itemView.findViewById(R.id.tvGroupName);
+            ivExploreImage = itemView.findViewById(R.id.ivGroupImage);
         }
     }
 

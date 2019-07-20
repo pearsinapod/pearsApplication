@@ -30,7 +30,7 @@ import java.util.List;
 
 import static com.parse.Parse.getApplicationContext;
 
-public class exploreFragmentParent extends Fragment {
+public class exploreFragment extends Fragment {
     protected ArrayList<Group> exploreGroups;
    protected exploreAdapter eAdapter;
    private RecyclerView rvExploreGroups;
