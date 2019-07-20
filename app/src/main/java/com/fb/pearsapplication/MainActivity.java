@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 //import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
 import com.fb.pearsapplication.fragments.exploreFragment;
 import com.fb.pearsapplication.fragments.groupFragment;
 import com.fb.pearsapplication.fragments.profileFragment;
@@ -24,6 +25,7 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,22 +47,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("temp");
 
-        String fbUserEmail = getIntent().getStringExtra("email");
 
-        ParseQuery<ParseUser> query = ParseUser.getQuery();
-        query.whereEqualTo("email", fbUserEmail);
-        query.findInBackground(new FindCallback<ParseUser>() {
-            @Override
-            public void done(List<ParseUser> objects, ParseException e) {
-                if (e != null) {
-                    e.printStackTrace();
-                    return;
-                }
-                if (objects.isEmpty()) {
-                    Log.d("XYZ", "need to sign-up user");
-                }
-            }
-        });
     }
 
     public void setUpBottomNavigationView() {
@@ -97,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickLogout(MenuItem item) {
         Log.d("Main Activity", "Logged out");
+        LoginManager.getInstance().logOut();
         ParseUser.logOut();
         Intent logoutIntent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(logoutIntent);
@@ -109,28 +97,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(messageIntent);
     }
 
-    public void populateGroupDatabase(ArrayList<String> groupNames) {
-        boolean priv = true;
-        for (String h : groupNames) {
-            Group newGroup = new Group();
-            newGroup.setGroupName(h);
-            newGroup.setPrivateStatus(priv);
-            newGroup.setDescription("This group is about " + h);
-            newGroup.addUser(new ArrayList());
-            priv = !priv;
-
-            newGroup.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e == null) {
-                        Log.d("XYZ", "success");
-                    } else {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
-    }
 }
 
 
