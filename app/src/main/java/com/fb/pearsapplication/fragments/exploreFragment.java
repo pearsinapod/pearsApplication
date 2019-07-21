@@ -33,6 +33,7 @@ import java.util.List;
 import static com.parse.Parse.getApplicationContext;
 
 public class exploreFragment extends Fragment {
+
     protected ArrayList<Group> exploreGroups;
    protected exploreAdapter eAdapter;
    private RecyclerView rvExploreGroups;
@@ -58,7 +59,7 @@ public class exploreFragment extends Fragment {
        etSearch = view.findViewById(R.id.etSearch);
 
 
-       updatingListAdapter(getQuery(),true);
+       updatingListAdapter(getQuery(),getSearchedText());
        setUpEditorListener();
        setUpSwipeContainer();
        setUpOnTextChanged();
@@ -71,7 +72,7 @@ public class exploreFragment extends Fragment {
 
                eAdapter.clear();
                exploreGroups.clear();
-               updatingListAdapter(getQuery(),true);
+               updatingListAdapter(getQuery(),getSearchedText());
                swipeContainer.setRefreshing(false);
 
            }
@@ -120,7 +121,7 @@ public class exploreFragment extends Fragment {
 
            @Override
            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-               updatingListAdapter(getQuery(),false);
+               updatingListAdapter(getQuery(),getSearchedText());
            }
 
            @Override
@@ -128,14 +129,14 @@ public class exploreFragment extends Fragment {
        });
    }
 
-   protected void updatingListAdapter(ParseQuery groupsQuery, final boolean noUserSearch){
+   protected void updatingListAdapter(ParseQuery groupsQuery, final String getSearchedText){
        exploreGroups.clear();
        eAdapter.notifyDataSetChanged();
        groupsQuery.findInBackground(new FindCallback<Group>() {
            @Override
            public void done(List<Group> objects, ParseException e) {
                if (e == null) {
-                   if(noUserSearch) {
+                   if(getSearchedText.equals("")) {
                        exploreGroups.addAll(objects);
                        eAdapter.notifyDataSetChanged();
                    }
@@ -158,7 +159,7 @@ public class exploreFragment extends Fragment {
    }
 /*   TODO:
        user searches .. should not contain their groups
-              problem: onRefresh will go back to noSearchQuery
+            
 */
 
 
