@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.fb.pearsapplication.R;
-import com.fb.pearsapplication.adapters.exploreAdapter;
+import com.fb.pearsapplication.adapters.groupsAdapter;
 import com.fb.pearsapplication.models.Group;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -35,12 +35,11 @@ import static com.parse.Parse.getApplicationContext;
 public class exploreFragment extends Fragment {
 
     public static final Group.Query groupsQuery = new Group.Query();
-
     protected ArrayList<Group> exploreGroups;
-   protected exploreAdapter eAdapter;
-   private RecyclerView rvExploreGroups;
-   private SwipeRefreshLayout swipeContainer;
-   EditText etSearch;
+    protected groupsAdapter eAdapter;
+    private RecyclerView rvExploreGroups;
+    private SwipeRefreshLayout swipeContainer;
+    EditText etSearch;
 
    @Nullable
    @Override
@@ -52,7 +51,7 @@ public class exploreFragment extends Fragment {
    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
        rvExploreGroups = view.findViewById(R.id.rvExploreGroups);
        exploreGroups = new ArrayList<>();
-       eAdapter = new exploreAdapter(exploreGroups);
+       eAdapter = new groupsAdapter(getContext(), exploreGroups);
        rvExploreGroups.setAdapter(eAdapter);
        GridLayoutManager exploreGridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
        rvExploreGroups.setLayoutManager(exploreGridLayoutManager);
@@ -105,9 +104,10 @@ public class exploreFragment extends Fragment {
    }
 
    protected ParseQuery getQuery(Group.Query groupsQuery){
-       if (getSearchedText().equals("")){
+/*       if (getSearchedText().equals("")){
            groupsQuery.getTop();
-       }
+       }*/
+        //groupsQuery.getTop();
        groupsQuery.addDescendingOrder(Group.KEY_CREATED_AT);
        return groupsQuery;
    }
@@ -159,7 +159,7 @@ public class exploreFragment extends Fragment {
        });
    }
 /*   TODO:
-       user searches .. should not contain their groups
+       user searches .. should not contain their groups +get top should be fixed
 
 */
 
