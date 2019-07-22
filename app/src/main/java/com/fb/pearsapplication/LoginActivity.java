@@ -28,6 +28,7 @@ import com.facebook.login.widget.LoginButton;
 import com.fb.pearsapplication.models.Group;
 import com.parse.FindCallback;
 import com.parse.LogInCallback;
+import com.parse.ParseACL;
 import com.parse.ParseException;
 //import com.parse.ParseFacebookUtils;
 
@@ -116,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-//
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -205,6 +206,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    // used to populate the database
     public void populateGroupDatabase(ArrayList<String> groupNames) {
         boolean priv = true;
         for (String h : groupNames) {

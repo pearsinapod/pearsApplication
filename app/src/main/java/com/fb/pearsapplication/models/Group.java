@@ -21,6 +21,7 @@ public class Group extends ParseObject implements Serializable {
     public static final String KEY_PRIVATE_STATUS = "privateStatus";
     public static final String KEY_USERS = "users";
     public static final String KEY_CREATED_AT = "createdAt";
+    public static final String KEY_PEARS = "pears";
 
     public String getDescription() {
         return getString(KEY_DESCRIPTION);
@@ -68,10 +69,31 @@ public class Group extends ParseObject implements Serializable {
         saveInBackground();
     }
 
+
     public void setUsers(ArrayList<ParseUser> users) {
         put(KEY_USERS, users);
         saveInBackground();
     }
+
+    public void setPears(ArrayList<ParseUser> pears) {
+        put(KEY_PEARS, pears);
+        saveInBackground();
+    }
+
+    public ArrayList getPears() {
+        if (getList(KEY_PEARS) == null) {
+            setPears(new ArrayList());
+        }
+        return (ArrayList) getList(KEY_PEARS);
+    }
+
+    public void addUserPear(ParseUser user) {
+        ArrayList users = (ArrayList) getUsers();
+        users.add(user);
+        put(KEY_USERS, users);
+        saveInBackground();
+    }
+
 
         // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
         public String getRelativeTimeAgo () {
