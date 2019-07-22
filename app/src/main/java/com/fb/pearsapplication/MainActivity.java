@@ -15,6 +15,7 @@ import com.facebook.login.LoginManager;
 import com.fb.pearsapplication.fragments.exploreFragment;
 import com.fb.pearsapplication.fragments.groupFragment;
 import com.fb.pearsapplication.fragments.profileFragment;
+import com.fb.pearsapplication.fragments.searchFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.ParseUser;
 
@@ -43,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("temp");
 
-
     }
 
     public void setUpBottomNavigationView() {
@@ -61,9 +61,12 @@ public class MainActivity extends AppCompatActivity {
                         fragment = new profileFragment();
                         break;
                     case R.id.exploreFragment:
-                        Log.d("exploreFragment", "exploreFragment clicked");
+                        Log.d("exploreFragment", "searchFragment clicked");
                         fragment = new exploreFragment();
-                        getSupportActionBar().hide();
+                        break;
+                    case R.id.searchFragment:
+                        Log.d("searchFragment", "searchFragment clicked");
+                        fragment = new searchFragment();
                         break;
                 }
                 fragmentManager.beginTransaction().replace(R.id.flContainter, fragment).commit();
