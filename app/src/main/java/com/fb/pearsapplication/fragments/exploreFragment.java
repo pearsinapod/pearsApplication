@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,10 +36,10 @@ import static com.parse.Parse.getApplicationContext;
 
 public class exploreFragment extends Fragment {
 
-    protected ArrayList<Group> exploreGroups;
-    protected groupsAdapter eAdapter;
-    private RecyclerView rvExploreGroups;
-    private SwipeRefreshLayout swipeContainer;
+    protected ArrayList<Group> searchGroups;
+    protected groupsAdapter searchAdapter;
+    private RecyclerView rvSearchAdapter;
+    private SwipeRefreshLayout searchSwipeContainer;
     EditText etSearch;
 
    @Nullable
@@ -49,36 +50,36 @@ public class exploreFragment extends Fragment {
 
    @Override
    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-       rvExploreGroups = view.findViewById(R.id.rvExploreGroups);
-       exploreGroups = new ArrayList<>();
-       eAdapter = new groupsAdapter(getContext(), exploreGroups);
-       rvExploreGroups.setAdapter(eAdapter);
-       GridLayoutManager exploreGridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
-       rvExploreGroups.setLayoutManager(exploreGridLayoutManager);
+       rvSearchAdapter = view.findViewById(R.id.rvSearchGroups);
+       searchGroups = new ArrayList<>();
+       searchAdapter = new groupsAdapter(getContext(), searchGroups);
+       rvSearchAdapter.setAdapter(searchAdapter);
+       GridLayoutManager searchExploreGridLayout = new GridLayoutManager(getApplicationContext(), 2);
+       rvSearchAdapter.setLayoutManager(searchExploreGridLayout);
 
-       swipeContainer = view.findViewById(R.id.swipeContainer);
+       searchSwipeContainer = view.findViewById(R.id.searchSwipeContainer);
        etSearch = view.findViewById(R.id.etSearch);
 
-
-       updatingListAdapter(getQuery());
+       ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+       updatingListAdapterSearch(getQuerySearch());
        setUpEditorListener();
-       setUpSwipeContainer();
-       setUpOnTextChanged();
+       setUpSearchSwipeContainer();
+       setUpOnTextChangedSearch();
    }
 
-   public void setUpSwipeContainer(){
-       swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+   public void setUpSearchSwipeContainer(){
+       searchSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
            @Override
            public void onRefresh() {
 
-               eAdapter.clear();
-               exploreGroups.clear();
-               updatingListAdapter(getQuery());
-               swipeContainer.setRefreshing(false);
+               searchAdapter.clear();
+               searchGroups.clear();
+               updatingListAdapterSearch(getQuerySearch());
+               searchSwipeContainer.setRefreshing(false);
 
            }
        });
-       swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+       searchSwipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                android.R.color.holo_green_light,
                android.R.color.holo_orange_light,
                android.R.color.holo_red_light);
@@ -103,7 +104,7 @@ public class exploreFragment extends Fragment {
        return etSearch.getText().toString();
    }
 
-   protected ParseQuery getQuery(){
+   protected ParseQuery getQuerySearch(){
        Group.Query groupsQuery = new Group.Query();
        groupsQuery.addDescendingOrder(Group.KEY_CREATED_AT);
        if (!getSearchedText().equals("")){
@@ -115,14 +116,14 @@ public class exploreFragment extends Fragment {
        // can be used to alphabatize : groupsQuery.addAscendingOrder(Group.KEY_GROUP_NAME);
        //groupsQuery.whereContains(Group.KEY_GROUP_NAME, getSearchedText());
 
-   public void setUpOnTextChanged(){
+   public void setUpOnTextChangedSearch(){
        etSearch.addTextChangedListener(new TextWatcher() {
            @Override
            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) { }
 
            @Override
            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-               updatingListAdapter(getQuery());
+               updatingListAdapterSearch(getQuerySearch());
            }
 
            @Override
@@ -130,9 +131,9 @@ public class exploreFragment extends Fragment {
        });
    }
 
-   protected void updatingListAdapter(final ParseQuery groupsQuery){
-       exploreGroups.clear();
-       eAdapter.notifyDataSetChanged();
+   protected void updatingListAdapterSearch(final ParseQuery groupsQuery){
+       searchGroups.clear();
+       searchAdapter.notifyDataSetChanged();
        groupsQuery.findInBackground(new FindCallback<Group>() {
            @Override
            public void done(List<Group> objects, ParseException e) {
@@ -140,8 +141,8 @@ public class exploreFragment extends Fragment {
                    for (int i = 0; i < objects.size(); i++) {
                        Group group = objects.get(i);
                        if(!group.getUsers().contains(ParseUser.getCurrentUser())) {
-                           exploreGroups.add(group);
-                           eAdapter.notifyDataSetChanged();
+                           searchGroups.add(group);
+                           searchAdapter.notifyDataSetChanged();
                        }
                    }
 
@@ -153,8 +154,7 @@ public class exploreFragment extends Fragment {
        });
    }
 /*   TODO:
-       user searches .. should not contain their groups +get top should be fixed
-       endless scorlling
+       get top should be fixed+ endless scorlling
 
 */
 

@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("temp");
 
-
     }
 
     public void setUpBottomNavigationView() {
@@ -63,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.exploreFragment:
                         Log.d("exploreFragment", "exploreFragment clicked");
                         fragment = new exploreFragment();
-                        getSupportActionBar().hide();
                         break;
                 }
                 fragmentManager.beginTransaction().replace(R.id.flContainter, fragment).commit();
