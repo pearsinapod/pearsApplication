@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -107,7 +106,10 @@ public class groupsAdapter extends RecyclerView.Adapter<groupsAdapter.ViewHolder
             tvGroupName.setText(group.getGroupName());
             ParseFile image = group.getGroupImage();
             if (image != null) {
-                Glide.with(context).load(image.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivGroupImage);
+                Glide.with(context)
+                        .load(image.getUrl())
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(ivGroupImage);
             }
         }
 

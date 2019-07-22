@@ -6,6 +6,7 @@ import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,7 +19,6 @@ public class Group extends ParseObject implements Serializable {
     public static final String KEY_PRIVATE_STATUS = "privateStatus";
     public static final String KEY_USERS = "users";
     public static final String KEY_CREATED_AT = "createdAt";
-
 
     public String getDescription() {
         return getString(KEY_DESCRIPTION);
@@ -54,15 +54,19 @@ public class Group extends ParseObject implements Serializable {
 
     public ArrayList getUsers() {
         if (getList(KEY_USERS) == null) {
-            put(KEY_USERS, new ArrayList<>());
-            saveInBackground();
+            setUsers(new ArrayList());
         }
         return (ArrayList) getList(KEY_USERS);
     }
 
-    public void addUser(ArrayList user) {
+    public void addUser(ParseUser user) {
         ArrayList users = (ArrayList) getUsers();
         users.add(user);
+        put(KEY_USERS, users);
+        saveInBackground();
+    }
+
+    public void setUsers(ArrayList<ParseUser> users) {
         put(KEY_USERS, users);
         saveInBackground();
     }

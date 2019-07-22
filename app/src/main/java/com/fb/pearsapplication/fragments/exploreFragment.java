@@ -21,11 +21,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.fb.pearsapplication.R;
-import com.fb.pearsapplication.adapters.exploreAdapter;
+import com.fb.pearsapplication.adapters.groupsAdapter;
 import com.fb.pearsapplication.models.Group;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +34,12 @@ import java.util.List;
 import static com.parse.Parse.getApplicationContext;
 
 public class exploreFragment extends Fragment {
+
     protected ArrayList<Group> exploreGroups;
-   protected exploreAdapter eAdapter;
-   private RecyclerView rvExploreGroups;
-   private SwipeRefreshLayout swipeContainer;
-   EditText etSearch;
+    protected groupsAdapter eAdapter;
+    private RecyclerView rvExploreGroups;
+    private SwipeRefreshLayout swipeContainer;
+    EditText etSearch;
 
    @Nullable
    @Override
@@ -49,7 +51,7 @@ public class exploreFragment extends Fragment {
    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
        rvExploreGroups = view.findViewById(R.id.rvExploreGroups);
        exploreGroups = new ArrayList<>();
-       eAdapter = new exploreAdapter(exploreGroups);
+       eAdapter = new groupsAdapter(getContext(), exploreGroups);
        rvExploreGroups.setAdapter(eAdapter);
        GridLayoutManager exploreGridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
        rvExploreGroups.setLayoutManager(exploreGridLayoutManager);
@@ -58,7 +60,7 @@ public class exploreFragment extends Fragment {
        etSearch = view.findViewById(R.id.etSearch);
 
 
-       updatingListAdapter(getQuery(),true);
+       updatingListAdapter(getQuery());
        setUpEditorListener();
        setUpSwipeContainer();
        setUpOnTextChanged();
@@ -71,7 +73,7 @@ public class exploreFragment extends Fragment {
 
                eAdapter.clear();
                exploreGroups.clear();
-               updatingListAdapter(getQuery(),true);
+               updatingListAdapter(getQuery());
                swipeContainer.setRefreshing(false);
 
            }
@@ -103,10 +105,10 @@ public class exploreFragment extends Fragment {
 
    protected ParseQuery getQuery(){
        Group.Query groupsQuery = new Group.Query();
-      //  if (noUserSearch){ // this one is the problem : TODO MUST FIXXXXXXXXXXXXXXXXXXX
-          // groupsQuery.getTop();
-      // }
        groupsQuery.addDescendingOrder(Group.KEY_CREATED_AT);
+       if (!getSearchedText().equals("")){
+           groupsQuery.whereMatches(Group.KEY_GROUP_NAME, "(?i)^" + getSearchedText());
+       }
        return groupsQuery;
    }
 
@@ -120,7 +122,7 @@ public class exploreFragment extends Fragment {
 
            @Override
            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-               updatingListAdapter(getQuery(),false);
+               updatingListAdapter(getQuery());
            }
 
            @Override
@@ -128,28 +130,22 @@ public class exploreFragment extends Fragment {
        });
    }
 
-   protected void updatingListAdapter(ParseQuery groupsQuery, final boolean noUserSearch){
+   protected void updatingListAdapter(final ParseQuery groupsQuery){
        exploreGroups.clear();
        eAdapter.notifyDataSetChanged();
        groupsQuery.findInBackground(new FindCallback<Group>() {
            @Override
            public void done(List<Group> objects, ParseException e) {
                if (e == null) {
-                   if(noUserSearch) {
-                       exploreGroups.addAll(objects);
-                       eAdapter.notifyDataSetChanged();
-                   }
-                   else {
-                       for (int i = 0; i < objects.size(); i++) {
-                               Group group = objects.get(i);
-                               String lowercaseGroup = group.getGroupName().toLowerCase();
-                               if (lowercaseGroup.length()>= getSearchedText().length() && getSearchedText().equals(lowercaseGroup.substring(0, getSearchedText().length()))) {
-                                   exploreGroups.add(group);
-                                   eAdapter.notifyDataSetChanged();
-                               }
-                           }
+                   for (int i = 0; i < objects.size(); i++) {
+                       Group group = objects.get(i);
+                       if(!group.getUsers().contains(ParseUser.getCurrentUser())) {
+                           exploreGroups.add(group);
+                           eAdapter.notifyDataSetChanged();
                        }
                    }
+
+               }
                else{
                    Log.d("Explore Fragment","Loading items failed");
                }
@@ -157,8 +153,9 @@ public class exploreFragment extends Fragment {
        });
    }
 /*   TODO:
-       user searches .. should not contain their groups
-              problem: onRefresh will go back to noSearchQuery
+       user searches .. should not contain their groups +get top should be fixed
+       endless scorlling
+
 */
 
 
