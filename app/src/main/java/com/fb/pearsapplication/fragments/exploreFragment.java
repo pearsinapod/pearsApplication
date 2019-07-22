@@ -26,6 +26,7 @@ import com.fb.pearsapplication.models.Group;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,6 @@ import static com.parse.Parse.getApplicationContext;
 
 public class exploreFragment extends Fragment {
 
-    public static final Group.Query groupsQuery = new Group.Query();
     protected ArrayList<Group> exploreGroups;
     protected groupsAdapter eAdapter;
     private RecyclerView rvExploreGroups;
@@ -60,7 +60,7 @@ public class exploreFragment extends Fragment {
        etSearch = view.findViewById(R.id.etSearch);
 
 
-       updatingListAdapter(getQuery(groupsQuery),getSearchedText());
+       updatingListAdapter(getQuery());
        setUpEditorListener();
        setUpSwipeContainer();
        setUpOnTextChanged();
@@ -73,7 +73,7 @@ public class exploreFragment extends Fragment {
 
                eAdapter.clear();
                exploreGroups.clear();
-               updatingListAdapter(getQuery(groupsQuery),getSearchedText());
+               updatingListAdapter(getQuery());
                swipeContainer.setRefreshing(false);
 
            }
@@ -103,12 +103,12 @@ public class exploreFragment extends Fragment {
        return etSearch.getText().toString();
    }
 
-   protected ParseQuery getQuery(Group.Query groupsQuery){
-/*       if (getSearchedText().equals("")){
-           groupsQuery.getTop();
-       }*/
-        //groupsQuery.getTop();
+   protected ParseQuery getQuery(){
+       Group.Query groupsQuery = new Group.Query();
        groupsQuery.addDescendingOrder(Group.KEY_CREATED_AT);
+       if (!getSearchedText().equals("")){
+           groupsQuery.whereMatches(Group.KEY_GROUP_NAME, "(?i)^" + getSearchedText());
+       }
        return groupsQuery;
    }
 
@@ -122,7 +122,7 @@ public class exploreFragment extends Fragment {
 
            @Override
            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-               updatingListAdapter(getQuery(groupsQuery),getSearchedText());
+               updatingListAdapter(getQuery());
            }
 
            @Override
@@ -130,28 +130,22 @@ public class exploreFragment extends Fragment {
        });
    }
 
-   protected void updatingListAdapter(ParseQuery groupsQuery, final String getSearchedText){
+   protected void updatingListAdapter(final ParseQuery groupsQuery){
        exploreGroups.clear();
        eAdapter.notifyDataSetChanged();
        groupsQuery.findInBackground(new FindCallback<Group>() {
            @Override
            public void done(List<Group> objects, ParseException e) {
                if (e == null) {
-                   if(getSearchedText.equals("")) {
-                       exploreGroups.addAll(objects);
-                       eAdapter.notifyDataSetChanged();
-                   }
-                   else {
-                       for (int i = 0; i < objects.size(); i++) {
-                               Group group = objects.get(i);
-                               String lowercaseGroup = group.getGroupName().toLowerCase();
-                               if (lowercaseGroup.length()>= getSearchedText().length() && getSearchedText().equals(lowercaseGroup.substring(0, getSearchedText().length()))) {
-                                   exploreGroups.add(group);
-                                   eAdapter.notifyDataSetChanged();
-                               }
-                           }
+                   for (int i = 0; i < objects.size(); i++) {
+                       Group group = objects.get(i);
+                       if(!group.getUsers().contains(ParseUser.getCurrentUser())) {
+                           exploreGroups.add(group);
+                           eAdapter.notifyDataSetChanged();
                        }
                    }
+
+               }
                else{
                    Log.d("Explore Fragment","Loading items failed");
                }
@@ -160,6 +154,7 @@ public class exploreFragment extends Fragment {
    }
 /*   TODO:
        user searches .. should not contain their groups +get top should be fixed
+       endless scorlling
 
 */
 
