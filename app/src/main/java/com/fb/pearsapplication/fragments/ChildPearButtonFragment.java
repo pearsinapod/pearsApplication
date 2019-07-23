@@ -50,8 +50,6 @@ public class ChildPearButtonFragment extends Fragment {
                 ArrayList<ParseUser> pearUsers = group.getPears();
                 Random randomIntGen = new Random();
                 int pearPosition = randomIntGen.nextInt(pearUsers.size());
-                Integer in = pearPosition;
-                Log.d("XYZ", in.toString());
                 pearUser = pearUsers.get(pearPosition);
 
                 if (group.getPears().size() == 1) {
@@ -63,46 +61,49 @@ public class ChildPearButtonFragment extends Fragment {
                     pearPosition = randomIntGen.nextInt(pearUsers.size());
                     pearUser = pearUsers.get(pearPosition);
                 }
-
-                Pear newPear = new Pear();
-                ArrayList pearedUsers = new ArrayList();
-                pearedUsers.add(currentUser.getObjectId());
-                pearedUsers.add(pearUser.getObjectId());
-                newPear.setUsers(pearedUsers);
-                newPear.setUser1(currentUser);
-                newPear.setUser2(pearUser);
-                newPear.setGroup(group);
-
-                newPear.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e == null) {
-                            Log.d("XYZ", "Pear created successfully!");
-                        } else {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-                ArrayList updatedPears = (ArrayList) group.getList("pears");
-                updatedPears.remove(currentUser);
-                updatedPears.remove(pearUser);
-                group.put(Group.KEY_PEARS, updatedPears);
-
-                group.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e == null) {
-                            Log.d("XYZ", "Pear created successfully!");
-                        } else {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                pear = newPear;
+                createPear();
                 goToPearFragment();
             }
         });
+    }
+
+    private void createPear() {
+        Pear newPear = new Pear();
+        ArrayList pearedUsers = new ArrayList();
+        pearedUsers.add(currentUser.getObjectId());
+        pearedUsers.add(pearUser.getObjectId());
+        newPear.setUsers(pearedUsers);
+        newPear.setUser1(currentUser);
+        newPear.setUser2(pearUser);
+        newPear.setGroup(group);
+
+        newPear.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.d("XYZ", "Pear created successfully!");
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        ArrayList updatedPears = (ArrayList) group.getList("pears");
+        updatedPears.remove(currentUser);
+        updatedPears.remove(pearUser);
+        group.put(Group.KEY_PEARS, updatedPears);
+
+        group.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.d("XYZ", "Pear created successfully!");
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
+        pear = newPear;
     }
 
     public void setGroup(Group group) {
