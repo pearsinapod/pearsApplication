@@ -67,11 +67,11 @@ public class ChildPearFragment extends Fragment {
         btnViewProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentManager fragmentManager = getFragmentManager();
+                groupDetailsFragment parentFrag = ((groupDetailsFragment)ChildPearFragment.this.getParentFragment());
+                FragmentManager fragmentManager = parentFrag.getFragmentManager();
                 Fragment fragment = new matchProfileFragment();
-                ((matchProfileFragment) fragment).setPear(pear);
-                fragmentManager.beginTransaction().replace(R.id.child_fragment_container, fragment).addToBackStack(null).commit();
-
+                ((matchProfileFragment) fragment).setPearUser(pearUser);
+                fragmentManager.beginTransaction().replace(R.id.flContainter, fragment).addToBackStack(null).commit();
             }
         });
 
