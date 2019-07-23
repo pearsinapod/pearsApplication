@@ -93,13 +93,13 @@ public class groupFragment extends Fragment {
         }
         groupQuery.findInBackground(new FindCallback<Group>() {
             @Override
-            public void done(List<Group> objects, ParseException e) {
+            public void done(List<Group> groups, ParseException e) {
                 if (e != null) {
                     Log.e(TAG, "Error with query");
                     e.printStackTrace();
                     return;
                 }
-                mGroups.addAll(objects);
+                mGroups.addAll(groups);
                 adapter.notifyDataSetChanged();
 //                for (int i = 0; i < objects.size(); i++) {
 //                    Log.d(TAG, "Group: " + objects.get(i).getDescription() + ", username: " + objects.get(i).getUser().getUsername());
