@@ -24,7 +24,6 @@
         android:theme="@style/AppTheme">
         <meta-data android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"/>
-
         <meta-data
             android:name="com.facebook.sdk.PERMISSIONS"
             android:value="email" />
@@ -43,9 +42,9 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".conversationsActivity"></activity>
 
-        <activity android:name=".SignupActivity"></activity>
+        <activity android:name=".conversationsActivity"/>
+        <activity android:name=".SignupActivity"/>
         <activity android:name=".MainActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>

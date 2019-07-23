@@ -63,7 +63,12 @@ public class groupDetailsFragment extends Fragment {
         tvDescription = (TextView) view.findViewById(R.id.tvDescription);
         tvGroupNumber = (TextView) view.findViewById(R.id.tvGroupNumber);
         currentUser = ParseUser.getCurrentUser();
+        bindViews();
+        determineChildFragment();
 
+    }
+
+    private void bindViews() {
         tvGroupName.setText(group.getGroupName());
         ParseFile image = group.getGroupImage();
         if (image != null) {
@@ -76,14 +81,18 @@ public class groupDetailsFragment extends Fragment {
         }
         tvDescription.setText(group.getDescription());
         String timeAgo = group.getRelativeTimeAgo();
+    }
 
-
+    private void determineChildFragment() {
         if (group.getPears().contains(currentUser)) {
             // TODO: create the fragment that shows up when their match is pending
         }
+        
+        ArrayList myGroups = (ArrayList) currentUser.getList("groups");
 
-
-        if (currentUser.getList("groups").contains(group)) {
+        if (myGroups == null || !myGroups.contains(group)) {
+            insertNestedAddFragment();
+        } else if (currentUser.getList("groups").contains(group)) {
             ParseQuery<Pear> pearQuery = new ParseQuery<Pear>(Pear.class);
             pearQuery.include(Group.KEY_USERS);
             pearQuery.whereEqualTo(Pear.KEY_GROUP, group);
@@ -103,8 +112,6 @@ public class groupDetailsFragment extends Fragment {
                     }
                 }
             });
-        } else {
-            insertNestedAddFragment();
         }
     }
 
@@ -131,6 +138,10 @@ public class groupDetailsFragment extends Fragment {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.addToBackStack(null);
         transaction.replace(R.id.child_fragment_container, childFragment).commit();
+    }
+
+    private void insertNestedWaitingFragment() {
+
     }
 
 }
