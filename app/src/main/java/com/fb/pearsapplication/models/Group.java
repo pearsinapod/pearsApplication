@@ -67,7 +67,6 @@ public class Group extends ParseObject implements Serializable {
         saveInBackground();
     }
 
-
     public void setUsers(ArrayList<ParseUser> users) {
         put(KEY_USERS, users);
         saveInBackground();
@@ -92,8 +91,12 @@ public class Group extends ParseObject implements Serializable {
         saveInBackground();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return ((Group) obj).getObjectId().equals(getObjectId());
+    }
 
-        // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
+    // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
         public String getRelativeTimeAgo () {
             String relativeDate = "";
             long dateMillis = getCreatedAt().getTime();

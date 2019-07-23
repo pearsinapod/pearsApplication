@@ -58,12 +58,11 @@ public class groupDetailsFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-//        insertNestedAddFragment();
-
         ivGroupImage = (ImageView) view.findViewById(R.id.ivGroupImage);
         tvGroupName = (TextView) view.findViewById(R.id.tvGroupName);
         tvDescription = (TextView) view.findViewById(R.id.tvDescription);
         tvGroupNumber = (TextView) view.findViewById(R.id.tvGroupNumber);
+        currentUser = ParseUser.getCurrentUser();
 
         tvGroupName.setText(group.getGroupName());
         ParseFile image = group.getGroupImage();
@@ -79,19 +78,24 @@ public class groupDetailsFragment extends Fragment {
         String timeAgo = group.getRelativeTimeAgo();
 
 
-        currentUser = ParseUser.getCurrentUser();
+        if (group.getPears().contains(currentUser)) {
+            // TODO: create the fragment that shows up when their match is pending
+        }
+
+
         if (currentUser.getList("groups").contains(group)) {
             ParseQuery<Pear> pearQuery = new ParseQuery<Pear>(Pear.class);
             pearQuery.include(Group.KEY_USERS);
-            pearQuery.whereEqualTo(Pear.KEY_GROUP, group.getGroupName());
-            ArrayList userName = new ArrayList();
-            userName.add(currentUser);
-            pearQuery.whereContainedIn(Pear.KEY_USERS, userName);
+            pearQuery.whereEqualTo(Pear.KEY_GROUP, group);
+            ArrayList userID = new ArrayList();
+            userID.add(currentUser.getObjectId());
+            pearQuery.whereContainedIn(Pear.KEY_USERS, userID);
 
             pearQuery.findInBackground(new FindCallback<Pear>() {
                 @Override
                 public void done(List<Pear> objects, ParseException e) {
-                    if (objects.size() != 0) {
+                    Log.d("XYZ", objects.toString());
+                    if (objects.size() == 0) {
                         insertNestedPearButtonFragment();
                     } else {
                         pear = objects.get(0);
@@ -99,6 +103,8 @@ public class groupDetailsFragment extends Fragment {
                     }
                 }
             });
+        } else {
+            insertNestedAddFragment();
         }
     }
 
@@ -121,6 +127,7 @@ public class groupDetailsFragment extends Fragment {
 
     private void insertNestedPearButtonFragment() {
         Fragment childFragment = new ChildPearButtonFragment();
+        ((ChildPearButtonFragment) childFragment).setGroup(group);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.addToBackStack(null);
         transaction.replace(R.id.child_fragment_container, childFragment).commit();

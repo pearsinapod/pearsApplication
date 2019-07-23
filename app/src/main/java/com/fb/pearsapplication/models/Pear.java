@@ -49,4 +49,9 @@ public class Pear extends ParseObject implements Serializable {
     public void setUsers(ArrayList users) {
         put(KEY_USERS, users);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return ((Pear) obj).getObjectId().equals(getObjectId());
+    }
 }

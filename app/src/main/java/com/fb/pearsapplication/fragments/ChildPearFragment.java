@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -49,7 +50,6 @@ public class ChildPearFragment extends Fragment {
         String name = "";
         try {
             name = pearUser.fetchIfNeeded().getString("username");
-
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -67,6 +67,10 @@ public class ChildPearFragment extends Fragment {
         btnViewProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                FragmentManager fragmentManager = getFragmentManager();
+                Fragment fragment = new matchProfileFragment();
+                ((matchProfileFragment) fragment).setPear(pear);
+                fragmentManager.beginTransaction().replace(R.id.child_fragment_container, fragment).addToBackStack(null).commit();
 
             }
         });
@@ -83,5 +87,11 @@ public class ChildPearFragment extends Fragment {
 
     public void setPear(Pear pear) {
         this.pear = pear;
+        if (pear.getUser1().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())) {
+            pearUser = pear.getUser2();
+        } else {
+            pearUser = pear.getUser1();
+        }
     }
+
 }

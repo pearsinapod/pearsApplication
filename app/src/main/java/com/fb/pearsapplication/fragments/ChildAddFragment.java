@@ -10,7 +10,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Group;
@@ -29,7 +31,6 @@ public class ChildAddFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Toast.makeText(getContext(), "lol",Toast.LENGTH_LONG).show();
         return inflater.inflate(R.layout.fragment_child_add, container, false);
     }
 
@@ -84,12 +85,20 @@ public class ChildAddFragment extends Fragment {
                         }
                     }
                 });
+                goToPearBtnFragment();
             }
         });
     }
 
     public void setGroup(Group group) {
         this.group = group;
+    }
+
+    public void goToPearBtnFragment() {
+        FragmentManager fragmentManager = getFragmentManager();
+        Fragment fragment = new ChildPearButtonFragment();
+        ((ChildPearButtonFragment) fragment).setGroup(group);
+        fragmentManager.beginTransaction().replace(R.id.child_fragment_container, fragment).addToBackStack(null).commit();
     }
 
 }

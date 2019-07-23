@@ -10,6 +10,7 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Group;
@@ -51,6 +52,11 @@ public class ChildPearButtonFragment extends Fragment {
                 int pearPosition = randomIntGen.nextInt(pearUsers.size());
                 Integer in = pearPosition;
                 Log.d("XYZ", in.toString());
+                pearUser = pearUsers.get(pearPosition);
+
+                if (group.getPears().size() == 1) {
+                    // TODO: Fragment that says "waiting for pear request, pls check in later"
+                }
 
                 // used to ensure that the user doesn't get paired up with themselves
                 while (pearUser.getObjectId() == currentUser.getObjectId()) {
@@ -60,17 +66,12 @@ public class ChildPearButtonFragment extends Fragment {
 
                 Pear newPear = new Pear();
                 ArrayList pearedUsers = new ArrayList();
-                pearedUsers.add(currentUser);
-                pearedUsers.add(pearUser);
+                pearedUsers.add(currentUser.getObjectId());
+                pearedUsers.add(pearUser.getObjectId());
                 newPear.setUsers(pearedUsers);
                 newPear.setUser1(currentUser);
                 newPear.setUser2(pearUser);
                 newPear.setGroup(group);
-
-                ArrayList updatedPears = (ArrayList) group.getList("pears");
-                updatedPears.remove(currentUser);
-                updatedPears.remove(pearUser);
-
 
                 newPear.saveInBackground(new SaveCallback() {
                     @Override
@@ -82,8 +83,36 @@ public class ChildPearButtonFragment extends Fragment {
                         }
                     }
                 });
+
+                ArrayList updatedPears = (ArrayList) group.getList("pears");
+                updatedPears.remove(currentUser);
+                updatedPears.remove(pearUser);
+                group.put(Group.KEY_PEARS, updatedPears);
+
+                group.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e == null) {
+                            Log.d("XYZ", "Pear created successfully!");
+                        } else {
+                            e.printStackTrace();
+                        }
+                    }
+                });
                 pear = newPear;
+                goToPearFragment();
             }
         });
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    private void goToPearFragment() {
+        FragmentManager fragmentManager = getFragmentManager();
+        Fragment fragment = new ChildPearFragment();
+        ((ChildPearFragment) fragment).setPear(pear);
+        fragmentManager.beginTransaction().replace(R.id.child_fragment_container, fragment).addToBackStack(null).commit();
     }
 }
