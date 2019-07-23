@@ -8,7 +8,7 @@
     android:paddingLeft="40sp"
     android:paddingRight="40sp"
     android:paddingTop="20sp"
-    android:paddingBottom="20sp"
+    android:paddingBottom="60sp"
     android:outlineProvider="bounds"
     android:clipToPadding="false">
 
@@ -21,8 +21,8 @@
         android:elevation="3dp">
         <FrameLayout
             android:layout_gravity="center"
-            android:layout_width="350dp"
-            android:layout_height="350dp">
+            android:layout_width="400dp"
+            android:layout_height="500dp">
 
             <TextView
                 android:id="@+id/tvExploreName"
@@ -36,9 +36,20 @@
 
             <ImageView
                 android:id="@+id/ivExploreImage"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10sp"
                 tools:srcCompat="@tools:sample/avatars[0]" />
+
+            <TextView
+                android:id="@+id/tvExploreDescription"
+                android:layout_gravity="center"
+                android:paddingTop="100sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hello my name is" />
+
         </FrameLayout>
     </androidx.cardview.widget.CardView>
 

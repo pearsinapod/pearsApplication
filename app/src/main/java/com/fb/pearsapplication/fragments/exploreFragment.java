@@ -5,13 +5,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.fb.pearsapplication.R;
+import com.fb.pearsapplication.adapters.exploreAdapter;
 import com.fb.pearsapplication.models.Group;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import com.parse.FindCallback;
@@ -23,8 +23,8 @@ import java.util.List;
 
 public class exploreFragment extends Fragment {
 
-    private ArrayList<String> exploreGroups;
-    private ArrayAdapter<String> exploreArrayAdapter;
+    private ArrayList<Group> exploreGroups;
+    private exploreAdapter exploreArrayAdapter;
     SwipeFlingAdapterView flingContainer;
 
     @Nullable
@@ -37,11 +37,13 @@ public class exploreFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         exploreGroups = new ArrayList<>();
-        exploreArrayAdapter = new ArrayAdapter<>(getContext(), R.layout.item_explore_group, R.id.tvExploreName, exploreGroups);
+        exploreArrayAdapter = new exploreAdapter(getContext(), R.layout.item_explore_group , exploreGroups);
         flingContainer = view.findViewById(R.id.frame);
         flingContainer.setAdapter(exploreArrayAdapter);
+
         setUpExploreFlingContainer();
         setOnClickListenerFling();
+        addGroupNames();
 
     }
 
@@ -50,10 +52,9 @@ public class exploreFragment extends Fragment {
         flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
             @Override
             public void removeFirstObjectInAdapter() {
-                // this is the simplest way to delete an object from the Adapter (/AdapterView)
-                Log.d("Explore Fragment:", "Removed Object from Adapter");
                 exploreGroups.remove(0);
                 exploreArrayAdapter.notifyDataSetChanged();
+                Log.d("Explore Fragment:", "Removed Object from Adapter");
             }
 
             @Override
@@ -67,12 +68,13 @@ public class exploreFragment extends Fragment {
             @Override
             public void onRightCardExit(Object dataObject) {
                 Log.d("Explore Fragment:", "Right");
+
             }
 
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 // So it never ends
-                addGroupNames();
+               // addGroupNames();?
             }
 
             @Override
@@ -92,6 +94,8 @@ public class exploreFragment extends Fragment {
         });
     }
 
+
+
     public void addGroupNames(){
         final ParseQuery<Group> groupQuery = new ParseQuery<Group>(Group.class);
         groupQuery.addDescendingOrder(Group.KEY_CREATED_AT);
@@ -99,10 +103,20 @@ public class exploreFragment extends Fragment {
             @Override
             public void done(List<Group> objects, ParseException e) {
                 if(e==null){
-                    for (int i = 0; i<objects.size(); i++){
-                        exploreGroups.add(objects.get(i).getGroupName());
-                    }
+                    exploreGroups.addAll(objects);
                     exploreArrayAdapter.notifyDataSetChanged();
+                    /*for (int i = 0; i<objects.size(); i++){
+                        Group group = objects.get(i);
+                        exploreGroups.add(group);
+                        exploreArrayAdapter.notifyDataSetChanged();*/
+                        // why cant u do this?
+                    /*    ParseFile image = group.getGroupImage();
+                        if (image!=null){
+                            Glide.with(exploreFragment.this)
+                                    .load(image.getUrl())
+                                    .into(ivExploreImage);
+                        }*/
+                    //}
                 }
                 else{
                     e.printStackTrace();
@@ -112,5 +126,5 @@ public class exploreFragment extends Fragment {
     }
 
 
-
 }
+
