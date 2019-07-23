@@ -17,6 +17,7 @@ import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,7 @@ public class exploreFragment extends Fragment {
     public void setUpExploreFlingContainer(){
         flingContainer.setBackgroundColor(0000);
         flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
+            //Group currentGroup = exploreGroups.get(0);
             @Override
             public void removeFirstObjectInAdapter() {
                 exploreGroups.remove(0);
@@ -68,6 +70,7 @@ public class exploreFragment extends Fragment {
             @Override
             public void onRightCardExit(Object dataObject) {
                 Log.d("Explore Fragment:", "Right");
+                ChildAddFragment.addUserToGroup(ParseUser.getCurrentUser(), (Group)dataObject);
 
             }
 
@@ -85,7 +88,6 @@ public class exploreFragment extends Fragment {
     }
 
     public void setOnClickListenerFling(){
-        // Optionally add an OnItemClickListener
         flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
@@ -105,18 +107,6 @@ public class exploreFragment extends Fragment {
                 if(e==null){
                     exploreGroups.addAll(objects);
                     exploreArrayAdapter.notifyDataSetChanged();
-                    /*for (int i = 0; i<objects.size(); i++){
-                        Group group = objects.get(i);
-                        exploreGroups.add(group);
-                        exploreArrayAdapter.notifyDataSetChanged();*/
-                        // why cant u do this?
-                    /*    ParseFile image = group.getGroupImage();
-                        if (image!=null){
-                            Glide.with(exploreFragment.this)
-                                    .load(image.getUrl())
-                                    .into(ivExploreImage);
-                        }*/
-                    //}
                 }
                 else{
                     e.printStackTrace();
