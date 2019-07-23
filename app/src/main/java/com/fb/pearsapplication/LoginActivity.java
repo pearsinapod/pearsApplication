@@ -77,6 +77,12 @@ public class LoginActivity extends AppCompatActivity {
         // fb-specific button
         FBloginButton = findViewById(R.id.login);
 
+        if (ParseUser.getCurrentUser() != null) {
+            Intent homeIntent = new Intent(this, MainActivity.class);
+            startActivity(homeIntent);
+            finish();
+        }
+
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
         if (isLoggedIn) {

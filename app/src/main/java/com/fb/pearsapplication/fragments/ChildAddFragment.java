@@ -41,29 +41,8 @@ public class ChildAddFragment extends Fragment {
         btnJoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // solely for testing purposes, pls ignore
-                ArrayList groupUsers = group.getUsers();
-                ArrayList groupPears = group.getPears();
-                ArrayList userGroups = (ArrayList) currentUser.getList("groups");
-                groupUsers.add(currentUser);
-                groupPears.add(currentUser);
-                if (userGroups == null) {
-                    userGroups = new ArrayList();
-                    userGroups.add(group);
-                } else {
-                    userGroups.add(group);
-                }
-                group.put("users", groupUsers);
-                group.put("pears", groupPears);
-                currentUser.put("groups", userGroups);
-
-                // ACL Error Code:
-                ParseACL acl = new ParseACL(ParseUser.getCurrentUser());
-                acl.setPublicReadAccess(true);
-                acl.setPublicWriteAccess(true);
-                group.setACL(acl);
-                currentUser.setACL(acl);
-
+                addUserToGroup();
+                checkACL();
                 currentUser.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
@@ -88,6 +67,31 @@ public class ChildAddFragment extends Fragment {
                 goToPearBtnFragment();
             }
         });
+    }
+
+    private void addUserToGroup() {
+        ArrayList groupUsers = group.getUsers();
+        ArrayList groupPears = group.getPears();
+        ArrayList userGroups = (ArrayList) currentUser.getList("groups");
+        groupUsers.add(currentUser);
+        groupPears.add(currentUser);
+        if (userGroups == null) {
+            userGroups = new ArrayList();
+            userGroups.add(group);
+        } else {
+            userGroups.add(group);
+        }
+        group.put("users", groupUsers);
+        group.put("pears", groupPears);
+        currentUser.put("groups", userGroups);
+    }
+
+    private void checkACL() {
+        ParseACL acl = new ParseACL(ParseUser.getCurrentUser());
+        acl.setPublicReadAccess(true);
+        acl.setPublicWriteAccess(true);
+        group.setACL(acl);
+        currentUser.setACL(acl);
     }
 
     public void setGroup(Group group) {

@@ -13,18 +13,16 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ChatActivity"></activity>
-        <activity android:name=".conversationsActivity" />
-        <activity android:name=".SignupActivity" />
 
-        android:usesCleartextTraffic="true"
-        android:theme="@style/AppTheme">
+
+        <activity android:name=".ChatActivity"/>
+        <activity android:name=".conversationsActivity"/>
+        <activity android:name=".SignupActivity"/>
+
         <meta-data android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"/>
-
         <meta-data
             android:name="com.facebook.sdk.PERMISSIONS"
             android:value="email" />
@@ -43,9 +41,6 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".conversationsActivity"></activity>
-
-        <activity android:name=".SignupActivity"></activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>
