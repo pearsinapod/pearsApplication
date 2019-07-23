@@ -63,10 +63,13 @@ public class profileFragment extends Fragment {
         } else {
             tvDescription.setText("How would your best friend describe you?");
         }
-        String profileImage = user.getString("profilePicString");
+
+        ParseFile profileImage = user.getParseFile("profileImage");
+        String profileImageString = user.getString("profilePicString");
         if (profileImage != null) {
-            Log.d("XYZ", "got image!");
             Glide.with(getContext()).load(profileImage).apply(RequestOptions.circleCropTransform()).into(ivImage);
+        } else if (profileImageString != null) {
+            Glide.with(getContext()).load(profileImageString).apply(RequestOptions.circleCropTransform()).into(ivImage);
         } else {
             Glide.with(getContext()).load(R.drawable.user).apply(RequestOptions.circleCropTransform()).into(ivImage);
         }
