@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,20 +21,33 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Group;
+import com.fb.pearsapplication.models.Pear;
+import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class groupDetailsFragment extends Fragment {
 
-    // the post to display
     Group group;
     Context context;
+    ParseUser currentUser;
 
     // the view objects
     ImageView ivGroupImage;
     TextView tvGroupName;
     TextView tvGroupNumber;
     TextView tvDescription;
-    Button btnMatch;
+
+    // pear details
+    ParseUser pearUser;
+    Pear pear;
 
     @Nullable
     @Override
@@ -44,12 +58,11 @@ public class groupDetailsFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
         ivGroupImage = (ImageView) view.findViewById(R.id.ivGroupImage);
         tvGroupName = (TextView) view.findViewById(R.id.tvGroupName);
         tvDescription = (TextView) view.findViewById(R.id.tvDescription);
         tvGroupNumber = (TextView) view.findViewById(R.id.tvGroupNumber);
+        currentUser = ParseUser.getCurrentUser();
 
         tvGroupName.setText(group.getGroupName());
         ParseFile image = group.getGroupImage();
@@ -64,38 +77,63 @@ public class groupDetailsFragment extends Fragment {
         tvDescription.setText(group.getDescription());
         String timeAgo = group.getRelativeTimeAgo();
 
-//        btnMatch.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                insertNestedFragment();
-//
-//            }
-//        });
+
+        if (group.getPears().contains(currentUser)) {
+            // TODO: create the fragment that shows up when their match is pending
+        }
+
+
+        if (currentUser.getList("groups").contains(group)) {
+            ParseQuery<Pear> pearQuery = new ParseQuery<Pear>(Pear.class);
+            pearQuery.include(Group.KEY_USERS);
+            pearQuery.whereEqualTo(Pear.KEY_GROUP, group);
+            ArrayList userID = new ArrayList();
+            userID.add(currentUser.getObjectId());
+            pearQuery.whereContainedIn(Pear.KEY_USERS, userID);
+
+            pearQuery.findInBackground(new FindCallback<Pear>() {
+                @Override
+                public void done(List<Pear> objects, ParseException e) {
+                    Log.d("XYZ", objects.toString());
+                    if (objects.size() == 0) {
+                        insertNestedPearButtonFragment();
+                    } else {
+                        pear = objects.get(0);
+                        insertNestedPearFragment();
+                    }
+                }
+            });
+        } else {
+            insertNestedAddFragment();
+        }
     }
+
     // Embeds the child fragment dynamically
-    private void insertNestedFragment() {
-        Fragment childFragment = new ChildFragment();
+    private void insertNestedPearFragment() {
+        Fragment childFragment = new ChildPearFragment();
+        ((ChildPearFragment) childFragment).setPear(pear);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.child_fragment_container, childFragment).commit();
+    }
+
+    private void insertNestedAddFragment() {
+        Fragment childFragment = new ChildAddFragment();
+        ((ChildAddFragment) childFragment).setGroup(group);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.child_fragment_container, childFragment).commit();
+    }
+
+    private void insertNestedPearButtonFragment() {
+        Fragment childFragment = new ChildPearButtonFragment();
+        ((ChildPearButtonFragment) childFragment).setGroup(group);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.addToBackStack(null);
         transaction.replace(R.id.child_fragment_container, childFragment).commit();
     }
 
 }
 
-class ChildFragment extends Fragment {
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Need to define the child fragment layout
-        return inflater.inflate(R.layout.fragment_child, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-
-    }
-
-}
 
 

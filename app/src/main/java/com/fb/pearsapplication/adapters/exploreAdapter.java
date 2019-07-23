@@ -4,68 +4,48 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Group;
 import com.parse.ParseFile;
 
 import java.util.List;
 
-public class exploreAdapter extends RecyclerView.Adapter<exploreAdapter.ViewHolder> {
-    private List<Group> mGroups;
-    private Context context;
+// why do u need this? is this necessary?
+public class exploreAdapter extends ArrayAdapter<Group> {
+    Context context;
 
-    public exploreAdapter(List groups){
-            mGroups=groups;
-    }
-
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        context = parent.getContext();
-        View exploreView = LayoutInflater.from(context).inflate(R.layout.item_explore_group,parent,false);
-        ViewHolder viewHolder =  new ViewHolder(exploreView);
-        return viewHolder;
+    public exploreAdapter(Context context, int resourceId, List<Group> groups){
+        super(context, resourceId, groups);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Group group = mGroups.get(position);
-        holder.tvExploreName.setText(group.getGroupName());
+    public View getView(int position, View convertView, ViewGroup parent) {
+        Group group = getItem(position);
+        if (convertView == null){
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_explore_group, parent,false);
+
+        }
+        ImageView ivExploreImage = convertView.findViewById(R.id.ivExploreImage);
+        TextView tvExploreName = convertView.findViewById(R.id.tvExploreName);
+        TextView tvExploreDescription = convertView.findViewById(R.id.tvExploreDescription);
+
+        tvExploreDescription.setText(group.getDescription());
+        tvExploreName.setText(group.getGroupName());
+
         ParseFile image = group.getGroupImage();
         if (image!=null){
-            Glide.with(context)
-                    .load(image.getUrl())
-                    .into(holder.ivExploreImage);
+            Glide.with(getContext())
+                    .load(group.getGroupImage().getUrl())
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(ivExploreImage);
         }
-    }
-    @Override
-    public int getItemCount() {
-        return mGroups.size();
-    }
-    class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView tvExploreName;
-        public ImageView ivExploreImage;
-        public ViewHolder(View itemView){
-            super(itemView);
-            tvExploreName= itemView.findViewById(R.id.tvExploreName);
-            ivExploreImage = itemView.findViewById(R.id.ivExploreImage);
-        }
-    }
+        return convertView;
 
-    public void clear() {
-        mGroups.clear();
-        notifyDataSetChanged();
-    }
-
-    public void addAll(List<Group> list) {
-        mGroups.addAll(list);
-        notifyDataSetChanged();
     }
 }

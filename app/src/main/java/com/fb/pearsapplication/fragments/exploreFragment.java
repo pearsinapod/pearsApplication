@@ -1,40 +1,31 @@
 package com.fb.pearsapplication.fragments;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.adapters.exploreAdapter;
 import com.fb.pearsapplication.models.Group;
+import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseQuery;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class exploreFragment extends Fragment {
 
-    protected ArrayList<Group> exploreGroups;
-    protected exploreAdapter eAdapter;
-    private RecyclerView rvExploreGroups;
-    private SwipeRefreshLayout swipeContainer;
-    EditText etSearch;
-    Button btnSearchSubmit;
-
+    private ArrayList<Group> exploreGroups;
+    private exploreAdapter exploreArrayAdapter;
+    SwipeFlingAdapterView flingContainer;
 
     @Nullable
     @Override
@@ -42,97 +33,98 @@ public class exploreFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_explore, container, false);
     }
 
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        rvExploreGroups = view.findViewById(R.id.rvExploreGroups);
+        super.onCreate(savedInstanceState);
         exploreGroups = new ArrayList<>();
-        eAdapter = new exploreAdapter(exploreGroups);
-        rvExploreGroups.setAdapter(eAdapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        rvExploreGroups.setLayoutManager(linearLayoutManager);
+        exploreArrayAdapter = new exploreAdapter(getContext(), R.layout.item_explore_group , exploreGroups);
+        flingContainer = view.findViewById(R.id.frame);
+        flingContainer.setAdapter(exploreArrayAdapter);
 
-        swipeContainer = view.findViewById(R.id.swipeContainer);
-        etSearch = view.findViewById(R.id.etSearch);
-        btnSearchSubmit = view.findViewById(R.id.btnSearchSubmit);
+        setUpExploreFlingContainer();
+        setOnClickListenerFling();
+        addGroupNames();
 
-
-        showGroups();
-        setUpOnSubmitListener();
-        setUpSwipeContainer();
     }
 
-    public void setUpSwipeContainer(){
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+    public void setUpExploreFlingContainer(){
+        flingContainer.setBackgroundColor(0000);
+        flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
             @Override
-            public void onRefresh() {
+            public void removeFirstObjectInAdapter() {
+                exploreGroups.remove(0);
+                exploreArrayAdapter.notifyDataSetChanged();
+                Log.d("Explore Fragment:", "Removed Object from Adapter");
+            }
 
-                eAdapter.clear();
-                exploreGroups.clear();
-                showGroups();
-                swipeContainer.setRefreshing(false);
+            @Override
+            public void onLeftCardExit(Object dataObject) {
+                //Do something on the left!
+                //You also have access to the original object.
+                //If you want to use it just cast it (String) dataObject
+                Log.d("Explore Fragment:", "Left");
+            }
 
+            @Override
+            public void onRightCardExit(Object dataObject) {
+                Log.d("Explore Fragment:", "Right");
+
+            }
+
+            @Override
+            public void onAdapterAboutToEmpty(int itemsInAdapter) {
+                // So it never ends
+               // addGroupNames();?
+            }
+
+            @Override
+            public void onScroll(float scrollProgressPercent) {
             }
         });
 
-        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-
-
     }
 
-    public void setUpOnSubmitListener(){
-        btnSearchSubmit.setOnClickListener(new View.OnClickListener() {
+    public void setOnClickListenerFling(){
+        // Optionally add an OnItemClickListener
+        flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View view) {
-                etSearch.setText("");
-                hideSoftKeyboard(getActivity());
-                Log.d("Search Submit","Clicked");
-
+            public void onItemClicked(int itemPosition, Object dataObject) {
+                Log.d("Explore Fragment:", "Clicked");
             }
         });
-
-    }
-
-    public String getSearchedText(){
-        return etSearch.getText().toString();
-    }
-
-    public static void hideSoftKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
 
 
-    protected void showGroups(){
-        Group.Query groupsQuery = new Group.Query();
-        // can be used to alphabatize : groupsQuery.addAscendingOrder(Group.KEY_GROUP_NAME);
-        if (getSearchedText().equals("")){
-            groupsQuery.getTop();
-            groupsQuery.addDescendingOrder(Group.KEY_CREATED_AT);
-        }else{
-            //TODO soon!
-        }
-        groupsQuery.findInBackground(new FindCallback<Group>() {
+
+    public void addGroupNames(){
+        final ParseQuery<Group> groupQuery = new ParseQuery<Group>(Group.class);
+        groupQuery.addDescendingOrder(Group.KEY_CREATED_AT);
+        groupQuery.findInBackground(new FindCallback<Group>() {
             @Override
             public void done(List<Group> objects, ParseException e) {
-                if (e == null){
+                if(e==null){
                     exploreGroups.addAll(objects);
-                    eAdapter.notifyDataSetChanged();
+                    exploreArrayAdapter.notifyDataSetChanged();
+                    /*for (int i = 0; i<objects.size(); i++){
+                        Group group = objects.get(i);
+                        exploreGroups.add(group);
+                        exploreArrayAdapter.notifyDataSetChanged();*/
+                        // why cant u do this?
+                    /*    ParseFile image = group.getGroupImage();
+                        if (image!=null){
+                            Glide.with(exploreFragment.this)
+                                    .load(image.getUrl())
+                                    .into(ivExploreImage);
+                        }*/
+                    //}
                 }
                 else{
-                    Log.d("Explore Fragment","Loading items failed");
+                    e.printStackTrace();
                 }
             }
         });
     }
-
-
-
-
-
 
 
 }
+

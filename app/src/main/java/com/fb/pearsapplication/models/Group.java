@@ -9,9 +9,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 @ParseClassName("Group")
 public class Group extends ParseObject implements Serializable {
@@ -21,7 +19,7 @@ public class Group extends ParseObject implements Serializable {
     public static final String KEY_PRIVATE_STATUS = "privateStatus";
     public static final String KEY_USERS = "users";
     public static final String KEY_CREATED_AT = "createdAt";
-
+    public static final String KEY_PEARS = "pears";
 
     public String getDescription() {
         return getString(KEY_DESCRIPTION);
@@ -57,20 +55,48 @@ public class Group extends ParseObject implements Serializable {
 
     public ArrayList getUsers() {
         if (getList(KEY_USERS) == null) {
-            put(KEY_USERS, new ArrayList<>());
-            saveInBackground();
+            setUsers(new ArrayList());
         }
         return (ArrayList) getList(KEY_USERS);
     }
 
-    public void addUser(ArrayList user) {
+    public void addUser(ParseUser user) {
         ArrayList users = (ArrayList) getUsers();
         users.add(user);
         put(KEY_USERS, users);
         saveInBackground();
     }
 
-        // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
+    public void setUsers(ArrayList<ParseUser> users) {
+        put(KEY_USERS, users);
+        saveInBackground();
+    }
+
+    public void setPears(ArrayList<ParseUser> pears) {
+        put(KEY_PEARS, pears);
+        saveInBackground();
+    }
+
+    public ArrayList getPears() {
+        if (getList(KEY_PEARS) == null) {
+            setPears(new ArrayList());
+        }
+        return (ArrayList) getList(KEY_PEARS);
+    }
+
+    public void addUserPear(ParseUser user) {
+        ArrayList users = (ArrayList) getUsers();
+        users.add(user);
+        put(KEY_USERS, users);
+        saveInBackground();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return ((Group) obj).getObjectId().equals(getObjectId());
+    }
+
+    // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
         public String getRelativeTimeAgo () {
             String relativeDate = "";
             long dateMillis = getCreatedAt().getTime();

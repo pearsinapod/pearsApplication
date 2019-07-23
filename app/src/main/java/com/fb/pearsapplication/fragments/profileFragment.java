@@ -52,18 +52,24 @@ public class profileFragment extends Fragment {
         etDescription.setVisibility(View.GONE);
         btnDone.setVisibility(View.GONE);
 
-
-        tvName.setText(user.getUsername() + ", " + user.getNumber("age"));
+        if (user.getNumber("age") != null) {
+            tvName.setText(user.getUsername() + ", " + user.getNumber("age"));
+        } else {
+            tvName.setText(user.getUsername());
+        }
         String description = user.getString("description");
         if (description != null) {
             tvDescription.setText(description);
         } else {
             tvDescription.setText("How would your best friend describe you?");
-            Log.d("XYZ", "im sad");
         }
+
         ParseFile profileImage = user.getParseFile("profileImage");
+        String profileImageString = user.getString("profilePicString");
         if (profileImage != null) {
-            Glide.with(getContext()).load(profileImage.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivImage);
+            Glide.with(getContext()).load(profileImage).apply(RequestOptions.circleCropTransform()).into(ivImage);
+        } else if (profileImageString != null) {
+            Glide.with(getContext()).load(profileImageString).apply(RequestOptions.circleCropTransform()).into(ivImage);
         } else {
             Glide.with(getContext()).load(R.drawable.user).apply(RequestOptions.circleCropTransform()).into(ivImage);
         }

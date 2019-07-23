@@ -11,17 +11,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-//import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
 import com.fb.pearsapplication.fragments.exploreFragment;
 import com.fb.pearsapplication.fragments.groupFragment;
 import com.fb.pearsapplication.fragments.profileFragment;
-import com.fb.pearsapplication.models.Group;
+import com.fb.pearsapplication.fragments.searchFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.parse.ParseException;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
-import java.util.ArrayList;
+//import com.facebook.AccessToken;
+
+//import com.facebook.AccessToken;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -60,8 +61,12 @@ public class MainActivity extends AppCompatActivity {
                         fragment = new profileFragment();
                         break;
                     case R.id.exploreFragment:
-                        Log.d("exploreFragment", "exploreFragment clicked");
+                        Log.d("exploreFragment", "searchFragment clicked");
                         fragment = new exploreFragment();
+                        break;
+                    case R.id.searchFragment:
+                        Log.d("searchFragment", "searchFragment clicked");
+                        fragment = new searchFragment();
                         break;
                 }
                 fragmentManager.beginTransaction().replace(R.id.flContainter, fragment).commit();
@@ -79,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickLogout(MenuItem item) {
         Log.d("Main Activity", "Logged out");
+        LoginManager.getInstance().logOut();
         ParseUser.logOut();
         Intent logoutIntent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(logoutIntent);
@@ -91,28 +97,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(messageIntent);
     }
 
-    public void populateGroupDatabase(ArrayList<String> groupNames) {
-        boolean priv = true;
-        for (String h : groupNames) {
-            Group newGroup = new Group();
-            newGroup.setGroupName(h);
-            newGroup.setPrivateStatus(priv);
-            newGroup.setDescription("This group is about " + h);
-            newGroup.addUser(new ArrayList());
-            priv = !priv;
-
-            newGroup.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e == null) {
-                        Log.d("XYZ", "success");
-                    } else {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
-    }
 }
 
 
