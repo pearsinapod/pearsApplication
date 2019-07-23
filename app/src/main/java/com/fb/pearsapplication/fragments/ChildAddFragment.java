@@ -6,11 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -41,35 +39,13 @@ public class ChildAddFragment extends Fragment {
         btnJoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addUserToGroup();
-                checkACL();
-                currentUser.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e == null) {
-                            Log.d("XYZ", "added group");
-                        } else {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-                group.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e == null) {
-                            Log.d("XYZ", "added users");
-                        } else {
-                            e.printStackTrace();
-                        }
-                    }
-                });
+                addUserToGroup(currentUser, group);
                 goToPearBtnFragment();
             }
         });
     }
 
-    private void addUserToGroup() {
+    public static void addUserToGroup(ParseUser currentUser, Group group) {
         ArrayList groupUsers = group.getUsers();
         ArrayList groupPears = group.getPears();
         ArrayList userGroups = (ArrayList) currentUser.getList("groups");
@@ -84,9 +60,31 @@ public class ChildAddFragment extends Fragment {
         group.put("users", groupUsers);
         group.put("pears", groupPears);
         currentUser.put("groups", userGroups);
+        checkACL(currentUser, group);
+        currentUser.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.d("XYZ", "added group");
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        group.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.d("XYZ", "added users");
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
-    private void checkACL() {
+    public static void checkACL(ParseUser currentUser, Group group) {
         ParseACL acl = new ParseACL(ParseUser.getCurrentUser());
         acl.setPublicReadAccess(true);
         acl.setPublicWriteAccess(true);
