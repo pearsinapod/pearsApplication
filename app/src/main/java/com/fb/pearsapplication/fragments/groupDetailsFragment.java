@@ -85,9 +85,10 @@ public class groupDetailsFragment extends Fragment {
 
     private void determineChildFragment() {
         if (group.getPears().contains(currentUser)) {
-            // TODO: create the fragment that shows up when their match is pending
+            // TODO: figure out how to check if they are awaiting a pear
+            insertNestedWaitingFragment();
         }
-        
+
         ArrayList myGroups = (ArrayList) currentUser.getList("groups");
 
         if (myGroups == null || !myGroups.contains(group)) {
@@ -115,8 +116,7 @@ public class groupDetailsFragment extends Fragment {
         }
     }
 
-    // Embeds the child fragment dynamically
-    private void insertNestedPearFragment() {
+    public void insertNestedPearFragment() {
         Fragment childFragment = new ChildPearFragment();
         ((ChildPearFragment) childFragment).setPear(pear);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
@@ -124,7 +124,7 @@ public class groupDetailsFragment extends Fragment {
         transaction.replace(R.id.child_fragment_container, childFragment).commit();
     }
 
-    private void insertNestedAddFragment() {
+    public void insertNestedAddFragment() {
         Fragment childFragment = new ChildAddFragment();
         ((ChildAddFragment) childFragment).setGroup(group);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
@@ -132,7 +132,7 @@ public class groupDetailsFragment extends Fragment {
         transaction.replace(R.id.child_fragment_container, childFragment).commit();
     }
 
-    private void insertNestedPearButtonFragment() {
+    public void insertNestedPearButtonFragment() {
         Fragment childFragment = new ChildPearButtonFragment();
         ((ChildPearButtonFragment) childFragment).setGroup(group);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
@@ -140,8 +140,11 @@ public class groupDetailsFragment extends Fragment {
         transaction.replace(R.id.child_fragment_container, childFragment).commit();
     }
 
-    private void insertNestedWaitingFragment() {
-
+    public void insertNestedWaitingFragment() {
+        Fragment childFragment = new ChildWaitingFragment();
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.child_fragment_container, childFragment).commit();
     }
 
 }
