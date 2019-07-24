@@ -89,8 +89,11 @@ public class groupDetailsFragment extends Fragment {
 
         if (currentUser.getList("pearRequests").contains(group)) {
             swPear.setChecked(true);
-        }
+        } // TODO FIX THIS
     }
+
+
+
 
     private void determineChildFragment() {
         ParseQuery<GroupUserRelation> query = new ParseQuery<GroupUserRelation>(GroupUserRelation.class);
@@ -108,8 +111,30 @@ public class groupDetailsFragment extends Fragment {
                 } else if (objects.get(0).getPearRequest()) {
                     gur = objects.get(0);
                     insertNestedPearButtonFragment();
+                } else if (pear == null) {
+                    insertNestedWaitingFragment();
                 } else {
-                    // TODO: Make new query here
+                    insertNestedPearFragment();
+                }
+            }
+        });
+    }
+
+    private void pearQuery() {
+        ParseQuery<Pear> pearQuery = new ParseQuery<Pear>(Pear.class);
+        pearQuery.whereEqualTo("user", currentUser);
+        pearQuery.whereEqualTo("group", group);
+        pearQuery.findInBackground(new FindCallback<Pear>() {
+            @Override
+            public void done(List<Pear> objects, ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                    return;
+                }
+                if (objects.isEmpty()) {
+                    pear = null;
+                } else {
+                    pear = objects.get(0);
                 }
             }
         });

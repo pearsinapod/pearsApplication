@@ -124,24 +124,34 @@ public class ChildPearButtonFragment extends Fragment {
     }
 
     private void createPear() {
-        final Pear newPear = new Pear();
-        ArrayList pearedUsers = new ArrayList();
-        pearedUsers.add(currentUser.getObjectId());
-        pearedUsers.add(pearUser.getObjectId());
-        newPear.setUsers(pearedUsers);
-        newPear.setUser1(currentUser);
-        newPear.setUser2(pearUser);
-        newPear.setGroup(group);
+        final Pear newPearMe = new Pear();
+        final Pear newPearOther = new Pear();
+        newPearMe.setUser(currentUser);
+        newPearMe.setOtherUser(pearUser);
+        newPearMe.setGroup(group);
 
-        newPear.saveInBackground(new SaveCallback() {
+        newPearOther.setUser(pearUser);
+        newPearOther.setOtherUser(currentUser);
+        newPearOther.setGroup(group);
+
+        newPearMe.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
-                    pear = newPear;
+                    pear = newPearMe;
                     updateRelations();
                     goToPearFragment();
                     Log.d("XYZ", "Pear created successfully!");
                 } else {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        newPearOther.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
                     e.printStackTrace();
                 }
             }

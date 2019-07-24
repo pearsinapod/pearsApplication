@@ -10,25 +10,25 @@ import java.util.List;
 
 @ParseClassName("Pear")
 public class Pear extends ParseObject implements Serializable {
-    public static final String KEY_USER_1 = "user1";
-    public static final String KEY_USER_2 = "user2";
+    public static final String KEY_USER = "user";
+    public static final String KEY_OTHER_USER = "otherUser";
     public static final String KEY_GROUP = "group";
     public static final String KEY_USERS = "users";
 
-    public ParseUser getUser1() {
-        return getParseUser(KEY_USER_1);
+    public ParseUser getUser() {
+        return getParseUser(KEY_USER);
     }
 
-    public void setUser1(ParseUser user) {
-        put(KEY_USER_1, user);
+    public void setUser(ParseUser user) {
+        put(KEY_USER, user);
     }
 
-    public ParseUser getUser2() {
-        return getParseUser(KEY_USER_2);
+    public ParseUser getOtherUser() {
+        return getParseUser(KEY_OTHER_USER);
     }
 
-    public void setUser2(ParseUser user) {
-        put(KEY_USER_2, user);
+    public void setOtherUser(ParseUser user) {
+        put(KEY_OTHER_USER, user);
     }
 
     public Group getGroup() {

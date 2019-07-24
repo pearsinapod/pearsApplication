@@ -53,7 +53,6 @@ public class ChildAddFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 addUserToGroup(currentUser, group);
-                goToPearBtnFragment();
             }
         });
     }
@@ -64,12 +63,15 @@ public class ChildAddFragment extends Fragment {
         groupUser.setUser(user);
         groupUser.setPearRequest(true);
 
+        user.saveInBackground();
+        group.saveInBackground();
         groupUser.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
                     Log.d("XYZ", "added successfully");
                     gur = groupUser;
+                    goToPearBtnFragment();
                 } else {
                     e.printStackTrace();
                 }
