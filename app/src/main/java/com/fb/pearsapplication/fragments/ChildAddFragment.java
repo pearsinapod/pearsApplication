@@ -51,15 +51,27 @@ public class ChildAddFragment extends Fragment {
         btnJoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addUserToGroup(currentUser, group);
+                final GroupUserRelation groupUser = addUserToGroup(currentUser, group);
+                groupUser.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e == null) {
+                            Log.d("XYZ", "added successfully");
+                            gur = groupUser;
+                            goToPearBtnFragment();
+                        } else {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }
         });
     }
-  
-    private void addUserToGroup(ParseUser user, Group group) {
+
+    private GroupUserRelation addUserToGroup(ParseUser user, Group group) {
         final GroupUserRelation groupUser = new GroupUserRelation();
         ArrayList groupUsers = group.getUsers();
-        ArrayList userGroups = (ArrayList) user.getList("groups);
+        ArrayList userGroups = (ArrayList) user.getList("groups");
         groupUsers.add(user);
         userGroups.add(group);
         user.put("groups", userGroups);  
@@ -69,20 +81,7 @@ public class ChildAddFragment extends Fragment {
         groupUser.setUser(user);
         groupUser.setPearRequest(true);
 
-        user.saveInBackground();
-        group.saveInBackground();
-        groupUser.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    Log.d("XYZ", "added successfully");
-                    gur = groupUser;
-                    goToPearBtnFragment();
-                } else {
-                    e.printStackTrace();
-                }
-            }
-        });
+        return groupUser;
     }
 
     public static void checkACL(ParseUser currentUser, Group group) {

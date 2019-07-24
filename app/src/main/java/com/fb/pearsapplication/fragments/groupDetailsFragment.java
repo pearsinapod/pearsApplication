@@ -68,6 +68,7 @@ public class groupDetailsFragment extends Fragment {
         tvGroupNumber = (TextView) view.findViewById(R.id.tvGroupNumber);
         swPear = (Switch) view.findViewById(R.id.swPear);
         currentUser = ParseUser.getCurrentUser();
+        pearQuery();
         bindViews();
         determineChildFragment();
 
@@ -146,6 +147,15 @@ public class groupDetailsFragment extends Fragment {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.addToBackStack(null);
         transaction.replace(R.id.child_fragment_container, childFragment).commit();
+
+        ParseQuery<GroupUserRelation> query = new ParseQuery<GroupUserRelation>(GroupUserRelation.class);
+        query.whereEqualTo("user", currentUser);
+        query.findInBackground(new FindCallback<GroupUserRelation>() {
+            @Override
+            public void done(List<GroupUserRelation> objects, ParseException e) {
+
+            }
+        });
     }
 
     public void insertNestedAddFragment() {
