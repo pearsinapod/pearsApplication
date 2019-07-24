@@ -1,30 +1,42 @@
 package com.fb.pearsapplication.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.fb.pearsapplication.LoginActivity;
+import com.fb.pearsapplication.MainActivity;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Group;
+import com.fb.pearsapplication.models.GroupUserRelation;
+import com.parse.FindCallback;
+import com.parse.LogInCallback;
 import com.parse.ParseACL;
 import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChildAddFragment extends Fragment {
     Button btnJoin;
     ParseUser currentUser;
     Group group;
+    Switch swPear;
+    GroupUserRelation gur;
 
     @Nullable
     @Override
@@ -40,43 +52,32 @@ public class ChildAddFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 addUserToGroup(currentUser, group);
-                goToPearBtnFragment();
             }
         });
     }
-
-    public static void addUserToGroup(ParseUser currentUser, Group group) {
+  
+    private void addUserToGroup(ParseUser user, Group group) {
+        final GroupUserRelation groupUser = new GroupUserRelation();
         ArrayList groupUsers = group.getUsers();
-        ArrayList groupPears = group.getPears();
-        ArrayList userGroups = (ArrayList) currentUser.getList("groups");
-        groupUsers.add(currentUser);
-        groupPears.add(currentUser);
-        if (userGroups == null) {
-            userGroups = new ArrayList();
-            userGroups.add(group);
-        } else {
-            userGroups.add(group);
-        }
-        group.put("users", groupUsers);
-        group.put("pears", groupPears);
-        currentUser.put("groups", userGroups);
-        checkACL(currentUser, group);
-        currentUser.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    Log.d("XYZ", "added group");
-                } else {
-                    e.printStackTrace();
-                }
-            }
-        });
+        ArrayList userGroups = (ArrayList) user.getList("groups);
+        groupUsers.add(user);
+        userGroups.add(group);
+        user.put("groups", userGroups);  
+        group.put("users", groupUsers);                                               
+  
+        groupUser.setGroup(group);
+        groupUser.setUser(user);
+        groupUser.setPearRequest(true);
 
-        group.saveInBackground(new SaveCallback() {
+        user.saveInBackground();
+        group.saveInBackground();
+        groupUser.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
-                    Log.d("XYZ", "added users");
+                    Log.d("XYZ", "added successfully");
+                    gur = groupUser;
+                    goToPearBtnFragment();
                 } else {
                     e.printStackTrace();
                 }
@@ -99,7 +100,10 @@ public class ChildAddFragment extends Fragment {
     public void goToPearBtnFragment() {
         FragmentManager fragmentManager = getFragmentManager();
         Fragment fragment = new ChildPearButtonFragment();
-        ((ChildPearButtonFragment) fragment).setGroup(group);
+        ((ChildPearButtonFragment) fragment).setGUR(gur);
+        groupDetailsFragment parentFrag = ((groupDetailsFragment)ChildAddFragment.this.getParentFragment());
+        swPear = parentFrag.swPear;
+        swPear.setChecked(true);
         fragmentManager.beginTransaction().replace(R.id.child_fragment_container, fragment).addToBackStack(null).commit();
     }
 
