@@ -1,6 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_gravity="center"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="40sp"
+    android:paddingRight="40sp"
+    android:paddingTop="20sp"
+    android:paddingBottom="60sp"
+    android:outlineProvider="bounds"
+    android:clipToPadding="false">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewExplore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:cardCornerRadius="4dp"
+        android:elevation="3dp">
+        <FrameLayout
+            android:layout_gravity="center"
+            android:layout_width="400dp"
+            android:layout_height="500dp">
+
+            <TextView
+                android:id="@+id/tvExploreName"
+                android:layout_width="match_parent"
+                android:layout_height="366dp"
+                android:background="@android:color/white"
+                android:gravity="center"
+                android:textColor="@android:color/black"
+                android:textSize="40sp"
+                tools:text="hello" />
+
+            <ImageView
+                android:id="@+id/ivExploreImage"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10sp"
+                tools:srcCompat="@tools:sample/avatars[0]" />
+
+            <TextView
+                android:id="@+id/tvExploreDescription"
+                android:layout_gravity="center"
+                android:paddingTop="100sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hello my name is" />
+
+        </FrameLayout>
+    </androidx.cardview.widget.CardView>
 
 </LinearLayout>
