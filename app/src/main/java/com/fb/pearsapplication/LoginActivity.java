@@ -77,19 +77,7 @@ public class LoginActivity extends AppCompatActivity {
         // fb-specific button
         FBloginButton = findViewById(R.id.login);
 
-        if (ParseUser.getCurrentUser() != null) {
-            Intent homeIntent = new Intent(this, MainActivity.class);
-            startActivity(homeIntent);
-            finish();
-        }
-
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
-        if (isLoggedIn) {
-            Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(mainIntent);
-            finish();
-        }
+        persistenceCheck();
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -112,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (user == null) {
                             Log.d("MyApp", "Uh oh. The user cancelled the Facebook login.");
                         } else if (user.isNew()) {
-                            Log.d("MyApp", "User signed up and logged in through Facebook!");
+                            SignupActivity.instantiateGroups(user);
                             getFBInfo();
                         } else {
                             Log.d("MyApp", "User logged in through Facebook!");
@@ -122,6 +110,22 @@ public class LoginActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    private void persistenceCheck() {
+        if (ParseUser.getCurrentUser() != null) {
+            Intent homeIntent = new Intent(this, MainActivity.class);
+            startActivity(homeIntent);
+            finish();
+        }
+
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+        if (isLoggedIn) {
+            Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(mainIntent);
+            finish();
+        }
     }
 
     @Override

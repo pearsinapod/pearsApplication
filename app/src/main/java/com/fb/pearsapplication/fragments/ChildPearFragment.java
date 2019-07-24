@@ -90,11 +90,7 @@ public class ChildPearFragment extends Fragment {
 
     public void setPear(Pear pear) {
         this.pear = pear;
-        if (pear.getUser1().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())) {
-            pearUser = pear.getUser2();
-        } else {
-            pearUser = pear.getUser1();
-        }
+        pearUser = pear.getOtherUser();
     }
 
 }

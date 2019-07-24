@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.fb.pearsapplication.models.Group;
 
+import com.fb.pearsapplication.models.GroupUserRelation;
 import com.fb.pearsapplication.models.PearMessage;
 
 import com.fb.pearsapplication.models.Pear;
@@ -25,6 +26,7 @@ public class ParseApp extends Application {
         ParseObject.registerSubclass(User.class);
         ParseObject.registerSubclass(PearMessage.class);
         ParseObject.registerSubclass(Pear.class);
+        ParseObject.registerSubclass(GroupUserRelation.class);
 
 
         final Parse.Configuration configuration = new Parse.Configuration.Builder(this)
