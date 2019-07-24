@@ -13,11 +13,13 @@ import androidx.fragment.app.Fragment;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.adapters.exploreAdapter;
 import com.fb.pearsapplication.models.Group;
+import com.fb.pearsapplication.models.GroupUserRelation;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +40,7 @@ public class exploreFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         exploreGroups = new ArrayList<>();
-//        exploreArrayAdapter = new exploreAdapter(getContext(), R.layout.item_explore_group, exploreGroups);
+        exploreArrayAdapter = new exploreAdapter(getContext(), R.layout.item_explore_group, exploreGroups);
         flingContainer = view.findViewById(R.id.frame);
         flingContainer.setAdapter(exploreArrayAdapter);
 
@@ -70,7 +72,17 @@ public class exploreFragment extends Fragment {
             @Override
             public void onRightCardExit(Object dataObject) {
                 Log.d("Explore Fragment:", "Right");
-                ChildAddFragment.addUserToGroup(ParseUser.getCurrentUser(), (Group)dataObject);
+                final GroupUserRelation GURQuery = ChildAddFragment.addUserToGroup(ParseUser.getCurrentUser(), (Group)dataObject);
+                GURQuery.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e == null) {
+                            Log.d("User joining:", "added successfully");
+                        } else {
+                            e.printStackTrace();
+                        }
+                    }
+                });
 
             }
 
