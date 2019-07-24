@@ -52,31 +52,30 @@ public class ChildAddFragment extends Fragment {
         btnJoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addUserToGroup(currentUser, group);
+                final GroupUserRelation groupUser = addUserToGroup(currentUser, group);
+                groupUser.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e == null) {
+                            Log.d("XYZ", "added successfully");
+                            gur = groupUser;
+                            goToPearBtnFragment();
+                        } else {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }
         });
     }
 
-    private void addUserToGroup(ParseUser user, Group group) {
+    private GroupUserRelation addUserToGroup(ParseUser user, Group group) {
         final GroupUserRelation groupUser = new GroupUserRelation();
         groupUser.setGroup(group);
         groupUser.setUser(user);
         groupUser.setPearRequest(true);
 
-        user.saveInBackground();
-        group.saveInBackground();
-        groupUser.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    Log.d("XYZ", "added successfully");
-                    gur = groupUser;
-                    goToPearBtnFragment();
-                } else {
-                    e.printStackTrace();
-                }
-            }
-        });
+        return groupUser;
     }
 
     private void checkACL() {
