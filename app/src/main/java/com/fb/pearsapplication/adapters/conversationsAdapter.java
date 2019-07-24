@@ -78,7 +78,6 @@ public class conversationsAdapter extends RecyclerView.Adapter<conversationsAdap
             ivProfileOther = (ImageView) itemView.findViewById(R.id.ivProfileOther);
             tvBody = (TextView) itemView.findViewById(R.id.tvBody);
             tvUsername = (TextView) itemView.findViewById(R.id.tvUsername);
-
         }
 
         @Override
@@ -87,98 +86,10 @@ public class conversationsAdapter extends RecyclerView.Adapter<conversationsAdap
             Intent convoIntent = new Intent(context, ChatActivity.class);
             convoIntent.putExtra(convoIntent.EXTRA_DATA_REMOVED, userList.get(position).getUsername());
             context.startActivity(convoIntent);
-
-
-
         }
 
         public void bind(ParseUser parseUser) {
             tvUsername.setText(parseUser.getUsername());
         }
     }
-
-
-//    private List<PearMessage> mMessages;
-//    private Context mContext;
-//    private String mUserId;
-//
-//    public conversationsAdapter(Context context, String userId, List<PearMessage> messages) {
-//        mMessages = messages;
-//        this.mUserId = userId;
-//        mContext = context;
-//    }
-//
-//
-//
-//
-//    @Override
-//    public void onBindViewHolder(ViewHolder holder, int position) {
-//        PearMessage message = mMessages.get(position);
-//        final boolean isMe = message.getUserId() != null && message.getUserId().equals(mUserId);
-//
-//        if (isMe) {
-//            holder.imageMe.setVisibility(View.VISIBLE);
-//            holder.imageOther.setVisibility(View.GONE);
-//            holder.body.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
-//        } else {
-//            holder.imageOther.setVisibility(View.VISIBLE);
-//            holder.imageMe.setVisibility(View.GONE);
-//            holder.body.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
-//        }
-//
-//        final ImageView profileView = isMe ? holder.imageMe : holder.imageOther;
-//        Glide.with(mContext).load(getProfileUrl(message.getUserId())).into(profileView);
-//        holder.body.setText(message.getBody());
-//
-//    }
-//
-//    // Create a gravatar image based on the hash value obtained from userId
-//    private static String getProfileUrl(final String userId) {
-//        String hex = "";
-//        try {
-//            final MessageDigest digest = MessageDigest.getInstance("MD5");
-//            final byte[] hash = digest.digest(userId.getBytes());
-//            final BigInteger bigInt = new BigInteger(hash);
-//            hex = bigInt.abs().toString(16);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return "https://www.gravatar.com/avatar/" + hex + "?d=identicon";
-//    }
-//
-//
-//    @Override
-//    public int getItemCount() {
-//        return mMessages.size();
-//    }
-//
-//    public class ViewHolder extends RecyclerView.ViewHolder {
-//        ImageView imageOther;
-//        ImageView imageMe;
-//        TextView body;
-//
-//        public ViewHolder(View itemView) {
-//            super(itemView);
-//            imageOther = (ImageView)itemView.findViewById(R.id.ivProfileOther);
-//            imageMe = (ImageView)itemView.findViewById(R.id.ivProfileMe);
-//            body = (TextView)itemView.findViewById(R.id.tvBody);
-//        }
-//
-//    }
-//
-//    public void onClick(View view) {
-//        //gets item position
-//        int position = getAdapterPosition();
-//        // make sure the position is valid, i.e. actually exists in the view
-//        if (position != RecyclerView.NO_POSITION) {
-//            PearMessage message = mMessages.get(position);
-//            Intent chatIntent = new Intent (mContext, ChatActivity.class);
-//            mContext.startActivity(chatIntent);
-//        }
-//    }
-//
-//    private int getAdapterPosition() {
-//       return getAdapterPosition();
-//    }
-
 }
