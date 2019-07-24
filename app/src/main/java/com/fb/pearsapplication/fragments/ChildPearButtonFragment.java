@@ -17,11 +17,14 @@ import androidx.fragment.app.FragmentManager;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Group;
 import com.fb.pearsapplication.models.Pear;
+import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class ChildPearButtonFragment extends Fragment {
@@ -45,31 +48,57 @@ public class ChildPearButtonFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         btnPear = (Button) view.findViewById(R.id.btnPear);
-        currentUser = ParseUser.getCurrentUser();
         groupDetailsFragment parentFrag = ((groupDetailsFragment)ChildPearButtonFragment.this.getParentFragment());
         swPear = parentFrag.swPear;
+        currentUser = ParseUser.getCurrentUser();
+        if (currentUser.getList("pearRequests").contains(group)) {
+            swPear.setChecked(true);
+            btnPear.setEnabled(true);
+            btnPear.setClickable(true);
+            btnListener();
+        }
+        currentUser = ParseUser.getCurrentUser();
         swPear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (swPear.isChecked()) {
                     Log.d("switch", "on");
-                    ArrayList groupPears = group.getPears();
-                    groupPears.add(currentUser);
-                    group.put(Group.KEY_PEARS, groupPears);
-                    group.saveInBackground();
+                    btnPear.setEnabled(true);
+                    btnPear.setClickable(true);
+                    switchOnMethod();
                     btnListener();
                 } else {
                     Log.d("switch", "off");
                     btnPear.setEnabled(false);
                     btnPear.setClickable(false);
-                    ArrayList groupPears = group.getPears();
-                    groupPears.remove(currentUser);
-                    group.put(Group.KEY_PEARS, groupPears);
-                    group.saveInBackground();
+                    switchOffMethod();
                 }
             }
         });
+    }
 
+    private void switchOnMethod() {
+        ArrayList groupPears = group.getPears();
+        ArrayList userPearRequests = (ArrayList) currentUser.getList("pearRequests");
+        if (!userPearRequests.contains(group)) {
+            groupPears.add(currentUser);
+            userPearRequests.add(group);
+        }
+        group.put(Group.KEY_PEARS, groupPears);
+        currentUser.put("pearRequests", userPearRequests);
+        group.saveInBackground();
+        currentUser.saveInBackground();
+    }
+
+    private void switchOffMethod() {
+        ArrayList groupPears = group.getPears();
+        ArrayList userPearRequests = (ArrayList) currentUser.getList("pearRequests");
+        groupPears.remove(currentUser);
+        userPearRequests.remove(group);
+        group.put(Group.KEY_PEARS, groupPears);
+        currentUser.put("pearRequests", userPearRequests);
+        group.saveInBackground();
+        currentUser.saveInBackground();
     }
 
     private void btnListener() {
@@ -78,22 +107,23 @@ public class ChildPearButtonFragment extends Fragment {
             public void onClick(View view) {
                 ArrayList<ParseUser> pearUsers = group.getPears();
 
-                if (pearUsers.size() == 0) {
-                    goToWaitingFragment();
-                } else {
-                    Random randomIntGen = new Random();
-                    Log.d("XYZ", "pears size is " + ((Integer) pearUsers.size()).toString());
-                    int pearPosition = randomIntGen.nextInt(pearUsers.size());
-                    pearUser = pearUsers.get(pearPosition);
-
-//                    // used to ensure that the user doesn't get paired up with themselves
-//                    while (pearUser.getObjectId().equals(currentUser.getObjectId())) {
-//                        pearPosition = randomIntGen.nextInt(pearUsers.size());
-//                        pearUser = pearUsers.get(pearPosition);
-//                    }
-                    createPear();
-                    goToPearFragment();
-                }
+                ParseQuery<ParseUser> query = ParseUser.getQuery();
+                query.whereNotEqualTo("username", currentUser.getUsername());
+                ArrayList<Group> currentGroup = new ArrayList<Group>();
+                currentGroup.add(group);
+                query.whereContainedIn("pearRequests", currentGroup);
+                query.findInBackground(new FindCallback<ParseUser>() {
+                    @Override
+                    public void done(List<ParseUser> objects, ParseException e) {
+                        if (objects.size() == 0) {
+                            goToWaitingFragment();
+                        } else {
+                            pearUser = objects.get(0); // TODO: change this so it's not the same pear everytime
+                            createPear();
+                            goToPearFragment();
+                        }
+                    }
+                });
             }
         });
     }

@@ -84,6 +84,10 @@ public class groupDetailsFragment extends Fragment {
         }
         tvDescription.setText(group.getDescription());
         String timeAgo = group.getRelativeTimeAgo();
+
+        if (currentUser.getList("pearRequests").contains(group)) {
+            swPear.setChecked(true);
+        }
     }
 
     private void determineChildFragment() {
