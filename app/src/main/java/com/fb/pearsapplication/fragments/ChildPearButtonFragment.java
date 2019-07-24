@@ -108,6 +108,7 @@ public class ChildPearButtonFragment extends Fragment {
                 query.findInBackground(new FindCallback<GroupUserRelation>() {
                     @Override
                     public void done(List<GroupUserRelation> objects, ParseException e) {
+                        Log.d("pear request", objects.toString());
                         if (e != null) {
                             e.printStackTrace();
                         } else if (objects.isEmpty()) {

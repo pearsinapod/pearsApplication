@@ -1,6 +1,5 @@
 package com.fb.pearsapplication.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,28 +7,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.fb.pearsapplication.LoginActivity;
-import com.fb.pearsapplication.MainActivity;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Group;
 import com.fb.pearsapplication.models.GroupUserRelation;
-import com.parse.FindCallback;
-import com.parse.LogInCallback;
 import com.parse.ParseACL;
 import com.parse.ParseException;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ChildAddFragment extends Fragment {
     Button btnJoin;
@@ -67,15 +59,19 @@ public class ChildAddFragment extends Fragment {
             }
         });
     }
-
-    private GroupUserRelation addUserToGroup(ParseUser user, Group group) {
+    
+    public static GroupUserRelation addUserToGroup(ParseUser user, Group group) {
         final GroupUserRelation groupUser = new GroupUserRelation();
+        ParseACL acl = new ParseACL(user);
+        acl.setPublicReadAccess(true);
+        acl.setPublicWriteAccess(true);
+        groupUser.setACL(acl);
+        user.setACL(acl);
+
         ArrayList groupUsers = group.getUsers();
-        ArrayList userGroups = (ArrayList) user.getList("groups");
         groupUsers.add(user);
-        userGroups.add(group);
-        user.put("groups", userGroups);  
-        group.put("users", groupUsers);                                               
+        group.put("users", groupUsers);
+        group.saveInBackground();
   
         groupUser.setGroup(group);
         groupUser.setUser(user);
