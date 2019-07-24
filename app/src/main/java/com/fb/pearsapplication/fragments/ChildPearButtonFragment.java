@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,10 +27,12 @@ import java.util.Random;
 public class ChildPearButtonFragment extends Fragment {
 
     Button btnPear;
+    Switch swPear;
     ParseUser currentUser;
     ParseUser pearUser;
     Group group;
     Pear pear;
+
 
     // TODO: need to figure out how to send information between the parent and child fragments
 
@@ -42,15 +46,39 @@ public class ChildPearButtonFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         btnPear = (Button) view.findViewById(R.id.btnPear);
         currentUser = ParseUser.getCurrentUser();
+        groupDetailsFragment parentFrag = ((groupDetailsFragment)ChildPearButtonFragment.this.getParentFragment());
+        swPear = parentFrag.swPear;
+        swPear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (swPear.isChecked()) {
+                    Log.d("switch", "on");
+                    ArrayList groupPears = group.getPears();
+                    groupPears.add(currentUser);
+                    group.put(Group.KEY_PEARS, groupPears);
+                    group.saveInBackground();
+                    btnListener();
+                } else {
+                    Log.d("switch", "off");
+                    btnPear.setEnabled(false);
+                    btnPear.setClickable(false);
+                    ArrayList groupPears = group.getPears();
+                    groupPears.remove(currentUser);
+                    group.put(Group.KEY_PEARS, groupPears);
+                    group.saveInBackground();
+                }
+            }
+        });
+
+    }
+
+    private void btnListener() {
         btnPear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ArrayList<ParseUser> pearUsers = group.getPears();
 
                 if (pearUsers.size() == 0) {
-                    pearUsers.add(currentUser);
-                    group.put("pears", pearUsers);
-                    group.saveInBackground();
                     goToWaitingFragment();
                 } else {
                     Random randomIntGen = new Random();

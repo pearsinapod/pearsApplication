@@ -15,6 +15,8 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
+import java.util.ArrayList;
+
 public class SignupActivity extends AppCompatActivity {
 
     public EditText etName;
@@ -59,6 +61,7 @@ public class SignupActivity extends AppCompatActivity {
                 if (e == null) {
                     Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_LONG).show();
                     addAge(user, age2);
+                    instantiateGroups(user);
                     Intent mainIntent = new Intent(SignupActivity.this, MainActivity.class);
                     startActivity(mainIntent);
                     finish();
@@ -67,6 +70,12 @@ public class SignupActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public static void instantiateGroups(ParseUser user) {
+        user.put("groups", new ArrayList<>());
+        user.put("pearRequests", new ArrayList<>());
+        user.saveInBackground();
     }
 
     public void addAge(ParseUser user, String age) {

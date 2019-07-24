@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -44,6 +45,7 @@ public class groupDetailsFragment extends Fragment {
     TextView tvGroupName;
     TextView tvGroupNumber;
     TextView tvDescription;
+    Switch swPear;
 
     // pear details
     ParseUser pearUser;
@@ -62,6 +64,7 @@ public class groupDetailsFragment extends Fragment {
         tvGroupName = (TextView) view.findViewById(R.id.tvGroupName);
         tvDescription = (TextView) view.findViewById(R.id.tvDescription);
         tvGroupNumber = (TextView) view.findViewById(R.id.tvGroupNumber);
+        swPear = (Switch) view.findViewById(R.id.swPear);
         currentUser = ParseUser.getCurrentUser();
         bindViews();
         determineChildFragment();
