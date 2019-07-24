@@ -43,7 +43,7 @@
         app:layout_constraintTop_toTopOf="@+id/etMessage"></Button>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvMessage"
+        android:id="@+id/rvChat"
         android:layout_width="395dp"
         android:layout_height="661dp"
         android:layout_marginStart="8dp"
@@ -55,6 +55,7 @@
         app:layout_constraintBottom_toTopOf="@+id/btSend"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/item_chat"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
