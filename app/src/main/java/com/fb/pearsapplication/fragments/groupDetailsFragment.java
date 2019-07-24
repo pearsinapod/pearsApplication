@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Group;
+import com.fb.pearsapplication.models.GroupUserRelation;
 import com.fb.pearsapplication.models.Pear;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -50,6 +51,7 @@ public class groupDetailsFragment extends Fragment {
     // pear details
     ParseUser pearUser;
     Pear pear;
+    GroupUserRelation gur;
 
     @Nullable
     @Override
@@ -91,36 +93,26 @@ public class groupDetailsFragment extends Fragment {
     }
 
     private void determineChildFragment() {
-        if (group.getPears().contains(currentUser)) {
-            // TODO: figure out how to check if they are awaiting a pear
-            insertNestedWaitingFragment();
-        }
-
-        ArrayList myGroups = (ArrayList) currentUser.getList("groups");
-
-        if (myGroups == null || !myGroups.contains(group)) {
-            insertNestedAddFragment();
-        } else if (currentUser.getList("groups").contains(group)) {
-            ParseQuery<Pear> pearQuery = new ParseQuery<Pear>(Pear.class);
-            pearQuery.include(Group.KEY_USERS);
-            pearQuery.whereEqualTo(Pear.KEY_GROUP, group);
-            ArrayList userID = new ArrayList();
-            userID.add(currentUser.getObjectId());
-            pearQuery.whereContainedIn(Pear.KEY_USERS, userID);
-
-            pearQuery.findInBackground(new FindCallback<Pear>() {
-                @Override
-                public void done(List<Pear> objects, ParseException e) {
-                    Log.d("XYZ", objects.toString());
-                    if (objects.size() == 0) {
-                        insertNestedPearButtonFragment();
-                    } else {
-                        pear = objects.get(0);
-                        insertNestedPearFragment();
-                    }
+        ParseQuery<GroupUserRelation> query = new ParseQuery<GroupUserRelation>(GroupUserRelation.class);
+        query.whereEqualTo("user", currentUser);
+        query.whereEqualTo("group", group);
+        query.findInBackground(new FindCallback<GroupUserRelation>() {
+            @Override
+            public void done(List<GroupUserRelation> objects, ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                    return;
                 }
-            });
-        }
+                if (objects.isEmpty()) {
+                    insertNestedAddFragment();
+                } else if (objects.get(0).getPearRequest()) {
+                    gur = objects.get(0);
+                    insertNestedPearButtonFragment();
+                } else {
+                    // TODO: Make new query here
+                }
+            }
+        });
     }
 
     public void insertNestedPearFragment() {
@@ -141,7 +133,7 @@ public class groupDetailsFragment extends Fragment {
 
     public void insertNestedPearButtonFragment() {
         Fragment childFragment = new ChildPearButtonFragment();
-        ((ChildPearButtonFragment) childFragment).setGroup(group);
+        ((ChildPearButtonFragment) childFragment).setGUR(gur);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.addToBackStack(null);
         transaction.replace(R.id.child_fragment_container, childFragment).commit();

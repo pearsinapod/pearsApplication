@@ -20,6 +20,7 @@ import com.fb.pearsapplication.LoginActivity;
 import com.fb.pearsapplication.MainActivity;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Group;
+import com.fb.pearsapplication.models.GroupUserRelation;
 import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseACL;
@@ -36,6 +37,7 @@ public class ChildAddFragment extends Fragment {
     ParseUser currentUser;
     Group group;
     Switch swPear;
+    GroupUserRelation gur;
 
     @Nullable
     @Override
@@ -50,53 +52,29 @@ public class ChildAddFragment extends Fragment {
         btnJoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addUserToGroup(currentUser);
-                checkACL();
-                currentUser.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e == null) {
-                            Log.d("XYZ", "added group");
-                        } else {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-                group.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e == null) {
-                            Log.d("XYZ", "added users");
-                        } else {
-                            e.printStackTrace();
-                        }
-                    }
-                });
+                addUserToGroup(currentUser, group);
                 goToPearBtnFragment();
             }
         });
     }
 
-    private void addUserToGroup(ParseUser user) {
-        ArrayList groupUsers = group.getUsers();
-        ArrayList groupPears = group.getPears();
-        ArrayList userGroups = (ArrayList) user.getList("groups");
-        ArrayList userPearRequests = (ArrayList) user.getList("pearRequests");
-        groupUsers.add(user);
-        groupPears.add(user);
-        if (userGroups == null) {
-            userGroups = new ArrayList();
-        }
-        userGroups.add(group);
-        if (userPearRequests == null) {
-            userPearRequests = new ArrayList();
-        }
-        userPearRequests.add(group);
-        group.put("users", groupUsers);
-        group.put("pears", groupPears);
-        user.put("groups", userGroups);
-        user.put("pearRequests", userPearRequests);
+    private void addUserToGroup(ParseUser user, Group group) {
+        final GroupUserRelation groupUser = new GroupUserRelation();
+        groupUser.setGroup(group);
+        groupUser.setUser(user);
+        groupUser.setPearRequest(true);
+
+        groupUser.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.d("XYZ", "added successfully");
+                    gur = groupUser;
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void checkACL() {
@@ -114,7 +92,7 @@ public class ChildAddFragment extends Fragment {
     public void goToPearBtnFragment() {
         FragmentManager fragmentManager = getFragmentManager();
         Fragment fragment = new ChildPearButtonFragment();
-        ((ChildPearButtonFragment) fragment).setGroup(group);
+        ((ChildPearButtonFragment) fragment).setGUR(gur);
         groupDetailsFragment parentFrag = ((groupDetailsFragment)ChildAddFragment.this.getParentFragment());
         swPear = parentFrag.swPear;
         swPear.setChecked(true);

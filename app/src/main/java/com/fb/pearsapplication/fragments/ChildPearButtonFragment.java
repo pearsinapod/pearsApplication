@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Group;
+import com.fb.pearsapplication.models.GroupUserRelation;
 import com.fb.pearsapplication.models.Pear;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -35,6 +36,8 @@ public class ChildPearButtonFragment extends Fragment {
     ParseUser pearUser;
     Group group;
     Pear pear;
+    GroupUserRelation gur;
+    GroupUserRelation otherGUR;
 
 
     // TODO: need to figure out how to send information between the parent and child fragments
@@ -51,11 +54,15 @@ public class ChildPearButtonFragment extends Fragment {
         groupDetailsFragment parentFrag = ((groupDetailsFragment)ChildPearButtonFragment.this.getParentFragment());
         swPear = parentFrag.swPear;
         currentUser = ParseUser.getCurrentUser();
-        if (currentUser.getList("pearRequests").contains(group)) {
+        if (gur.getPearRequest()) {
             swPear.setChecked(true);
             btnPear.setEnabled(true);
             btnPear.setClickable(true);
             btnListener();
+        } else {
+            swPear.setChecked(false);
+            btnPear.setEnabled(false);
+            btnPear.setClickable(false);
         }
         currentUser = ParseUser.getCurrentUser();
         swPear.setOnClickListener(new View.OnClickListener() {
@@ -63,14 +70,10 @@ public class ChildPearButtonFragment extends Fragment {
             public void onClick(View view) {
                 if (swPear.isChecked()) {
                     Log.d("switch", "on");
-                    btnPear.setEnabled(true);
-                    btnPear.setClickable(true);
                     switchOnMethod();
                     btnListener();
                 } else {
                     Log.d("switch", "off");
-                    btnPear.setEnabled(false);
-                    btnPear.setClickable(false);
                     switchOffMethod();
                 }
             }
@@ -78,27 +81,17 @@ public class ChildPearButtonFragment extends Fragment {
     }
 
     private void switchOnMethod() {
-        ArrayList groupPears = group.getPears();
-        ArrayList userPearRequests = (ArrayList) currentUser.getList("pearRequests");
-        if (!userPearRequests.contains(group)) {
-            groupPears.add(currentUser);
-            userPearRequests.add(group);
-        }
-        group.put(Group.KEY_PEARS, groupPears);
-        currentUser.put("pearRequests", userPearRequests);
-        group.saveInBackground();
-        currentUser.saveInBackground();
+        btnPear.setEnabled(true);
+        btnPear.setClickable(true);
+        gur.setPearRequest(true);
+        gur.saveInBackground();
     }
 
     private void switchOffMethod() {
-        ArrayList groupPears = group.getPears();
-        ArrayList userPearRequests = (ArrayList) currentUser.getList("pearRequests");
-        groupPears.remove(currentUser);
-        userPearRequests.remove(group);
-        group.put(Group.KEY_PEARS, groupPears);
-        currentUser.put("pearRequests", userPearRequests);
-        group.saveInBackground();
-        currentUser.saveInBackground();
+        btnPear.setEnabled(false);
+        btnPear.setClickable(false);
+        gur.setPearRequest(false);
+        gur.saveInBackground();
     }
 
     private void btnListener() {
@@ -107,18 +100,21 @@ public class ChildPearButtonFragment extends Fragment {
             public void onClick(View view) {
                 ArrayList<ParseUser> pearUsers = group.getPears();
 
-                ParseQuery<ParseUser> query = ParseUser.getQuery();
-                query.whereNotEqualTo("username", currentUser.getUsername());
-                ArrayList<Group> currentGroup = new ArrayList<Group>();
-                currentGroup.add(group);
-                query.whereContainedIn("pearRequests", currentGroup);
-                query.findInBackground(new FindCallback<ParseUser>() {
+                ParseQuery<GroupUserRelation> query = ParseQuery.getQuery(GroupUserRelation.class);
+                query.whereNotEqualTo("user", currentUser);
+                query.whereEqualTo("group", group);
+                query.whereEqualTo("pearRequest", true);
+
+                query.findInBackground(new FindCallback<GroupUserRelation>() {
                     @Override
-                    public void done(List<ParseUser> objects, ParseException e) {
-                        if (objects.size() == 0) {
+                    public void done(List<GroupUserRelation> objects, ParseException e) {
+                        if (e != null) {
+                            e.printStackTrace();
+                        } else if (objects.isEmpty()) {
                             goToWaitingFragment();
                         } else {
-                            pearUser = objects.get(0); // TODO: change this so it's not the same pear everytime
+                            otherGUR = objects.get(0);
+                            pearUser = otherGUR.getUser();
                             createPear();
                         }
                     }
@@ -142,7 +138,8 @@ public class ChildPearButtonFragment extends Fragment {
             public void done(ParseException e) {
                 if (e == null) {
                     pear = newPear;
-                    updatePearedUsers();
+                    updateRelations();
+                    goToPearFragment();
                     Log.d("XYZ", "Pear created successfully!");
                 } else {
                     e.printStackTrace();
@@ -151,32 +148,20 @@ public class ChildPearButtonFragment extends Fragment {
         });
     }
 
-    private void updatePearedUsers() {
-        ArrayList updatedPears = (ArrayList) group.getList("pears");
-        ArrayList updatedUserPears = (ArrayList) currentUser.getList("pearRequests");
-        ArrayList updatedPearUser = (ArrayList) pearUser.getList("pearRequests");
-
-        updatedPears.remove(currentUser);
-        updatedPears.remove(pearUser);
-        updatedUserPears.remove(group);
-        updatedPearUser.remove(group);
-
-        group.put(Group.KEY_PEARS, updatedPears);
-        currentUser.put("pearRequests", updatedUserPears);
-        group.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    Log.d("XYZ", "Pear created successfully!");
-                } else {
-                    e.printStackTrace();
-                }
-            }
-        });
+    private void updateRelations() {
+        otherGUR.setPearRequest(false);
+        gur.setPearRequest(false);
+        otherGUR.saveInBackground();
+        gur.saveInBackground();
     }
 
     public void setGroup(Group group) {
         this.group = group;
+    }
+
+    public void setGUR(GroupUserRelation gur) {
+        this.gur = gur;
+        this.group = gur.getGroup();
     }
 
     private void goToPearFragment() {
