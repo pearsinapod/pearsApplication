@@ -117,6 +117,7 @@ public class searchFragment extends Fragment {
        //groupsQuery.whereContains(Group.KEY_GROUP_NAME, getSearchedText());
 
    public void setUpOnTextChangedSearch(){
+
        etSearch.addTextChangedListener(new TextWatcher() {
            @Override
            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) { }

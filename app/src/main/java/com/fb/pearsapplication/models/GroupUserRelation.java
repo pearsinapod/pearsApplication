@@ -1,4 +1,5 @@
 package com.fb.pearsapplication.models;
+import java.util.Date;
 
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
@@ -35,4 +36,9 @@ public class GroupUserRelation extends ParseObject {
     public void setPearRequest(boolean request) {
         put(KEY_PEAR, request);
     }
+  
+    public Date getDate() {
+        return getDate("createdAt");
+    }
 }
+
