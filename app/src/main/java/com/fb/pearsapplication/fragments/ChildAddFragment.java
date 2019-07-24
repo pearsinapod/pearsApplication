@@ -98,7 +98,7 @@ public class ChildAddFragment extends Fragment {
         user.put("groups", userGroups);
         user.put("pearRequests", userPearRequests);
     }
-    
+
     private void checkACL() {
         ParseACL acl = new ParseACL(ParseUser.getCurrentUser());
         acl.setPublicReadAccess(true);

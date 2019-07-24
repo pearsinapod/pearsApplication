@@ -120,7 +120,6 @@ public class ChildPearButtonFragment extends Fragment {
                         } else {
                             pearUser = objects.get(0); // TODO: change this so it's not the same pear everytime
                             createPear();
-                            goToPearFragment();
                         }
                     }
                 });
@@ -129,7 +128,7 @@ public class ChildPearButtonFragment extends Fragment {
     }
 
     private void createPear() {
-        Pear newPear = new Pear();
+        final Pear newPear = new Pear();
         ArrayList pearedUsers = new ArrayList();
         pearedUsers.add(currentUser.getObjectId());
         pearedUsers.add(pearUser.getObjectId());
@@ -142,18 +141,28 @@ public class ChildPearButtonFragment extends Fragment {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
+                    pear = newPear;
+                    updatePearedUsers();
                     Log.d("XYZ", "Pear created successfully!");
                 } else {
                     e.printStackTrace();
                 }
             }
         });
+    }
 
+    private void updatePearedUsers() {
         ArrayList updatedPears = (ArrayList) group.getList("pears");
+        ArrayList updatedUserPears = (ArrayList) currentUser.getList("pearRequests");
+        ArrayList updatedPearUser = (ArrayList) pearUser.getList("pearRequests");
+
         updatedPears.remove(currentUser);
         updatedPears.remove(pearUser);
-        group.put(Group.KEY_PEARS, updatedPears);
+        updatedUserPears.remove(group);
+        updatedPearUser.remove(group);
 
+        group.put(Group.KEY_PEARS, updatedPears);
+        currentUser.put("pearRequests", updatedUserPears);
         group.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -164,7 +173,6 @@ public class ChildPearButtonFragment extends Fragment {
                 }
             }
         });
-        pear = newPear;
     }
 
     public void setGroup(Group group) {
