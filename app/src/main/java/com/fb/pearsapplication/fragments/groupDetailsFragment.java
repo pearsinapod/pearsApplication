@@ -63,7 +63,12 @@ public class groupDetailsFragment extends Fragment {
         tvDescription = (TextView) view.findViewById(R.id.tvDescription);
         tvGroupNumber = (TextView) view.findViewById(R.id.tvGroupNumber);
         currentUser = ParseUser.getCurrentUser();
+        bindViews();
+        determineChildFragment();
 
+    }
+
+    private void bindViews() {
         tvGroupName.setText(group.getGroupName());
         ParseFile image = group.getGroupImage();
         if (image != null) {
@@ -76,14 +81,19 @@ public class groupDetailsFragment extends Fragment {
         }
         tvDescription.setText(group.getDescription());
         String timeAgo = group.getRelativeTimeAgo();
+    }
 
-
+    private void determineChildFragment() {
         if (group.getPears().contains(currentUser)) {
-            // TODO: create the fragment that shows up when their match is pending
+            // TODO: figure out how to check if they are awaiting a pear
+            insertNestedWaitingFragment();
         }
 
+        ArrayList myGroups = (ArrayList) currentUser.getList("groups");
 
-        if (currentUser.getList("groups").contains(group)) {
+        if (myGroups == null || !myGroups.contains(group)) {
+            insertNestedAddFragment();
+        } else if (currentUser.getList("groups").contains(group)) {
             ParseQuery<Pear> pearQuery = new ParseQuery<Pear>(Pear.class);
             pearQuery.include(Group.KEY_USERS);
             pearQuery.whereEqualTo(Pear.KEY_GROUP, group);
@@ -103,13 +113,10 @@ public class groupDetailsFragment extends Fragment {
                     }
                 }
             });
-        } else {
-            insertNestedAddFragment();
         }
     }
 
-    // Embeds the child fragment dynamically
-    private void insertNestedPearFragment() {
+    public void insertNestedPearFragment() {
         Fragment childFragment = new ChildPearFragment();
         ((ChildPearFragment) childFragment).setPear(pear);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
@@ -117,7 +124,7 @@ public class groupDetailsFragment extends Fragment {
         transaction.replace(R.id.child_fragment_container, childFragment).commit();
     }
 
-    private void insertNestedAddFragment() {
+    public void insertNestedAddFragment() {
         Fragment childFragment = new ChildAddFragment();
         ((ChildAddFragment) childFragment).setGroup(group);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
@@ -125,9 +132,16 @@ public class groupDetailsFragment extends Fragment {
         transaction.replace(R.id.child_fragment_container, childFragment).commit();
     }
 
-    private void insertNestedPearButtonFragment() {
+    public void insertNestedPearButtonFragment() {
         Fragment childFragment = new ChildPearButtonFragment();
         ((ChildPearButtonFragment) childFragment).setGroup(group);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.child_fragment_container, childFragment).commit();
+    }
+
+    public void insertNestedWaitingFragment() {
+        Fragment childFragment = new ChildWaitingFragment();
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.addToBackStack(null);
         transaction.replace(R.id.child_fragment_container, childFragment).commit();

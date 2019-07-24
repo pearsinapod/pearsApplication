@@ -40,13 +40,16 @@ public class ChildPearFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         tvCurrentPear = (TextView) view.findViewById(R.id.tvCurrentPear);
         ivPearPic = (ImageView) view.findViewById(R.id.ivPearPic);
         tvPearName = (TextView) view.findViewById(R.id.tvPearName);
         btnMessage = (Button) view.findViewById(R.id.btnMessage);
         btnViewProfile = (Button) view.findViewById(R.id.btnViewProfile);
+        bindViews();
+        setOnClickListeners();
+    }
 
+    private void bindViews() {
         String name = "";
         try {
             name = pearUser.fetchIfNeeded().getString("username");
@@ -63,7 +66,9 @@ public class ChildPearFragment extends Fragment {
         } else {
             Glide.with(getContext()).load(R.drawable.user).apply(RequestOptions.circleCropTransform()).into(ivPearPic);
         }
+    }
 
+    private void setOnClickListeners() {
         btnViewProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,8 +86,6 @@ public class ChildPearFragment extends Fragment {
 
             }
         });
-
-
     }
 
     public void setPear(Pear pear) {
