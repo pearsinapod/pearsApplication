@@ -62,12 +62,16 @@ public class ChildAddFragment extends Fragment {
     
     public static GroupUserRelation addUserToGroup(ParseUser user, Group group) {
         final GroupUserRelation groupUser = new GroupUserRelation();
+        ParseACL acl = new ParseACL(user);
+        acl.setPublicReadAccess(true);
+        acl.setPublicWriteAccess(true);
+        groupUser.setACL(acl);
+        user.setACL(acl);
+
         ArrayList groupUsers = group.getUsers();
-        ArrayList userGroups = (ArrayList) user.getList("groups");
         groupUsers.add(user);
-        userGroups.add(group);
-        user.put("groups", userGroups);  
-        group.put("users", groupUsers);                                               
+        group.put("users", groupUsers);
+        group.saveInBackground();
   
         groupUser.setGroup(group);
         groupUser.setUser(user);
