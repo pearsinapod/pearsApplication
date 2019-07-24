@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -56,9 +55,16 @@ public class ChildAddFragment extends Fragment {
             }
         });
     }
-
+  
     private void addUserToGroup(ParseUser user, Group group) {
         final GroupUserRelation groupUser = new GroupUserRelation();
+        ArrayList groupUsers = group.getUsers();
+        ArrayList userGroups = (ArrayList) user.getList("groups);
+        groupUsers.add(user);
+        userGroups.add(group);
+        user.put("groups", userGroups);  
+        group.put("users", groupUsers);                                               
+  
         groupUser.setGroup(group);
         groupUser.setUser(user);
         groupUser.setPearRequest(true);
@@ -79,7 +85,7 @@ public class ChildAddFragment extends Fragment {
         });
     }
 
-    private void checkACL() {
+    public static void checkACL(ParseUser currentUser, Group group) {
         ParseACL acl = new ParseACL(ParseUser.getCurrentUser());
         acl.setPublicReadAccess(true);
         acl.setPublicWriteAccess(true);
