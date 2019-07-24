@@ -1,5 +1,6 @@
 package com.fb.pearsapplication.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,14 +16,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.fb.pearsapplication.LoginActivity;
+import com.fb.pearsapplication.MainActivity;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Group;
+import com.parse.FindCallback;
+import com.parse.LogInCallback;
 import com.parse.ParseACL;
 import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChildAddFragment extends Fragment {
     Button btnJoin;
@@ -43,7 +50,7 @@ public class ChildAddFragment extends Fragment {
         btnJoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addUserToGroup();
+                addUserToGroup(currentUser);
                 checkACL();
                 currentUser.saveInBackground(new SaveCallback() {
                     @Override
@@ -71,13 +78,16 @@ public class ChildAddFragment extends Fragment {
         });
     }
 
-    private void addUserToGroup() {
+    private void addUserToGroup(ParseUser user) {
         ArrayList groupUsers = group.getUsers();
         ArrayList groupPears = group.getPears();
-        ArrayList userGroups = (ArrayList) currentUser.getList("groups");
-        ArrayList userPearRequests = (ArrayList) currentUser.getList("pearRequests");
-        groupUsers.add(currentUser);
-        groupPears.add(currentUser);
+        ArrayList userGroups = (ArrayList) user.getList("groups");
+        ArrayList userPearRequests = (ArrayList) user.getList("pearRequests");
+        groupUsers.add(user);
+        groupPears.add(user);
+        if (userGroups == null) {
+            userGroups = new ArrayList();
+        }
         userGroups.add(group);
         if (userPearRequests == null) {
             userPearRequests = new ArrayList();
@@ -85,10 +95,10 @@ public class ChildAddFragment extends Fragment {
         userPearRequests.add(group);
         group.put("users", groupUsers);
         group.put("pears", groupPears);
-        currentUser.put("groups", userGroups);
-        currentUser.put("pearRequests", userPearRequests);
+        user.put("groups", userGroups);
+        user.put("pearRequests", userPearRequests);
     }
-
+    
     private void checkACL() {
         ParseACL acl = new ParseACL(ParseUser.getCurrentUser());
         acl.setPublicReadAccess(true);
