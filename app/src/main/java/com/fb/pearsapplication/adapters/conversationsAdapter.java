@@ -2,8 +2,6 @@ package com.fb.pearsapplication.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,26 +13,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fb.pearsapplication.ChatActivity;
 import com.fb.pearsapplication.R;
-import com.fb.pearsapplication.conversationsActivity;
-import com.fb.pearsapplication.models.PearMessage;
+import com.fb.pearsapplication.models.Pear;
 import com.parse.ParseUser;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class conversationsAdapter extends RecyclerView.Adapter<conversationsAdapter.ViewHolder> {
 
-    private List<ParseUser> userList;
+    private List<Pear> pearList;
     Context context;
 
-    public conversationsAdapter(List<ParseUser> userList) {
-        this.userList = userList;
+    public conversationsAdapter(List<Pear> pearList) {
+        this.pearList = pearList;
 
     }
-    public ParseUser getItem(int adapterView){
-        return userList.get(adapterView);
+    public Pear getItem(int adapterView){
+        return pearList.get(adapterView);
     }
 
     @Override
@@ -44,7 +38,7 @@ public class conversationsAdapter extends RecyclerView.Adapter<conversationsAdap
 
     @Override
     public int getItemCount() {
-        return userList.size();
+        return pearList.size();
     }
 
     @Override
@@ -61,8 +55,8 @@ public class conversationsAdapter extends RecyclerView.Adapter<conversationsAdap
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        ParseUser parseUser = userList.get(position);
-        holder.bind(parseUser);
+        Pear pear = pearList.get(position);
+        holder.bind(pear);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -84,12 +78,12 @@ public class conversationsAdapter extends RecyclerView.Adapter<conversationsAdap
         public void onClick(View view) {
             int position = getAdapterPosition();
             Intent convoIntent = new Intent(context, ChatActivity.class);
-            convoIntent.putExtra(convoIntent.EXTRA_DATA_REMOVED, userList.get(position).getUsername());
+            convoIntent.putExtra(convoIntent.EXTRA_DATA_REMOVED, pearList.get(position).getUsername());
             context.startActivity(convoIntent);
         }
 
-        public void bind(ParseUser parseUser) {
-            tvUsername.setText(parseUser.getUsername());
+        public void bind(Pear pear) {
+            tvUsername.setText(pear.getUsername());
         }
     }
 }
