@@ -70,8 +70,6 @@ public class groupDetailsFragment extends Fragment {
         currentUser = ParseUser.getCurrentUser();
         pearQuery();
         bindViews();
-        determineChildFragment();
-
     }
 
     private void bindViews() {
@@ -92,8 +90,6 @@ public class groupDetailsFragment extends Fragment {
             swPear.setChecked(true);
         } // TODO FIX THIS
     }
-
-
 
 
     private void determineChildFragment() {
@@ -137,6 +133,32 @@ public class groupDetailsFragment extends Fragment {
                 } else {
                     pear = objects.get(0);
                 }
+                determineChildFragment();
+            }
+        });
+    }
+
+    public void addUsersToGroup() {
+        Log.d("XYZ", "inside function");
+        ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
+        userQuery.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                } else {
+                    for (ParseUser user : objects) {
+                        GroupUserRelation gur = ChildAddFragment.addUserToGroup(user, group);
+                        gur.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e != null) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                }
             }
         });
     }
@@ -147,15 +169,6 @@ public class groupDetailsFragment extends Fragment {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.addToBackStack(null);
         transaction.replace(R.id.child_fragment_container, childFragment).commit();
-
-        ParseQuery<GroupUserRelation> query = new ParseQuery<GroupUserRelation>(GroupUserRelation.class);
-        query.whereEqualTo("user", currentUser);
-        query.findInBackground(new FindCallback<GroupUserRelation>() {
-            @Override
-            public void done(List<GroupUserRelation> objects, ParseException e) {
-
-            }
-        });
     }
 
     public void insertNestedAddFragment() {
