@@ -13,9 +13,13 @@ import android.widget.Toast;
 
 import com.fb.pearsapplication.adapters.ChatAdapter;
 import com.fb.pearsapplication.adapters.conversationsAdapter;
+import com.fb.pearsapplication.models.Pear;
 import com.fb.pearsapplication.models.PearMessage;
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -23,7 +27,7 @@ import java.util.List;
 
 public class conversationsActivity extends AppCompatActivity {
 
-    private List<ParseUser> userList;
+    private List<Pear> pearList;
     public static ParseUser user;
 
     static final String TAG = conversationsActivity.class.getSimpleName();
@@ -39,12 +43,12 @@ public class conversationsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversations);
 
-        userList = new ArrayList<ParseUser>();
+        pearList = new ArrayList<Pear>();
 
 
         rvConversations = (RecyclerView) findViewById(R.id.rvConversations);
 
-        cAdapter = new conversationsAdapter(userList);
+        cAdapter = new conversationsAdapter(pearList);
         rvConversations.setAdapter(cAdapter);
 
 
@@ -52,6 +56,10 @@ public class conversationsActivity extends AppCompatActivity {
 
         user = ParseUser.getCurrentUser();
 
+        ParseQuery<Pear> parseQuery = ParseQuery.getQuery("Pear");
+        ArrayList<String> userID = new ArrayList<>();
+        userID.add(user.getObjectId());
+        parseQuery.whereContainedIn("User", userID);
 
 
 
