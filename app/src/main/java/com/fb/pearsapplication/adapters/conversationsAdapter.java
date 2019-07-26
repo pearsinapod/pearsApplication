@@ -78,12 +78,12 @@ public class conversationsAdapter extends RecyclerView.Adapter<conversationsAdap
         public void onClick(View view) {
             int position = getAdapterPosition();
             Intent convoIntent = new Intent(context, ChatActivity.class);
-            convoIntent.putExtra(convoIntent.EXTRA_DATA_REMOVED, pearList.get(position).getUsername());
+            convoIntent.putExtra(convoIntent.EXTRA_DATA_REMOVED, pearList.get(position).getOtherUser().getUsername());
             context.startActivity(convoIntent);
         }
 
         public void bind(Pear pear) {
-            tvUsername.setText(pear.getUsername());
+            tvUsername.setText(pear.getOtherUser().getUsername());
         }
     }
 }

@@ -77,7 +77,7 @@ public class conversationsActivity extends AppCompatActivity {
                 if (list != null) {
 
                     for(int i=0;i<list.size();i++){
-                        userList.add(list.get(i));
+                        list.add(list.get(i));
                     }
 //                    if (list.size() == 0)
 //                        Toast.makeText(conversationsActivity.this, "no user found", Toast.LENGTH_SHORT).show();
