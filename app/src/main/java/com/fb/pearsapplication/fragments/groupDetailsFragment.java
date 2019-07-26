@@ -88,7 +88,7 @@ public class groupDetailsFragment extends Fragment {
 
         if (currentUser.getList("pearRequests").contains(group)) {
             swPear.setChecked(true);
-        } // TODO FIX THIS
+        }
     }
 
 
@@ -105,11 +105,9 @@ public class groupDetailsFragment extends Fragment {
                 }
                 if (objects.isEmpty()) {
                     insertNestedAddFragment();
-                } else if (objects.get(0).getPearRequest()) {
+                } else if (!objects.isEmpty() && pear == null) {
                     gur = objects.get(0);
                     insertNestedPearButtonFragment();
-                } else if (pear == null) {
-                    insertNestedWaitingFragment();
                 } else {
                     insertNestedPearFragment();
                 }
@@ -138,6 +136,7 @@ public class groupDetailsFragment extends Fragment {
         });
     }
 
+    // used for database
     public void addUsersToGroup() {
         Log.d("XYZ", "inside function");
         ParseQuery<ParseUser> userQuery = ParseUser.getQuery();

@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,6 +28,7 @@ public class ChildPearFragment extends Fragment {
     TextView tvPearName;
     Button btnMessage;
     Button btnViewProfile;
+    Switch swPear;
 
     Pear pear;
     ParseUser pearUser;
@@ -50,6 +52,11 @@ public class ChildPearFragment extends Fragment {
     }
 
     private void bindViews() {
+        groupDetailsFragment parentFrag = ((groupDetailsFragment)ChildPearFragment.this.getParentFragment());
+        swPear = parentFrag.swPear;
+        swPear.setChecked(false);
+        swPear.setEnabled(false);
+        swPear.setClickable(false);
         String name = "";
         try {
             name = pearUser.fetchIfNeeded().getString("username");

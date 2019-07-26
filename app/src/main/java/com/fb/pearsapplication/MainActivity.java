@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
     private void setUserLocation(Location location) {
         if (location != null) {
             double lat = location.getLatitude();
-            double lng = location.getLatitude();
+            double lng = location.getLongitude();
 
             ParseGeoPoint geopoint = new ParseGeoPoint(lat, lng);
             user.put("location", geopoint);

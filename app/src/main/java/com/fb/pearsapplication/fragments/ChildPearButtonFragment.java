@@ -124,7 +124,7 @@ public class ChildPearButtonFragment extends Fragment {
                         if (e != null) {
                             e.printStackTrace();
                         } else if (objects.isEmpty()) {
-                            goToWaitingFragment();
+                            popupWaiting(getView());
                         } else {
                             otherGUR = objects.get(0);
                             pearUser = otherGUR.getUser();
@@ -176,7 +176,7 @@ public class ChildPearButtonFragment extends Fragment {
         View popupView = inflater.inflate(R.layout.popup_pear, null);
         int width = ConstraintLayout.LayoutParams.WRAP_CONTENT;
         int height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
-        bindPopupViews(popupView);
+        bindPopupPearViews(popupView);
         boolean focusable = true;
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
@@ -188,7 +188,7 @@ public class ChildPearButtonFragment extends Fragment {
         });
     }
 
-    public void bindPopupViews(View view) {
+    public void bindPopupPearViews(View view) {
         TextView tvCurrentPear = view.findViewById(R.id.tvCurrentPear);
         ImageView ivPearPic = view.findViewById(R.id.ivPearPic);
         TextView tvPearName = view.findViewById(R.id.tvPearName);
@@ -213,6 +213,17 @@ public class ChildPearButtonFragment extends Fragment {
         }
     }
 
+    public void popupWaiting(View view) {
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.popup_waiting, null);
+        int width = ConstraintLayout.LayoutParams.MATCH_PARENT;
+        int height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+        boolean focusable = true;
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+    }
+
     private void updateRelations() {
         otherGUR.setPearRequest(false);
         gur.setPearRequest(false);
@@ -233,6 +244,9 @@ public class ChildPearButtonFragment extends Fragment {
         FragmentManager fragmentManager = getFragmentManager();
         Fragment fragment = new ChildPearFragment();
         ((ChildPearFragment) fragment).setPear(pear);
+        swPear.setChecked(false);
+        swPear.setEnabled(false);
+        swPear.setClickable(false);
         fragmentManager.beginTransaction().replace(R.id.child_fragment_container, fragment).addToBackStack(null).commit();
     }
 
