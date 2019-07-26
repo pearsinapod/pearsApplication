@@ -1,10 +1,12 @@
 package com.fb.pearsapplication;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,8 +27,17 @@ import com.fb.pearsapplication.fragments.exploreFragment;
 import com.fb.pearsapplication.fragments.groupFragment;
 import com.fb.pearsapplication.fragments.profileFragment;
 import com.fb.pearsapplication.fragments.searchFragment;
+import com.fb.pearsapplication.models.GroupUserRelation;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.parse.FindCallback;
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
+
+import java.util.List;
 
 //import com.facebook.AccessToken;
 
@@ -39,11 +50,16 @@ public class MainActivity extends AppCompatActivity {
     final FragmentManager fragmentManager = getSupportFragmentManager();
     androidx.appcompat.widget.Toolbar toolbar;
     LocationManager locationManager;
+    Location location;
+    LocationListener locationListener;
+    String provider;
+    ParseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        user = ParseUser.getCurrentUser();
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         setUpBottomNavigationView();
@@ -53,17 +69,86 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("temp");
 
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         Criteria criteria = new Criteria();
-        String provider = locationManager.getBestProvider(criteria, true);
+        provider = locationManager.getBestProvider(criteria, true);
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 102);
-            return;
+            Log.d("XYZ", "asked for permissions");
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 102);
+            location = locationManager.getLastKnownLocation(provider);
+        } else {
+            location = locationManager.getLastKnownLocation(provider);
+            setUserLocation(location);
         }
-        Location location = locationManager.getLastKnownLocation(provider);
+        LocationListener locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                setUserLocation(location);
+            }
 
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
 
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+
+            }
+        };
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 102) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                setUserLocation(location);
+            } else {
+                Log.d("XYZ", "sad");
+            }
+        }
+    }
+
+    private void setUserLocation(Location location) {
+        if (location != null) {
+            double lat = location.getLatitude();
+            double lng = location.getLatitude();
+
+            ParseGeoPoint geopoint = new ParseGeoPoint(lat, lng);
+            user.put("location", geopoint);
+            user.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e != null) {
+                        e.printStackTrace();
+                    } else {
+                        updateGURs();
+                    }
+                }
+            });
+        }
+    }
+
+    private void updateGURs() {
+        ParseQuery<GroupUserRelation> gurQuery = new ParseQuery<GroupUserRelation>(GroupUserRelation.class);
+        gurQuery.whereEqualTo("user", user);
+        gurQuery.findInBackground(new FindCallback<GroupUserRelation>() {
+            @Override
+            public void done(List<GroupUserRelation> objects, ParseException e) {
+                for (GroupUserRelation gur: objects) {
+                    gur.setUserLocation(user.getParseGeoPoint("location"));
+                    gur.saveInBackground();
+                }
+            }
+        });
     }
 
     public void setUpBottomNavigationView() {

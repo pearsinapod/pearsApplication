@@ -102,6 +102,7 @@ public class ChildPearButtonFragment extends Fragment {
 
                 ParseQuery<GroupUserRelation> query = ParseQuery.getQuery(GroupUserRelation.class);
                 query.whereNotEqualTo("user", currentUser);
+                query.whereNear("userLocation", currentUser.getParseGeoPoint("location"));
                 query.whereEqualTo("group", group);
                 query.whereEqualTo("pearRequest", true);
 

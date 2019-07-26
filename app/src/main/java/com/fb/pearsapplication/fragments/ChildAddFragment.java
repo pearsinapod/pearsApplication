@@ -79,6 +79,7 @@ public class ChildAddFragment extends Fragment {
         groupUser.setGroup(group);
         groupUser.setUser(user);
         groupUser.setPearRequest(true);
+        groupUser.setUserLocation(user.getParseGeoPoint("location"));
 
         return groupUser;
     }
