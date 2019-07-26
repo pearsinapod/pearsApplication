@@ -176,12 +176,24 @@ public class ChildPearButtonFragment extends Fragment {
         View popupView = inflater.inflate(R.layout.popup_pear, null);
         int width = ConstraintLayout.LayoutParams.WRAP_CONTENT;
         int height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+        bindPopupViews(popupView);
+        boolean focusable = true;
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                goToPearFragment();
+            }
+        });
+    }
 
-        TextView tvCurrentPear = (TextView) popupView.findViewById(R.id.tvCurrentPear);
-        ImageView ivPearPic = (ImageView) popupView.findViewById(R.id.ivPearPic);
-        TextView tvPearName = (TextView) popupView.findViewById(R.id.tvPearName);
-        Button btnMessage = (Button) popupView.findViewById(R.id.btnMessage);
-        Button btnViewProfile = (Button) popupView.findViewById(R.id.btnViewProfile);
+    public void bindPopupViews(View view) {
+        TextView tvCurrentPear = view.findViewById(R.id.tvCurrentPear);
+        ImageView ivPearPic = view.findViewById(R.id.ivPearPic);
+        TextView tvPearName = view.findViewById(R.id.tvPearName);
+        Button btnMessage = view.findViewById(R.id.btnMessage); // TODO set onclick listeners here
+        Button btnViewProfile = view.findViewById(R.id.btnViewProfile);
 
         String name = "";
         try {
@@ -199,17 +211,6 @@ public class ChildPearButtonFragment extends Fragment {
         } else {
             Glide.with(getContext()).load(R.drawable.user).apply(RequestOptions.circleCropTransform()).into(ivPearPic);
         }
-
-        boolean focusable = true;
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-
-        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                goToPearFragment();
-            }
-        });
     }
 
     private void updateRelations() {
