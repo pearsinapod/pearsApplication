@@ -84,16 +84,29 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        isRunning = true;
+    protected void onStart() {
+        super.onStart();
         loadMessages();
     }
 
-    private void loadMessages() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isRunning = false;
+        loadMessages();
+    }
 
-        ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("Messages");
-        if (mMessages.size() == 0){
+    public void loadMessages() {
+
+        DefiningSenderReceiver();
+
+        getOldMessageFromParse();
+
+    }
+
+    private void DefiningSenderReceiver() {
+        ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("Message");
+        if (mMessages.size() == 0) {
             ArrayList<String> ArrayList = new ArrayList<String>();
             ArrayList.add(receiver);
             ArrayList.add(user.getUsername());
@@ -107,6 +120,10 @@ public class ChatActivity extends AppCompatActivity {
         }
         parseQuery.orderByDescending("createdAt");
         parseQuery.setLimit(30);
+    }
+
+    private void getOldMessageFromParse() {
+        ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("Message");
         parseQuery.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
@@ -135,13 +152,13 @@ public class ChatActivity extends AppCompatActivity {
                 }, 1000);
             }
         });
-
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        isRunning = false;
+        isRunning = true;
+
     }
 
 
@@ -153,108 +170,29 @@ public class ChatActivity extends AppCompatActivity {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(etMessage.getWindowToken(), 0);
 
-        String string = etMessage.getText().toString();
-        final PearMessage pearMessage = new PearMessage(string, new Date(), user.getUsername());
+        addNewMessageToParse();
+    }
+
+    private void addNewMessageToParse(){
+        String messageToBeSent = etMessage.getText().toString();
+        final PearMessage pearMessage = new PearMessage(messageToBeSent, new Date(), user.getUsername());
         pearMessage.setStatus(PearMessage.STATUS_SENDING);
         mMessages.add(pearMessage);
         mAdapter.notifyDataSetChanged();
         etMessage.setText(null);
-
         ParseObject parseObject = new ParseObject("Message");
         parseObject.put("messageAuthor", user.getUsername());
         parseObject.put("messageReceiver", receiver);
-        parseObject.put("body", string);
+        parseObject.put("body", messageToBeSent);
         parseObject.saveEventually(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-               if (e == null)
-                   pearMessage.setStatus(PearMessage.STATUS_SENT);
-               else
-                   pearMessage.setStatus(PearMessage.STATUS_FAILED);
-               mAdapter.notifyDataSetChanged();
+                if (e == null)
+                    pearMessage.setStatus(PearMessage.STATUS_SENT);
+                else
+                    pearMessage.setStatus(PearMessage.STATUS_FAILED);
+                mAdapter.notifyDataSetChanged();
             }
         });
     }
 }
-//    static final String TAG = ChatActivity.class.getSimpleName();
-//    static final String USER_ID_KEY = "messageAuthor";
-//    static final String BODY_KEY = "body";
-//
-//    EditText etMessage;
-//    Button btSend;
-//
-//    RecyclerView rvChat;
-//    ArrayList<PearMessage> mMessages;
-//    ChatAdapter mAdapter;
-//    // Keep track of initial load to scroll to the bottom of the ListView
-//    boolean mFirstLoad;
-//
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_chat);
-//        // User login
-//        if (ParseUser.getCurrentUser() != null) { // start with existing user
-//            startWithCurrentUser();
-//        } else { // If not logged in, login as a new anonymous user
-//            login();
-//        }
-//
-//    }
-//
-//    // Get the userId from the cached currentUser object
-//    void startWithCurrentUser() {
-//        setupMessagePosting();
-//
-//    }
-//
-//    // Create an anonymous user using ParseAnonymousUtils and set sUserId
-//    void login() {
-//        ParseAnonymousUtils.logIn(new LogInCallback() {
-//            @Override
-//            public void done(ParseUser user, ParseException e) {
-//                if (e != null) {
-//                    Log.e(TAG, "Anonymous login failed: ", e);
-//                } else {
-//                    startWithCurrentUser();
-//                }
-//            }
-//        });
-//    }
-//
-//
-//
-//    // Setup button event handler which posts the entered message to Parse
-//    void setupMessagePosting() {
-//        // Find the text field and button
-//        etMessage = (EditText) findViewById(R.id.etMessage);
-//        btSend = (Button) findViewById(R.id.btSend);
-//        // When send button is clicked, create message object on Parse
-//        btSend.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String data = etMessage.getText().toString();
-//
-//                PearMessage message = new PearMessage();
-//                message.setBody(data);
-//                message.setUserId(ParseUser.getCurrentUser().getObjectId());
-//
-//                message.saveInBackground(new SaveCallback() {
-//                    @Override
-//                    public void done(ParseException e) {
-//                        if(e == null) {
-//                            Toast.makeText(ChatActivity.this, "Successfully created message on Parse",
-//                                    Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            Log.e(TAG, "Failed to save message", e);
-//                        }
-//                    }
-//                });
-//                etMessage.setText(null);
-//            }
-//        });
-//    }
-//
-//
-//}

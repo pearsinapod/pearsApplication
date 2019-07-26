@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.fb.pearsapplication.ChatActivity;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.PearMessage;
 import com.parse.ParseUser;
@@ -38,6 +39,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     public PearMessage getItem(int pos) {
         return mMessages.get(pos);
     }
+
 
     @NonNull
     @Override
