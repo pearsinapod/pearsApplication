@@ -49,9 +49,6 @@ public class ChildPearButtonFragment extends Fragment {
     GroupUserRelation gur;
     GroupUserRelation otherGUR;
 
-
-    // TODO: need to figure out how to send information between the parent and child fragments
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -113,7 +110,7 @@ public class ChildPearButtonFragment extends Fragment {
 
                 ParseQuery<GroupUserRelation> query = ParseQuery.getQuery(GroupUserRelation.class);
                 query.whereNotEqualTo("user", currentUser);
-//                query.whereNear("userLocation", currentUser.getParseGeoPoint("location"));
+                query.whereNear("userLocation", currentUser.getParseGeoPoint("location"));
                 query.whereEqualTo("group", group);
                 query.whereEqualTo("pearRequest", true);
 
@@ -194,6 +191,7 @@ public class ChildPearButtonFragment extends Fragment {
         TextView tvPearName = view.findViewById(R.id.tvPearName);
         Button btnMessage = view.findViewById(R.id.btnMessage); // TODO set onclick listeners here
         Button btnViewProfile = view.findViewById(R.id.btnViewProfile);
+        setOnClickListeners(btnViewProfile, btnMessage);
 
         String name = "";
         try {
@@ -211,6 +209,26 @@ public class ChildPearButtonFragment extends Fragment {
         } else {
             Glide.with(getContext()).load(R.drawable.user).apply(RequestOptions.circleCropTransform()).into(ivPearPic);
         }
+    }
+
+    public void setOnClickListeners(Button profile, Button message) {
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                groupDetailsFragment parentFrag = ((groupDetailsFragment)ChildPearButtonFragment.this.getParentFragment());
+                FragmentManager fragmentManager = parentFrag.getFragmentManager();
+                Fragment fragment = new matchProfileFragment();
+                ((matchProfileFragment) fragment).setPearUser(pearUser);
+                fragmentManager.beginTransaction().replace(R.id.flContainter, fragment).addToBackStack(null).commit();
+            }
+        });
+
+        message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     public void popupWaiting(View view) {

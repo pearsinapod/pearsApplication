@@ -52,7 +52,7 @@ public class matchProfileFragment extends Fragment {
         ParseFile profileImage = pearUser.getParseFile("profileImage");
         String profileImageString = pearUser.getString("profilePicString");
         if (profileImage != null) {
-            Glide.with(getContext()).load(profileImage).apply(RequestOptions.circleCropTransform()).into(ivProfileOther);
+            Glide.with(getContext()).load(profileImage.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfileOther);
         } else if (profileImageString != null) {
             Glide.with(getContext()).load(profileImageString).apply(RequestOptions.circleCropTransform()).into(ivProfileOther);
         } else {

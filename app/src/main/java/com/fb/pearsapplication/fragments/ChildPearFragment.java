@@ -75,7 +75,7 @@ public class ChildPearFragment extends Fragment {
         }
     }
 
-    private void setOnClickListeners() {
+    public void setOnClickListeners() {
         btnViewProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
