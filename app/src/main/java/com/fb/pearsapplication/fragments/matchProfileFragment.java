@@ -36,6 +36,7 @@ public class matchProfileFragment extends Fragment {
     public ImageView ivProfileOther;
     public TextView tvName;
     public TextView tvDescription;
+    public TextView tvDistance;
 
     @Nullable
     @Override
@@ -48,6 +49,7 @@ public class matchProfileFragment extends Fragment {
         ivProfileOther = view.findViewById(R.id.ivProfileOther);
         tvName = view.findViewById(R.id.tvName);
         tvDescription = view.findViewById(R.id.tvDescription);
+        tvDistance = view.findViewById(R.id.tvDistance);
 
         ParseFile profileImage = pearUser.getParseFile("profileImage");
         String profileImageString = pearUser.getString("profilePicString");
@@ -60,6 +62,7 @@ public class matchProfileFragment extends Fragment {
         }
 
         tvName.setText(pearUser.getUsername());
+        tvDistance.setText(calculateDistance() + " miles away");
 
         if (pearUser.getString("description") != null) {
             tvDescription.setText(pearUser.getString("description"));
@@ -67,6 +70,11 @@ public class matchProfileFragment extends Fragment {
             tvDescription.setVisibility(View.GONE);
         }
 
+    }
+
+    public double calculateDistance() {
+        double distance = pearUser.getParseGeoPoint("location").distanceInMilesTo(ParseUser.getCurrentUser().getParseGeoPoint("location"));
+        return Math.round(distance * 10) / 10.0;
     }
 
     public void querySameGroups() {
