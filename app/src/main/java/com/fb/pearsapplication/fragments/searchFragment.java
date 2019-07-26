@@ -61,12 +61,21 @@ public class searchFragment extends Fragment {
        searchSwipeContainer = view.findViewById(R.id.searchSwipeContainer);
        etSearch = view.findViewById(R.id.etSearch);
 
-       ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
        updatingListAdapterSearch(getQuerySearch());
        setUpEditorListener();
        setUpSearchSwipeContainer();
        setUpOnTextChangedSearch();
    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+    }
 
     public void setUpSearchSwipeContainer(){
        searchSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
