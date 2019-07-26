@@ -1,25 +1,34 @@
 package com.fb.pearsapplication.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Group;
 import com.fb.pearsapplication.models.GroupUserRelation;
 import com.fb.pearsapplication.models.Pear;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -30,6 +39,7 @@ import java.util.Random;
 
 public class ChildPearButtonFragment extends Fragment {
 
+    View view;
     Button btnPear;
     Switch swPear;
     ParseUser currentUser;
@@ -50,6 +60,7 @@ public class ChildPearButtonFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        this.view = view;
         btnPear = (Button) view.findViewById(R.id.btnPear);
         groupDetailsFragment parentFrag = ((groupDetailsFragment)ChildPearButtonFragment.this.getParentFragment());
         swPear = parentFrag.swPear;
@@ -102,7 +113,7 @@ public class ChildPearButtonFragment extends Fragment {
 
                 ParseQuery<GroupUserRelation> query = ParseQuery.getQuery(GroupUserRelation.class);
                 query.whereNotEqualTo("user", currentUser);
-                query.whereNear("userLocation", currentUser.getParseGeoPoint("location"));
+//                query.whereNear("userLocation", currentUser.getParseGeoPoint("location"));
                 query.whereEqualTo("group", group);
                 query.whereEqualTo("pearRequest", true);
 
@@ -142,7 +153,7 @@ public class ChildPearButtonFragment extends Fragment {
                 if (e == null) {
                     pear = newPearMe;
                     updateRelations();
-                    goToPearFragment();
+                    popupPear(view);
                     Log.d("XYZ", "Pear created successfully!");
                 } else {
                     e.printStackTrace();
@@ -156,6 +167,47 @@ public class ChildPearButtonFragment extends Fragment {
                 if (e != null) {
                     e.printStackTrace();
                 }
+            }
+        });
+    }
+
+    public void popupPear(View view) {
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.popup_pear, null);
+        int width = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+        int height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+
+        TextView tvCurrentPear = (TextView) popupView.findViewById(R.id.tvCurrentPear);
+        ImageView ivPearPic = (ImageView) popupView.findViewById(R.id.ivPearPic);
+        TextView tvPearName = (TextView) popupView.findViewById(R.id.tvPearName);
+        Button btnMessage = (Button) popupView.findViewById(R.id.btnMessage);
+        Button btnViewProfile = (Button) popupView.findViewById(R.id.btnViewProfile);
+
+        String name = "";
+        try {
+            name = pearUser.fetchIfNeeded().getString("username");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        tvPearName.setText(name);
+        ParseFile profileImage = pearUser.getParseFile("profileImage");
+        String profileImageString = pearUser.getString("profilePicString");
+        if (profileImage != null) {
+            Glide.with(getContext()).load(profileImage.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivPearPic);
+        } else if (profileImageString != null) {
+            Glide.with(getContext()).load(profileImageString).apply(RequestOptions.circleCropTransform()).into(ivPearPic);
+        } else {
+            Glide.with(getContext()).load(R.drawable.user).apply(RequestOptions.circleCropTransform()).into(ivPearPic);
+        }
+
+        boolean focusable = true;
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                goToPearFragment();
             }
         });
     }

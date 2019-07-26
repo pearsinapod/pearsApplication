@@ -60,7 +60,7 @@ public class ChildPearFragment extends Fragment {
         ParseFile profileImage = pearUser.getParseFile("profileImage");
         String profileImageString = pearUser.getString("profilePicString");
         if (profileImage != null) {
-            Glide.with(getContext()).load(profileImage).apply(RequestOptions.circleCropTransform()).into(ivPearPic);
+            Glide.with(getContext()).load(profileImage.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivPearPic);
         } else if (profileImageString != null) {
             Glide.with(getContext()).load(profileImageString).apply(RequestOptions.circleCropTransform()).into(ivPearPic);
         } else {
