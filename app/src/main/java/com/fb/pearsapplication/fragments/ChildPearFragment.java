@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,6 +28,7 @@ public class ChildPearFragment extends Fragment {
     TextView tvPearName;
     Button btnMessage;
     Button btnViewProfile;
+    Switch swPear;
 
     Pear pear;
     ParseUser pearUser;
@@ -50,6 +52,11 @@ public class ChildPearFragment extends Fragment {
     }
 
     private void bindViews() {
+        groupDetailsFragment parentFrag = ((groupDetailsFragment)ChildPearFragment.this.getParentFragment());
+        swPear = parentFrag.swPear;
+        swPear.setChecked(false);
+        swPear.setEnabled(false);
+        swPear.setClickable(false);
         String name = "";
         try {
             name = pearUser.fetchIfNeeded().getString("username");
@@ -60,7 +67,7 @@ public class ChildPearFragment extends Fragment {
         ParseFile profileImage = pearUser.getParseFile("profileImage");
         String profileImageString = pearUser.getString("profilePicString");
         if (profileImage != null) {
-            Glide.with(getContext()).load(profileImage).apply(RequestOptions.circleCropTransform()).into(ivPearPic);
+            Glide.with(getContext()).load(profileImage.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivPearPic);
         } else if (profileImageString != null) {
             Glide.with(getContext()).load(profileImageString).apply(RequestOptions.circleCropTransform()).into(ivPearPic);
         } else {
@@ -68,7 +75,7 @@ public class ChildPearFragment extends Fragment {
         }
     }
 
-    private void setOnClickListeners() {
+    public void setOnClickListeners() {
         btnViewProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
