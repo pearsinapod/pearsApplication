@@ -67,7 +67,6 @@ public class matchProfileFragment extends Fragment {
             tvDescription.setVisibility(View.GONE);
         }
 
-
     }
 
     public void querySameGroups() {
@@ -75,6 +74,7 @@ public class matchProfileFragment extends Fragment {
         groupQuery.include(Group.KEY_USERS);
         ArrayList<ParseUser> users = new ArrayList<>();
         users.add(ParseUser.getCurrentUser());
+        users.add(pearUser);
 
         groupQuery.whereContainsAll("users", users);
 
