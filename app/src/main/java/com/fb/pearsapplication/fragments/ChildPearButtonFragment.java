@@ -1,25 +1,34 @@
 package com.fb.pearsapplication.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Group;
 import com.fb.pearsapplication.models.GroupUserRelation;
 import com.fb.pearsapplication.models.Pear;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -30,6 +39,7 @@ import java.util.Random;
 
 public class ChildPearButtonFragment extends Fragment {
 
+    View view;
     Button btnPear;
     Switch swPear;
     ParseUser currentUser;
@@ -39,9 +49,6 @@ public class ChildPearButtonFragment extends Fragment {
     GroupUserRelation gur;
     GroupUserRelation otherGUR;
 
-
-    // TODO: need to figure out how to send information between the parent and child fragments
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -50,6 +57,7 @@ public class ChildPearButtonFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        this.view = view;
         btnPear = (Button) view.findViewById(R.id.btnPear);
         groupDetailsFragment parentFrag = ((groupDetailsFragment)ChildPearButtonFragment.this.getParentFragment());
         swPear = parentFrag.swPear;
@@ -102,6 +110,7 @@ public class ChildPearButtonFragment extends Fragment {
 
                 ParseQuery<GroupUserRelation> query = ParseQuery.getQuery(GroupUserRelation.class);
                 query.whereNotEqualTo("user", currentUser);
+                query.whereNear("userLocation", currentUser.getParseGeoPoint("location"));
                 query.whereEqualTo("group", group);
                 query.whereEqualTo("pearRequest", true);
 
@@ -112,7 +121,7 @@ public class ChildPearButtonFragment extends Fragment {
                         if (e != null) {
                             e.printStackTrace();
                         } else if (objects.isEmpty()) {
-                            goToWaitingFragment();
+                            popupWaiting(getView());
                         } else {
                             otherGUR = objects.get(0);
                             pearUser = otherGUR.getUser();
@@ -141,7 +150,7 @@ public class ChildPearButtonFragment extends Fragment {
                 if (e == null) {
                     pear = newPearMe;
                     updateRelations();
-                    goToPearFragment();
+                    popupPear(view);
                     Log.d("XYZ", "Pear created successfully!");
                 } else {
                     e.printStackTrace();
@@ -157,6 +166,80 @@ public class ChildPearButtonFragment extends Fragment {
                 }
             }
         });
+    }
+
+    public void popupPear(View view) {
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.popup_pear, null);
+        int width = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+        int height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+        bindPopupPearViews(popupView);
+        boolean focusable = true;
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                goToPearFragment();
+            }
+        });
+    }
+
+    public void bindPopupPearViews(View view) {
+        TextView tvCurrentPear = view.findViewById(R.id.tvCurrentPear);
+        ImageView ivPearPic = view.findViewById(R.id.ivPearPic);
+        TextView tvPearName = view.findViewById(R.id.tvPearName);
+        Button btnMessage = view.findViewById(R.id.btnMessage); // TODO set onclick listeners here
+        Button btnViewProfile = view.findViewById(R.id.btnViewProfile);
+        setOnClickListeners(btnViewProfile, btnMessage);
+
+        String name = "";
+        try {
+            name = pearUser.fetchIfNeeded().getString("username");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        tvPearName.setText(name);
+        ParseFile profileImage = pearUser.getParseFile("profileImage");
+        String profileImageString = pearUser.getString("profilePicString");
+        if (profileImage != null) {
+            Glide.with(getContext()).load(profileImage.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivPearPic);
+        } else if (profileImageString != null) {
+            Glide.with(getContext()).load(profileImageString).apply(RequestOptions.circleCropTransform()).into(ivPearPic);
+        } else {
+            Glide.with(getContext()).load(R.drawable.user).apply(RequestOptions.circleCropTransform()).into(ivPearPic);
+        }
+    }
+
+    public void setOnClickListeners(Button profile, Button message) {
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                groupDetailsFragment parentFrag = ((groupDetailsFragment)ChildPearButtonFragment.this.getParentFragment());
+                FragmentManager fragmentManager = parentFrag.getFragmentManager();
+                Fragment fragment = new matchProfileFragment();
+                ((matchProfileFragment) fragment).setPearUser(pearUser);
+                fragmentManager.beginTransaction().replace(R.id.flContainter, fragment).addToBackStack(null).commit();
+            }
+        });
+
+        message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+    }
+
+    public void popupWaiting(View view) {
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.popup_waiting, null);
+        int width = ConstraintLayout.LayoutParams.MATCH_PARENT;
+        int height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+        boolean focusable = true;
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
     }
 
     private void updateRelations() {
@@ -179,6 +262,9 @@ public class ChildPearButtonFragment extends Fragment {
         FragmentManager fragmentManager = getFragmentManager();
         Fragment fragment = new ChildPearFragment();
         ((ChildPearFragment) fragment).setPear(pear);
+        swPear.setChecked(false);
+        swPear.setEnabled(false);
+        swPear.setClickable(false);
         fragmentManager.beginTransaction().replace(R.id.child_fragment_container, fragment).addToBackStack(null).commit();
     }
 
