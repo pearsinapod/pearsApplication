@@ -16,12 +16,15 @@ import androidx.fragment.app.FragmentManager;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Group;
 import com.fb.pearsapplication.models.GroupUserRelation;
+import com.parse.FindCallback;
 import com.parse.ParseACL;
 import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChildAddFragment extends Fragment {
     Button btnJoin;
@@ -59,29 +62,42 @@ public class ChildAddFragment extends Fragment {
             }
         });
     }
-
+    
     public static GroupUserRelation addUserToGroup(ParseUser user, Group group) {
         final GroupUserRelation groupUser = new GroupUserRelation();
         ArrayList groupUsers = group.getUsers();
-        ArrayList userGroups = (ArrayList) user.getList("groups");
         groupUsers.add(user);
-        userGroups.add(group);
-        user.put("groups", userGroups);  
-        group.put("users", groupUsers);                                               
-  
+        group.put("users", groupUsers);
+        group.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                }
+            }
+        });
         groupUser.setGroup(group);
         groupUser.setUser(user);
         groupUser.setPearRequest(true);
+        groupUser.setUserLocation(user.getParseGeoPoint("location"));
 
         return groupUser;
     }
 
-    public static void checkACL(ParseUser currentUser, Group group) {
-        ParseACL acl = new ParseACL(ParseUser.getCurrentUser());
+    private void userDirtyCheck(ParseUser user) {
+        if (user.isDirty()) {
+            Log.d("XYZ", user.getUsername() +" is dirty");
+        } else {
+            Log.d("XYZ", user.getUsername());
+        }
+    }
+
+    private void acl(ParseUser user, GroupUserRelation gur) {
+        ParseACL acl = new ParseACL(user);
         acl.setPublicReadAccess(true);
         acl.setPublicWriteAccess(true);
-        group.setACL(acl);
-        currentUser.setACL(acl);
+        gur.setACL(acl);
+        user.setACL(acl);
     }
 
     public void setGroup(Group group) {
