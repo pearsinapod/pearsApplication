@@ -56,10 +56,10 @@ public class ChildAddFragment extends Fragment {
         });
     }
   
-    private void addUserToGroup(ParseUser user, Group group) {
+    public static void addUserToGroup(ParseUser user, Group group) {
         final GroupUserRelation groupUser = new GroupUserRelation();
         ArrayList groupUsers = group.getUsers();
-        ArrayList userGroups = (ArrayList) user.getList("groups);
+        ArrayList userGroups = (ArrayList) user.getList("groups");
         groupUsers.add(user);
         userGroups.add(group);
         user.put("groups", userGroups);  
@@ -76,8 +76,8 @@ public class ChildAddFragment extends Fragment {
             public void done(ParseException e) {
                 if (e == null) {
                     Log.d("XYZ", "added successfully");
-                    gur = groupUser;
-                    goToPearBtnFragment();
+                    // gur = groupUser;
+                    // goToPearBtnFragment();
                 } else {
                     e.printStackTrace();
                 }

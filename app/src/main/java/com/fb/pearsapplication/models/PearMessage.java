@@ -37,10 +37,6 @@ public class PearMessage extends ParseObject implements Serializable {
         this.body = body;
     }
 
-   public String getUserId() {
-       return getString(USER_ID_KEY);
-   }
-
     public boolean isSent() {
         return user.getUsername().equals(sender);
     }

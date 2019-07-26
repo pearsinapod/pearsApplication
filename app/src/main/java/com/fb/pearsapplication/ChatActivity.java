@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.fb.pearsapplication.adapters.ChatAdapter;
 import com.fb.pearsapplication.models.PearMessage;
 import com.parse.FindCallback;
 import com.parse.LogInCallback;
+import com.parse.Parse;
 import com.parse.ParseAnonymousUtils;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -29,8 +31,13 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import com.parse.livequery.ParseLiveQueryClient;
+import com.parse.livequery.SubscriptionHandling;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,6 +55,16 @@ public class ChatActivity extends AppCompatActivity {
     private RecyclerView rvChat;
     private Boolean isRunning;
 
+    static final int POLL_INTERVAL = 1000;
+    Handler myHandler = new Handler();
+    Runnable mRefreshMessagesRunnable = new Runnable() {
+        @Override
+        public void run() {
+            loadMessages();
+            myHandler.postDelayed(this, POLL_INTERVAL);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +72,8 @@ public class ChatActivity extends AppCompatActivity {
 
 
         user = ParseUser.getCurrentUser();
+
+        myHandler.postDelayed(mRefreshMessagesRunnable, POLL_INTERVAL);
 
         mMessages = new ArrayList<PearMessage>();
         RecyclerView rvChat = (RecyclerView) findViewById(R.id.rvChat);
@@ -80,32 +99,32 @@ public class ChatActivity extends AppCompatActivity {
         receiver = getIntent().getStringExtra(Intent.EXTRA_DATA_REMOVED);
 //        getActionBar().setTitle(receiver);
 
-        Handler handler = new Handler();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        loadMessages();
+//        loadMessages();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         isRunning = false;
-        loadMessages();
     }
 
     public void loadMessages() {
 
-        DefiningSenderReceiver();
+//        DefiningSenderReceiver();
+//
+//        getOldMessageFromParse();
+//
+//    }
 
-        getOldMessageFromParse();
+//
+//    private void DefiningSenderReceiver() {
 
-    }
-
-    private void DefiningSenderReceiver() {
-        ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("Message");
+    ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("Message");
         if (mMessages.size() == 0) {
             ArrayList<String> ArrayList = new ArrayList<String>();
             ArrayList.add(receiver);
@@ -120,10 +139,6 @@ public class ChatActivity extends AppCompatActivity {
         }
         parseQuery.orderByDescending("createdAt");
         parseQuery.setLimit(30);
-    }
-
-    private void getOldMessageFromParse() {
-        ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("Message");
         parseQuery.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
@@ -141,18 +156,11 @@ public class ChatActivity extends AppCompatActivity {
                         mAdapter.notifyDataSetChanged();
                     }
                 }
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (isRunning)
-                            loadMessages();
-
-                    }
-                }, 1000);
             }
         });
+
     }
+
 
     @Override
     protected void onPause() {
@@ -170,10 +178,10 @@ public class ChatActivity extends AppCompatActivity {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(etMessage.getWindowToken(), 0);
 
-        addNewMessageToParse();
-    }
-
-    private void addNewMessageToParse(){
+//        addNewMessageToParse();
+//    }
+//
+//    private void addNewMessageToParse(){
         String messageToBeSent = etMessage.getText().toString();
         final PearMessage pearMessage = new PearMessage(messageToBeSent, new Date(), user.getUsername());
         pearMessage.setStatus(PearMessage.STATUS_SENDING);
@@ -184,7 +192,7 @@ public class ChatActivity extends AppCompatActivity {
         parseObject.put("messageAuthor", user.getUsername());
         parseObject.put("messageReceiver", receiver);
         parseObject.put("body", messageToBeSent);
-        parseObject.saveEventually(new SaveCallback() {
+        parseObject.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null)
@@ -195,4 +203,5 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
+
 }
