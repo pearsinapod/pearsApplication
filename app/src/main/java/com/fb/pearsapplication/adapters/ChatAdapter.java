@@ -24,7 +24,7 @@ import java.util.List;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
-    private List<PearMessage> mMessages;
+    public List<PearMessage> mMessages;
     private Context context;
 
     public ChatAdapter(ArrayList<PearMessage> mMessages) {
@@ -66,6 +66,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return mMessages.size();
+    }
+
+    public void updateMessages (List<PearMessage> messages) {
+        if (messages != null && messages.size() > 0){
+            mMessages.addAll(messages);
+            notifyDataSetChanged();
+        }
     }
 
     public View getView(int pos, View view, ViewGroup arg2){

@@ -14,20 +14,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.fb.pearsapplication.ChatActivity;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Pear;
+import com.parse.ParseException;
 import com.parse.ParseUser;
 
 import java.util.List;
 
 public class conversationsAdapter extends RecyclerView.Adapter<conversationsAdapter.ViewHolder> {
 
-    private List<Pear> pearList;
+    private List<ParseUser> pearList;
     Context context;
 
-    public conversationsAdapter(List<Pear> pearList) {
+    public conversationsAdapter(List<ParseUser> pearList) {
         this.pearList = pearList;
 
     }
-    public Pear getItem(int adapterView){
+    public ParseUser getItem(int adapterView){
         return pearList.get(adapterView);
     }
 
@@ -55,7 +56,7 @@ public class conversationsAdapter extends RecyclerView.Adapter<conversationsAdap
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        Pear pear = pearList.get(position);
+        ParseUser pear = pearList.get(position);
         holder.bind(pear);
     }
 
@@ -78,12 +79,19 @@ public class conversationsAdapter extends RecyclerView.Adapter<conversationsAdap
         public void onClick(View view) {
             int position = getAdapterPosition();
             Intent convoIntent = new Intent(context, ChatActivity.class);
-            convoIntent.putExtra(convoIntent.EXTRA_DATA_REMOVED, pearList.get(position).getOtherUser().getUsername());
+            convoIntent.putExtra(convoIntent.EXTRA_DATA_REMOVED, pearList.get(position).getUsername());
             context.startActivity(convoIntent);
         }
 
-        public void bind(Pear pear) {
-            tvUsername.setText(pear.getOtherUser().getUsername());
+
+        public void bind(ParseUser otherUser) {
+            String name = "";
+            try {
+                name = otherUser.fetchIfNeeded().getString("username");
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            tvUsername.setText(otherUser.getUsername());
         }
     }
 }

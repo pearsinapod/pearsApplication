@@ -46,14 +46,9 @@ public class groupFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         rvGroups = view.findViewById(R.id.rvGroups);
 
-        // create the data source
-        mGroups = new ArrayList<>();
-        // create the adapter
-        adapter = new groupsAdapter(getContext(), mGroups);
-        // set the adapter on the recycler view
-        rvGroups.setAdapter(adapter);
-        // set the layout manager on the recycler view
-        rvGroups.setLayoutManager(new LinearLayoutManager(getContext()));
+        setParameters();
+
+
 
         queryGroups();
 
@@ -82,6 +77,17 @@ public class groupFragment extends Fragment {
 
     }
 
+    private void setParameters() {
+        // create the data source
+        mGroups = new ArrayList<>();
+        // create the adapter
+        adapter = new groupsAdapter(getContext(), mGroups);
+        // set the adapter on the recycler view
+        rvGroups.setAdapter(adapter);
+        // set the layout manager on the recycler view
+        rvGroups.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
+
 
     protected void queryGroups() {
         ParseQuery<Group> groupQuery = new ParseQuery<Group>(Group.class);
@@ -101,9 +107,6 @@ public class groupFragment extends Fragment {
                 }
                 mGroups.addAll(groups);
                 adapter.notifyDataSetChanged();
-//                for (int i = 0; i < objects.size(); i++) {
-//                    Log.d(TAG, "Group: " + objects.get(i).getDescription() + ", username: " + objects.get(i).getUser().getUsername());
-//                }
             }
         });
     }

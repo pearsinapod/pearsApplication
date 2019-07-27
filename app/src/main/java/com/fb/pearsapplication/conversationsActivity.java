@@ -27,7 +27,7 @@ import java.util.List;
 
 public class conversationsActivity extends AppCompatActivity {
 
-    private List<Pear> pearList;
+    private List<ParseUser> pearList;
     public static ParseUser user;
 
     static final String TAG = conversationsActivity.class.getSimpleName();
@@ -43,7 +43,8 @@ public class conversationsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversations);
 
-        pearList = new ArrayList<Pear>();
+        pearList = new ArrayList<ParseUser>();
+        final ArrayList<String> pearID = new ArrayList<>();
 
 
         rvConversations = (RecyclerView) findViewById(R.id.rvConversations);
@@ -57,39 +58,26 @@ public class conversationsActivity extends AppCompatActivity {
         user = ParseUser.getCurrentUser();
 
         ParseQuery<Pear> parseQuery = ParseQuery.getQuery("Pear");
-        ArrayList<String> userID = new ArrayList<>();
-        userID.add(user.getObjectId());
-        parseQuery.whereContainedIn("User", userID);
+        parseQuery.whereEqualTo("user", user);
+        parseQuery.findInBackground(new FindCallback<Pear>() {
 
-
-
-
-        loadConversationList();
-        }
-
-
-
-    private void loadConversationList() {
-
-        ParseUser.getQuery().whereNotEqualTo("username", user.getUsername()).findInBackground(new FindCallback<ParseUser>() {
             @Override
-            public void done(List<ParseUser> list, ParseException e) {
-                if (list != null) {
-
-                    for(int i=0;i<list.size();i++){
-                        list.add(list.get(i));
+            public void done(List<Pear> objects, ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                } else if (!objects.isEmpty()) {
+                    for (Pear pear : objects) {
+                        if (!pearID.contains(pear.getOtherUser().getObjectId())) {
+                            pearList.add(pear.getOtherUser());
+                            pearID.add(pear.getOtherUser().getObjectId());
+                        }
                     }
-//                    if (list.size() == 0)
-//                        Toast.makeText(conversationsActivity.this, "no user found", Toast.LENGTH_SHORT).show();
-//                    else userList = list;
                     cAdapter.notifyDataSetChanged();
-
                 }
-                else {
-                    Log.e(TAG, "error getting conversations", e);
 
-                }
             }
         });
+
     }
+
 }

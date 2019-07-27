@@ -15,6 +15,10 @@ import com.fb.pearsapplication.models.User;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
+import com.parse.livequery.ParseLiveQueryClient;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 
 public class ParseApp extends Application {
