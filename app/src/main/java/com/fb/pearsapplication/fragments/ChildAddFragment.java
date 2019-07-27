@@ -66,12 +66,15 @@ public class ChildAddFragment extends Fragment {
     public static GroupUserRelation addUserToGroup(ParseUser user, Group group) {
         final GroupUserRelation groupUser = new GroupUserRelation();
         ArrayList groupUsers = group.getUsers();
+
         groupUsers.add(user);
         group.put("users", groupUsers);
         group.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                if (e != null) {
+                if (e == null) {
+                    Log.d("XYZ", "added successfully");
+                } else {
                     e.printStackTrace();
                 }
             }
