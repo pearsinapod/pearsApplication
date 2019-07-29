@@ -29,9 +29,12 @@ import com.fb.pearsapplication.models.Pear;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseInstallation;
+import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.parse.SendCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -151,6 +154,7 @@ public class ChildPearButtonFragment extends Fragment {
                     pear = newPearMe;
                     updateRelations();
                     popupPear(view);
+                    pushQuery();
                     Log.d("XYZ", "Pear created successfully!");
                 } else {
                     e.printStackTrace();
@@ -163,6 +167,25 @@ public class ChildPearButtonFragment extends Fragment {
             public void done(ParseException e) {
                 if (e != null) {
                     e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void pushQuery() {
+        ParseQuery query = ParseInstallation.getQuery();
+        query.whereEqualTo("device_id", pearUser.getObjectId());
+        ParsePush push = new ParsePush();
+        push.setQuery(query);
+        push.setMessage("hello!");
+
+        push.sendInBackground(new SendCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                } else {
+                    Log.d("XYZ", "push sent!");
                 }
             }
         });

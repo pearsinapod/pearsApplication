@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -34,6 +35,7 @@ import com.parse.ParseException;
 
 //import com.parse.ParseFacebookUtils;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseInstallation;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -103,6 +105,7 @@ public class LoginActivity extends AppCompatActivity {
                             SignupActivity.instantiateGroups(user);
                             getFBInfo();
                         } else {
+                            installationUpdate();
                             Log.d("MyApp", "User logged in through Facebook!");
                             getFBInfo();
                         }
@@ -113,7 +116,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void persistenceCheck() {
+
         if (ParseUser.getCurrentUser() != null) {
+            installationUpdate();
             Intent homeIntent = new Intent(this, MainActivity.class);
             startActivity(homeIntent);
             finish();
@@ -122,10 +127,26 @@ public class LoginActivity extends AppCompatActivity {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
         if (isLoggedIn) {
+            installationUpdate();
             Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(mainIntent);
             finish();
         }
+    }
+
+    private void installationUpdate() {
+        ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+        installation.put("device_id", ParseUser.getCurrentUser().getObjectId());
+        installation.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                } else {
+                    Log.d("XYZ", "successfully updated installation id");
+                }
+            }
+        });
     }
 
     @Override
@@ -180,6 +201,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void done(ParseUser user, ParseException e) {
                 if (e == null) {
+                    installationUpdate();
                     Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(mainIntent);
                     finish();
