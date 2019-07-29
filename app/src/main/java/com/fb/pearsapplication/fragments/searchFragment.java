@@ -50,6 +50,7 @@ public class searchFragment extends Fragment {
 
    @Override
    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
        rvSearchAdapter = view.findViewById(R.id.rvSearchGroups);
        searchGroups = new ArrayList<>();
        searchAdapter = new groupsAdapter(getContext(), searchGroups);
@@ -60,14 +61,23 @@ public class searchFragment extends Fragment {
        searchSwipeContainer = view.findViewById(R.id.searchSwipeContainer);
        etSearch = view.findViewById(R.id.etSearch);
 
-       ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
        updatingListAdapterSearch(getQuerySearch());
        setUpEditorListener();
        setUpSearchSwipeContainer();
        setUpOnTextChangedSearch();
    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+    }
 
-   public void setUpSearchSwipeContainer(){
+    public void setUpSearchSwipeContainer(){
        searchSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
            @Override
            public void onRefresh() {
@@ -158,7 +168,5 @@ public class searchFragment extends Fragment {
        get top should be fixed+ endless scorlling
 
 */
-
-
 
 }

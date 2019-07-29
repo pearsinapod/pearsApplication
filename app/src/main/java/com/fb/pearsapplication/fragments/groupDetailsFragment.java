@@ -68,9 +68,8 @@ public class groupDetailsFragment extends Fragment {
         tvGroupNumber = (TextView) view.findViewById(R.id.tvGroupNumber);
         swPear = (Switch) view.findViewById(R.id.swPear);
         currentUser = ParseUser.getCurrentUser();
+        pearQuery();
         bindViews();
-        determineChildFragment();
-
     }
 
     private void bindViews() {
@@ -89,10 +88,8 @@ public class groupDetailsFragment extends Fragment {
 
         if (currentUser.getList("pearRequests").contains(group)) {
             swPear.setChecked(true);
-        } // TODO FIX THIS
+        }
     }
-
-
 
 
     private void determineChildFragment() {
@@ -108,11 +105,9 @@ public class groupDetailsFragment extends Fragment {
                 }
                 if (objects.isEmpty()) {
                     insertNestedAddFragment();
-                } else if (objects.get(0).getPearRequest()) {
+                } else if (!objects.isEmpty() && pear == null) {
                     gur = objects.get(0);
                     insertNestedPearButtonFragment();
-                } else if (pear == null) {
-                    insertNestedWaitingFragment();
                 } else {
                     insertNestedPearFragment();
                 }
@@ -135,6 +130,33 @@ public class groupDetailsFragment extends Fragment {
                     pear = null;
                 } else {
                     pear = objects.get(0);
+                }
+                determineChildFragment();
+            }
+        });
+    }
+
+    // used for database
+    public void addUsersToGroup() {
+        Log.d("XYZ", "inside function");
+        ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
+        userQuery.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                } else {
+                    for (ParseUser user : objects) {
+                        GroupUserRelation gur = ChildAddFragment.addUserToGroup(user, group);
+                        gur.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e != null) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
                 }
             }
         });
