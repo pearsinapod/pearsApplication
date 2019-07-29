@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.adapters.ChatAdapter;
 import com.fb.pearsapplication.models.PearMessage;
+import com.fb.pearsapplication.models.User;
 import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.Parse;
@@ -76,10 +77,10 @@ public class ChatActivity extends AppCompatActivity {
         myHandler.postDelayed(mRefreshMessagesRunnable, POLL_INTERVAL);
 
         mMessages = new ArrayList<PearMessage>();
-        RecyclerView rvChat = (RecyclerView) findViewById(R.id.rvChat);
+        rvChat = (RecyclerView) findViewById(R.id.rvChat);
         mAdapter = new ChatAdapter(mMessages);
         rvChat.setAdapter(mAdapter);
-        Button btSend = (Button) findViewById(R.id.btSend);
+        btSend = (Button) findViewById(R.id.btSend);
 
         etMessage = (EditText) findViewById(R.id.etMessage);
         etMessage.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
@@ -87,15 +88,7 @@ public class ChatActivity extends AppCompatActivity {
         rvChat.setLayoutManager(new LinearLayoutManager(this));
 
         loadMessages();
-
-        btSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (view.getId() == R.id.btSend){
-                    sendMessage();
-                }
-            }
-        });
+        setUpSend();
         receiver = getIntent().getStringExtra(Intent.EXTRA_DATA_REMOVED);
 //        getActionBar().setTitle(receiver);
 
@@ -113,18 +106,23 @@ public class ChatActivity extends AppCompatActivity {
         isRunning = false;
     }
 
+    public void setUpSend(){
+        btSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (view.getId() == R.id.btSend){
+                    sendMessage();
+                }
+            }
+        });
+    }
+
     public void loadMessages() {
+        gettingMessagesFromParse(contactingParse());
+    }
 
-//        DefiningSenderReceiver();
-//
-//        getOldMessageFromParse();
-//
-//    }
-
-//
-//    private void DefiningSenderReceiver() {
-
-    ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("Message");
+    public ParseQuery contactingParse() {
+        ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("Message");
         if (mMessages.size() == 0) {
             ArrayList<String> ArrayList = new ArrayList<String>();
             ArrayList.add(receiver);
@@ -137,6 +135,10 @@ public class ChatActivity extends AppCompatActivity {
             parseQuery.whereEqualTo("messageAuthor", user.getUsername());
             parseQuery.whereEqualTo("messageReceiver", receiver);
         }
+        return parseQuery;
+    }
+
+    public void gettingMessagesFromParse(ParseQuery parseQuery) {
         parseQuery.orderByDescending("createdAt");
         parseQuery.setLimit(30);
         parseQuery.findInBackground(new FindCallback<ParseObject>() {
@@ -158,7 +160,6 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
 
@@ -172,36 +173,40 @@ public class ChatActivity extends AppCompatActivity {
 
     private void sendMessage() {
 
-        if(etMessage.length() == 0)
+        if (etMessage.length() == 0)
             return;
 
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(etMessage.getWindowToken(), 0);
 
-//        addNewMessageToParse();
-//    }
-//
-//    private void addNewMessageToParse(){
-        String messageToBeSent = etMessage.getText().toString();
-        final PearMessage pearMessage = new PearMessage(messageToBeSent, new Date(), user.getUsername());
-        pearMessage.setStatus(PearMessage.STATUS_SENDING);
-        mMessages.add(pearMessage);
-        mAdapter.notifyDataSetChanged();
-        etMessage.setText(null);
-        ParseObject parseObject = new ParseObject("Message");
-        parseObject.put("messageAuthor", user.getUsername());
-        parseObject.put("messageReceiver", receiver);
-        parseObject.put("body", messageToBeSent);
-        parseObject.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null)
-                    pearMessage.setStatus(PearMessage.STATUS_SENT);
-                else
-                    pearMessage.setStatus(PearMessage.STATUS_FAILED);
-                mAdapter.notifyDataSetChanged();
-            }
-        });
+        addNewMessageToParse();
     }
 
-}
+        private void addNewMessageToParse() { //changename
+            String messageToBeSent = etMessage.getText().toString();
+            final PearMessage pearMessage = new PearMessage(messageToBeSent, new Date(), user.getUsername());
+            pearMessage.setStatus(PearMessage.STATUS_SENDING);
+            mMessages.add(pearMessage);
+            mAdapter.notifyDataSetChanged();
+            etMessage.setText(null);
+            addingToParse(messageToBeSent).saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null)
+                        pearMessage.setStatus(PearMessage.STATUS_SENT);
+                    else
+                        pearMessage.setStatus(PearMessage.STATUS_FAILED);
+                    mAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+
+        public ParseObject addingToParse(String messageToBeSent) {
+            ParseObject parseObject = new ParseObject("Message");
+            parseObject.put("messageAuthor", user.getUsername());
+            parseObject.put("messageReceiver", receiver);
+            parseObject.put("body", messageToBeSent);
+            return parseObject;
+        }
+
+    }
