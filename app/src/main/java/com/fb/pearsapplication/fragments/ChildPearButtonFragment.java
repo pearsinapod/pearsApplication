@@ -20,21 +20,37 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Group;
 import com.fb.pearsapplication.models.GroupUserRelation;
 import com.fb.pearsapplication.models.Pear;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseInstallation;
+import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.parse.SendCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class ChildPearButtonFragment extends Fragment {
@@ -49,6 +65,12 @@ public class ChildPearButtonFragment extends Fragment {
     GroupUserRelation gur;
     GroupUserRelation otherGUR;
 
+    // notification variables
+    private String FCM_API = "https://fcm.googleapis.com/fcm/send";
+    private String server_key = "key=" + "AAAAQloNcoI:APA91bHwJdFHHyenaqjfw5DlNE00qcOVSgDAcWVEsMRlSGpgaF--ALmA9y5A2LMdRbivgtYivlu20GHvILC1qTQcbxiOcUtOAPzhwS0QqFB8pFdfJmMFKLL7j3pq1gXsgFzJ3kMElqaa";
+    private String contentType = "application/json";
+    private RequestQueue requestQueue;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,6 +80,8 @@ public class ChildPearButtonFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         this.view = view;
+        FirebaseMessaging.getInstance().subscribeToTopic("/topics/new_pear_notification");
+        requestQueue = Volley.newRequestQueue(getContext());
         btnPear = (Button) view.findViewById(R.id.btnPear);
         groupDetailsFragment parentFrag = ((groupDetailsFragment)ChildPearButtonFragment.this.getParentFragment());
         swPear = parentFrag.swPear;
@@ -107,6 +131,20 @@ public class ChildPearButtonFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 ArrayList<ParseUser> pearUsers = group.getPears();
+
+                String topic = "/topics/new_pear_notification";
+                JSONObject notification = new JSONObject();
+                JSONObject notifcationBody = new JSONObject();
+                try {
+                    notifcationBody.put("title", "hello from pears!");
+                    notifcationBody.put("message", "");
+
+                    notification.put("to", topic);
+                    notification.put("data", notifcationBody);
+                } catch (JSONException e) {
+                    Log.e("XYZ", "onCreate: " + e.getMessage() );
+                }
+                sendNotification(notification);
 
                 ParseQuery<GroupUserRelation> query = ParseQuery.getQuery(GroupUserRelation.class);
                 query.whereNotEqualTo("user", currentUser);
@@ -163,6 +201,25 @@ public class ChildPearButtonFragment extends Fragment {
             public void done(ParseException e) {
                 if (e != null) {
                     e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void pushQuery() {
+        ParseQuery query = ParseInstallation.getQuery();
+        query.whereEqualTo("device_id", pearUser.getObjectId());
+        ParsePush push = new ParsePush();
+        push.setQuery(query);
+        push.setMessage("hello!");
+
+        push.sendInBackground(new SendCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                } else {
+                    Log.d("XYZ", "push sent!");
                 }
             }
         });
@@ -273,4 +330,28 @@ public class ChildPearButtonFragment extends Fragment {
         Fragment fragment = new ChildWaitingFragment();
         fragmentManager.beginTransaction().replace(R.id.child_fragment_container, fragment).addToBackStack(null).commit();
     }
+
+    private void sendNotification(JSONObject notification) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                Log.d("XYZ", "volley error");
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", server_key);
+                params.put("Content-Type", contentType);
+                return params;
+            }
+        };
+        requestQueue.add(jsonObjectRequest);
+    }
+
 }

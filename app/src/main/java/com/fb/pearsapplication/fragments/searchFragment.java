@@ -118,7 +118,7 @@ public class searchFragment extends Fragment {
        Group.Query groupsQuery = new Group.Query();
        groupsQuery.addDescendingOrder(Group.KEY_CREATED_AT);
        if (!getSearchedText().equals("")){
-           groupsQuery.whereMatches(Group.KEY_GROUP_NAME, "(?i)^" + getSearchedText());
+           groupsQuery.whereMatches(Group.KEY_GROUP_NAME, "(?i)^"+getSearchedText()+"| (?i).*\\b"+getSearchedText()+"\\b.*");
        }
        return groupsQuery;
    }
@@ -150,6 +150,7 @@ public class searchFragment extends Fragment {
            public void done(List<Group> objects, ParseException e) {
                if (e == null) {
                    for (int i = 0; i < objects.size(); i++) {
+                       Log.d("words", objects.get(i).getGroupName());
                        Group group = objects.get(i);
                        if(!group.getUsers().contains(ParseUser.getCurrentUser())) {
                            searchGroups.add(group);

@@ -16,15 +16,12 @@ import androidx.fragment.app.FragmentManager;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Group;
 import com.fb.pearsapplication.models.GroupUserRelation;
-import com.parse.FindCallback;
 import com.parse.ParseACL;
 import com.parse.ParseException;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ChildAddFragment extends Fragment {
     Button btnJoin;

@@ -21,6 +21,7 @@ import com.fb.pearsapplication.models.Group;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,6 +94,9 @@ public class groupFragment extends Fragment {
         ParseQuery<Group> groupQuery = new ParseQuery<Group>(Group.class);
         groupQuery.include(Group.KEY_USERS);
         groupQuery.setLimit(20);
+//        ArrayList<ParseUser> currentUser = new ArrayList<>();
+//        currentUser.add(ParseUser.getCurrentUser());
+//        groupQuery.whereContainedIn("users", currentUser);
         groupQuery.addDescendingOrder(Group.KEY_CREATED_AT);
         if (mGroups.size()>0){
             groupQuery.whereLessThan(Group.KEY_CREATED_AT, mGroups.get(mGroups.size()-1).getCreatedAt());

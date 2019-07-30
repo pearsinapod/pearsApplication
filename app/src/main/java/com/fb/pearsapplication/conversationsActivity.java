@@ -63,10 +63,10 @@ public class conversationsActivity extends AppCompatActivity {
 
             @Override
             public void done(List<Pear> objects, ParseException e) {
-                if (e != null){
+                if (e != null) {
                     e.printStackTrace();
-                } else if(!objects.isEmpty()){
-                    for(Pear pear: objects) {
+                } else if (!objects.isEmpty()) {
+                    for (Pear pear : objects) {
                         if (!pearID.contains(pear.getOtherUser().getObjectId())) {
                             pearList.add(pear.getOtherUser());
                             pearID.add(pear.getOtherUser().getObjectId());
@@ -78,35 +78,6 @@ public class conversationsActivity extends AppCompatActivity {
             }
         });
 
+    }
 
-
-
-        //loadConversationList();
-        }
-
-
-
-//    private void loadConversationList() {
-//
-//        ParseUser.getQuery().whereNotEqualTo("username", user.getUsername()).findInBackground(new FindCallback<ParseUser>() {
-//            @Override
-//            public void done(List<Pear> list, ParseException e) {
-//                if (list != null) {
-//
-//                    for(int i=0;i<list.size();i++){
-//                        pearList.add(list.get(i));
-//                    }
-////                    if (list.size() == 0)
-////                        Toast.makeText(conversationsActivity.this, "no user found", Toast.LENGTH_SHORT).show();
-////                    else userList = list;
-//                    cAdapter.notifyDataSetChanged();
-//
-//                }
-//                else {
-//                    Log.e(TAG, "error getting conversations", e);
-//
-//                }
-//            }
-//        });
-//    }
 }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -34,6 +35,7 @@ import com.parse.ParseException;
 
 //import com.parse.ParseFacebookUtils;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseInstallation;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -74,11 +76,8 @@ public class LoginActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
-        // fb-specific button
         FBloginButton = findViewById(R.id.login);
-
         persistenceCheck();
-
         btnLogin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -113,6 +112,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void persistenceCheck() {
+
         if (ParseUser.getCurrentUser() != null) {
             Intent homeIntent = new Intent(this, MainActivity.class);
             startActivity(homeIntent);
@@ -126,6 +126,21 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(mainIntent);
             finish();
         }
+    }
+
+    private void installationUpdate() {
+        ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+        installation.put("device_id", ParseUser.getCurrentUser().getObjectId());
+        installation.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                } else {
+                    Log.d("XYZ", "successfully updated installation id");
+                }
+            }
+        });
     }
 
     @Override
