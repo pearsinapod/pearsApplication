@@ -76,11 +76,8 @@ public class LoginActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
-        // fb-specific button
         FBloginButton = findViewById(R.id.login);
-
         persistenceCheck();
-
         btnLogin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -105,7 +102,6 @@ public class LoginActivity extends AppCompatActivity {
                             SignupActivity.instantiateGroups(user);
                             getFBInfo();
                         } else {
-                            installationUpdate();
                             Log.d("MyApp", "User logged in through Facebook!");
                             getFBInfo();
                         }
@@ -118,7 +114,6 @@ public class LoginActivity extends AppCompatActivity {
     private void persistenceCheck() {
 
         if (ParseUser.getCurrentUser() != null) {
-            installationUpdate();
             Intent homeIntent = new Intent(this, MainActivity.class);
             startActivity(homeIntent);
             finish();
@@ -127,7 +122,6 @@ public class LoginActivity extends AppCompatActivity {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
         if (isLoggedIn) {
-            installationUpdate();
             Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(mainIntent);
             finish();
@@ -201,7 +195,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void done(ParseUser user, ParseException e) {
                 if (e == null) {
-                    installationUpdate();
                     Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(mainIntent);
                     finish();

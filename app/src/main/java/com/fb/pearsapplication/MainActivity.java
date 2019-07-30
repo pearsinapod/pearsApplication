@@ -35,10 +35,6 @@ import com.parse.SaveCallback;
 
 import java.util.List;
 
-//import com.facebook.AccessToken;
-
-//import com.facebook.AccessToken;
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -185,7 +181,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickLogout(MenuItem item) {
-        Log.d("Main Activity", "Logged out");
         LoginManager.getInstance().logOut();
         ParseUser.logOut();
         Intent logoutIntent = new Intent(MainActivity.this, LoginActivity.class);
@@ -194,7 +189,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickMessages(MenuItem item) {
-        Log.d("Main Activity", "went to messages");
         Intent messageIntent = new Intent(MainActivity.this, conversationsActivity.class);
         startActivity(messageIntent);
     }
