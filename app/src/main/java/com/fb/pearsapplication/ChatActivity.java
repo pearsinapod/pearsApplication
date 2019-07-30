@@ -61,6 +61,7 @@ public class ChatActivity extends AppCompatActivity {
     Runnable mRefreshMessagesRunnable = new Runnable() {
         @Override
         public void run() {
+            mMessages.clear();
             loadMessages();
             myHandler.postDelayed(this, POLL_INTERVAL);
         }
@@ -87,7 +88,7 @@ public class ChatActivity extends AppCompatActivity {
 
         rvChat.setLayoutManager(new LinearLayoutManager(this));
 
-        loadMessages();
+//        loadMessages();
         setUpSend();
         receiver = getIntent().getStringExtra(Intent.EXTRA_DATA_REMOVED);
 //        getActionBar().setTitle(receiver);
@@ -166,7 +167,7 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        isRunning = true;
+        isRunning = false;
 
     }
 
