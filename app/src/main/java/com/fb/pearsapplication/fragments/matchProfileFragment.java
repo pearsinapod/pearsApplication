@@ -5,9 +5,11 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,24 +21,31 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Group;
+import com.fb.pearsapplication.models.GroupUserRelation;
 import com.fb.pearsapplication.models.Pear;
+import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class matchProfileFragment extends Fragment {
 
+    public Group group;
     public ParseUser pearUser;
     public ImageView ivProfileOther;
     public TextView tvName;
     public TextView tvDescription;
     public TextView tvDistance;
+    public Button btnUnpear;
+    public Button btnMessage;
 
     @Nullable
     @Override
@@ -50,6 +59,8 @@ public class matchProfileFragment extends Fragment {
         tvName = view.findViewById(R.id.tvName);
         tvDescription = view.findViewById(R.id.tvDescription);
         tvDistance = view.findViewById(R.id.tvDistance);
+        btnUnpear = view.findViewById(R.id.btnUnpear);
+        btnMessage = view.findViewById(R.id.btnMessage);
 
         ParseFile profileImage = pearUser.getParseFile("profileImage");
         String profileImageString = pearUser.getString("profilePicString");
@@ -69,7 +80,86 @@ public class matchProfileFragment extends Fragment {
         } else {
             tvDescription.setVisibility(View.GONE);
         }
+        btnUnpearClick();
+    }
 
+    public void btnUnpearClick() {
+        btnUnpear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                queryUnpear();
+            }
+        });
+    }
+
+    private void queryUnpear() {
+        ParseQuery<Pear> pearQuery = new ParseQuery<Pear>(Pear.class);
+        pearQuery.whereEqualTo("user", ParseUser.getCurrentUser());
+        pearQuery.whereEqualTo("otherUser", pearUser);
+        pearQuery.whereEqualTo("group", group);
+        pearQuery.findInBackground(new FindCallback<Pear>() {
+            @Override
+            public void done(List<Pear> objects, ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                }
+                ParseObject.deleteAllInBackground(objects, new DeleteCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            e.printStackTrace();
+                        } else {
+                            Log.d("delete", "pear done");
+                        }
+                    }
+                });
+            }
+        });
+
+        ParseQuery<Pear> otherPearQuery = new ParseQuery<Pear>(Pear.class);
+        otherPearQuery.whereEqualTo("otherUser", ParseUser.getCurrentUser());
+        otherPearQuery.whereEqualTo("user", pearUser);
+        pearQuery.whereEqualTo("group", group);
+        otherPearQuery.findInBackground(new FindCallback<Pear>() {
+            @Override
+            public void done(List<Pear> objects, ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                }
+                ParseObject.deleteAllInBackground(objects, new DeleteCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            e.printStackTrace();
+                        } else {
+                            Log.d("delete", "pear done");
+                        }
+                    }
+                });
+            }
+        });
+
+        queryGUR(ParseUser.getCurrentUser());
+        queryGUR(pearUser);
+    }
+
+    private void queryGUR(ParseUser user) {
+        ParseQuery<GroupUserRelation> gurQuery = new ParseQuery<GroupUserRelation>(GroupUserRelation.class);
+        gurQuery.whereEqualTo("user", user);
+        gurQuery.whereEqualTo("group", group);
+        gurQuery.findInBackground(new FindCallback<GroupUserRelation>() {
+            @Override
+            public void done(List<GroupUserRelation> objects, ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                } else {
+                    GroupUserRelation gur = objects.get(0);
+                    gur.setPearRequest(true);
+                    gur.saveInBackground();
+                    Log.d("delete", "gur done");
+                }
+            }
+        });
     }
 
     public double calculateDistance() {
@@ -83,13 +173,15 @@ public class matchProfileFragment extends Fragment {
         ArrayList<ParseUser> users = new ArrayList<>();
         users.add(ParseUser.getCurrentUser());
         users.add(pearUser);
-
         groupQuery.whereContainsAll("users", users);
-
     }
 
     public void setPearUser(ParseUser pearUser) {
         this.pearUser = pearUser;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 
 }

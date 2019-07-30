@@ -28,6 +28,8 @@ import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Group;
 import com.fb.pearsapplication.models.GroupUserRelation;
 import com.fb.pearsapplication.models.Pear;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -80,7 +82,14 @@ public class ChildPearButtonFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         this.view = view;
-        FirebaseMessaging.getInstance().subscribeToTopic("/topics/new_pear_notification");
+        FirebaseMessaging.getInstance().subscribeToTopic("new_pear_notification").addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Log.d("XYZ", "subscribed successfully!");
+                }
+            }
+        });
         requestQueue = Volley.newRequestQueue(getContext());
         btnPear = (Button) view.findViewById(R.id.btnPear);
         groupDetailsFragment parentFrag = ((groupDetailsFragment)ChildPearButtonFragment.this.getParentFragment());
@@ -322,12 +331,6 @@ public class ChildPearButtonFragment extends Fragment {
         swPear.setChecked(false);
         swPear.setEnabled(false);
         swPear.setClickable(false);
-        fragmentManager.beginTransaction().replace(R.id.child_fragment_container, fragment).addToBackStack(null).commit();
-    }
-
-    private void goToWaitingFragment() {
-        FragmentManager fragmentManager = getFragmentManager();
-        Fragment fragment = new ChildWaitingFragment();
         fragmentManager.beginTransaction().replace(R.id.child_fragment_container, fragment).addToBackStack(null).commit();
     }
 

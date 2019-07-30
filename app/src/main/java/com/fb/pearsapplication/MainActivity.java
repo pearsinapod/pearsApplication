@@ -26,9 +26,11 @@ import com.fb.pearsapplication.fragments.profileFragment;
 import com.fb.pearsapplication.fragments.searchFragment;
 import com.fb.pearsapplication.models.GroupUserRelation;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -41,9 +43,7 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
     final FragmentManager fragmentManager = getSupportFragmentManager();
     androidx.appcompat.widget.Toolbar toolbar;
-    LocationManager locationManager;
     Location location;
-    LocationListener locationListener;
     String provider;
     ParseUser user;
 
@@ -191,6 +191,22 @@ public class MainActivity extends AppCompatActivity {
     public void onClickMessages(MenuItem item) {
         Intent messageIntent = new Intent(MainActivity.this, conversationsActivity.class);
         startActivity(messageIntent);
+    }
+
+    private void cleanDatabase() {
+        ParseQuery<GroupUserRelation> gurQuery = new ParseQuery<GroupUserRelation>(GroupUserRelation.class);
+        gurQuery.whereEqualTo("user", ParseUser.getCurrentUser());
+        gurQuery.findInBackground(new FindCallback<GroupUserRelation>() {
+            @Override
+            public void done(List<GroupUserRelation> objects, ParseException e) {
+                ParseObject.deleteAllInBackground(objects, new DeleteCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        Log.d("XYZ", "successfully deleted");
+                    }
+                });
+            }
+        });
     }
 
 
