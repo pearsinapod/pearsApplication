@@ -78,9 +78,9 @@ public class conversationsAdapter extends RecyclerView.Adapter<conversationsAdap
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
-            Intent convoIntent = new Intent(context, ChatActivity.class);
-            convoIntent.putExtra(convoIntent.EXTRA_DATA_REMOVED, pearList.get(position).getUsername());
-            context.startActivity(convoIntent);
+            Intent chatIntent = new Intent(context, ChatActivity.class);
+            chatIntent.putExtra(chatIntent.EXTRA_DATA_REMOVED, pearList.get(position).getUsername());
+            context.startActivity(chatIntent);
         }
 
 
