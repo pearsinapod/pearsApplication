@@ -35,10 +35,6 @@ import com.parse.SaveCallback;
 
 import java.util.List;
 
-//import com.facebook.AccessToken;
-
-//import com.facebook.AccessToken;
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -64,8 +60,10 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("p e a r s");
+        locationFinder();
+    }
 
-
+    public void locationFinder() {
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         provider = locationManager.getBestProvider(criteria, true);
@@ -86,21 +84,18 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onStatusChanged(String s, int i, Bundle bundle) {
-
             }
 
             @Override
             public void onProviderEnabled(String s) {
-
             }
 
             @Override
             public void onProviderDisabled(String s) {
-
             }
         };
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60000, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 0, locationListener);
     }
 
     @Override
@@ -186,7 +181,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickLogout(MenuItem item) {
-        Log.d("Main Activity", "Logged out");
         LoginManager.getInstance().logOut();
         ParseUser.logOut();
         Intent logoutIntent = new Intent(MainActivity.this, LoginActivity.class);
@@ -195,11 +189,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickMessages(MenuItem item) {
-        Log.d("Main Activity", "went to messages");
         Intent messageIntent = new Intent(MainActivity.this, conversationsActivity.class);
         startActivity(messageIntent);
     }
-
 
 
 }

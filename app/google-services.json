@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "284978672258",
+    "firebase_url": "https://pearsapp-912ff.firebaseio.com",
+    "project_id": "pearsapp-912ff",
+    "storage_bucket": "pearsapp-912ff.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:284978672258:android:3e030307cd290e7b",
+        "android_client_info": {
+          "package_name": "com.fb.pearsapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "284978672258-khcirmrq67gfsbo3b3k24nil8ab04435.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0vPoZ4pqedqGwUbeAwzD4owZnmYNgdZ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "284978672258-khcirmrq67gfsbo3b3k24nil8ab04435.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
