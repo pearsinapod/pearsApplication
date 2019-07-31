@@ -146,7 +146,7 @@ public class ChildPearButtonFragment extends Fragment {
                 JSONObject notifcationBody = new JSONObject();
                 try {
                     notifcationBody.put("title", "hello from pears!");
-                    notifcationBody.put("message", "");
+                    notifcationBody.put("message", "new notification");
 
                     notification.put("to", topic);
                     notification.put("data", notifcationBody);
