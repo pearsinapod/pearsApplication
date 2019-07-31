@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -46,6 +47,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +67,7 @@ public class matchProfileFragment extends Fragment {
 
     // notification variables
     private String FCM_API = "https://fcm.googleapis.com/fcm/send";
-    private String server_key = "key=" + "AAAAQloNcoI:APA91bHwJdFHHyenaqjfw5DlNE00qcOVSgDAcWVEsMRlSGpgaF--ALmA9y5A2LMdRbivgtYivlu20GHvILC1qTQcbxiOcUtOAPzhwS0QqFB8pFdfJmMFKLL7j3pq1gXsgFzJ3kMElqaa";
+    private String server_key = "key=" + "AAAAQloNcoI:APA91bHwJdFHHyenaqjfw5DlNE00qcOVSgDAcWVEsMRlSGpgaF--ALmA9y5A2LMdRbivgtYivlu20GHvILC1qTQcbxiOcUtOAPzhwS0QqFB8pFdfJmMFKLL7j3pq1gXsgFzJ3kMElqaa\n";
     private String contentType = "application/json";
     private RequestQueue requestQueue;
 
@@ -83,14 +86,14 @@ public class matchProfileFragment extends Fragment {
         btnUnpear = view.findViewById(R.id.btnUnpear);
         btnMessage = view.findViewById(R.id.btnMessage);
 
-        FirebaseMessaging.getInstance().subscribeToTopic("new_pear_notification").addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Log.d("XYZ", "subscribed successfully!");
-                }
-            }
-        });
+//        FirebaseMessaging.getInstance().subscribeToTopic("new_pear_notification").addOnCompleteListener(new OnCompleteListener<Void>() {
+//            @Override
+//            public void onComplete(@NonNull Task<Void> task) {
+//                if (task.isSuccessful()) {
+//                    Log.d("XYZ", "subscribed successfully!");
+//                }
+//            }
+//        });
         requestQueue = Volley.newRequestQueue(getContext());
 
         ParseFile profileImage = pearUser.getParseFile("profileImage");
@@ -213,9 +216,10 @@ public class matchProfileFragment extends Fragment {
     }
 
     private void sendNotification(JSONObject notification) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, FCM_API, notification, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                Log.d("XYZ", "good?");
             }
         }, new Response.ErrorListener() {
             @Override
@@ -225,9 +229,13 @@ public class matchProfileFragment extends Fragment {
             }
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 Map<String, String> params = new HashMap<>();
-                params.put("Authorization", server_key);
+                try {
+                    params.put("Authorization", URLEncoder.encode(server_key, "UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
                 params.put("Content-Type", contentType);
                 return params;
             }
