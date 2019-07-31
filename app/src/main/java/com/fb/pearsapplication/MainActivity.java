@@ -1,6 +1,7 @@
 package com.fb.pearsapplication;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
@@ -25,10 +26,15 @@ import com.fb.pearsapplication.fragments.groupFragment;
 import com.fb.pearsapplication.fragments.profileFragment;
 import com.fb.pearsapplication.fragments.searchFragment;
 import com.fb.pearsapplication.models.GroupUserRelation;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -41,9 +47,7 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
     final FragmentManager fragmentManager = getSupportFragmentManager();
     androidx.appcompat.widget.Toolbar toolbar;
-    LocationManager locationManager;
     Location location;
-    LocationListener locationListener;
     String provider;
     ParseUser user;
 
@@ -60,6 +64,13 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("p e a r s");
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                String newToken = instanceIdResult.getToken();
+                getPreferences(Context.MODE_PRIVATE).edit().putString(ParseUser.getCurrentUser().getObjectId(), newToken).apply();
+            }
+        });
         locationFinder();
     }
 
@@ -191,6 +202,22 @@ public class MainActivity extends AppCompatActivity {
     public void onClickMessages(MenuItem item) {
         Intent messageIntent = new Intent(MainActivity.this, conversationsActivity.class);
         startActivity(messageIntent);
+    }
+
+    private void cleanDatabase() {
+        ParseQuery<GroupUserRelation> gurQuery = new ParseQuery<GroupUserRelation>(GroupUserRelation.class);
+        gurQuery.whereEqualTo("user", ParseUser.getCurrentUser());
+        gurQuery.findInBackground(new FindCallback<GroupUserRelation>() {
+            @Override
+            public void done(List<GroupUserRelation> objects, ParseException e) {
+                ParseObject.deleteAllInBackground(objects, new DeleteCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        Log.d("XYZ", "successfully deleted");
+                    }
+                });
+            }
+        });
     }
 
 
