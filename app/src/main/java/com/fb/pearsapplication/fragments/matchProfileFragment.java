@@ -128,12 +128,12 @@ public class matchProfileFragment extends Fragment {
         btnMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String user = getActivity().getPreferences(Context.MODE_PRIVATE).getString(pearUser.getObjectId(), null);
+                String user = pearUser.getString("deviceToken");
                 JSONObject notification = new JSONObject();
                 JSONObject notificationBody = new JSONObject();
                 try {
                     notificationBody.put("title", "hello from pears!");
-                    notificationBody.put("message", "new notification");
+                    notificationBody.put("body", "new notification");
 
                     notification.put("to", user);
                     notification.put("data", notificationBody);
@@ -231,11 +231,7 @@ public class matchProfileFragment extends Fragment {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> params = new HashMap<>();
-                try {
-                    params.put("Authorization", URLEncoder.encode(server_key, "UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+                params.put("Authorization", server_key);
                 params.put("Content-Type", contentType);
                 return params;
             }

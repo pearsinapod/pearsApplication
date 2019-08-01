@@ -68,7 +68,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(InstanceIdResult instanceIdResult) {
                 String newToken = instanceIdResult.getToken();
-                getPreferences(Context.MODE_PRIVATE).edit().putString(ParseUser.getCurrentUser().getObjectId(), newToken).apply();
+                ParseUser.getCurrentUser().put("deviceToken", newToken);
+                ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        Log.d("XYZ", "device token saved");
+                    }
+                });
             }
         });
         locationFinder();
