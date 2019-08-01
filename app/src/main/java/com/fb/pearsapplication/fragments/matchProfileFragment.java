@@ -137,6 +137,7 @@ public class matchProfileFragment extends Fragment {
 
                     notification.put("to", user);
                     notification.put("data", notificationBody);
+                    notification.put("priority", "high");
                 } catch (JSONException e) {
                     Log.e("XYZ", "onCreate: " + e.getMessage());
                 }

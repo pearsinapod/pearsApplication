@@ -19,7 +19,9 @@ public class apioriAlgorithm {
         groups.findInBackground(new FindCallback<Group>() {
             @Override
             public void done(List<Group> objects, ParseException e) {
+                System.out.println("yay");
                 if (e==null){
+                    System.out.println("yay");
                     Group[] groups = new Group[objects.size()];//
                     List<List<Group>> groupSubsets = Powerset.subsets(objects.toArray(groups));//
                     for (int i = 0; i < groupSubsets.size(); i++) {
@@ -94,6 +96,10 @@ public class apioriAlgorithm {
             }
         });
 
+    }
+
+    public static void main(String args[]){
+        populatingHobbies();
     }
 
 }

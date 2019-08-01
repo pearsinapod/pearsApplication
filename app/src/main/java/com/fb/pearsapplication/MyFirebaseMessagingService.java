@@ -11,6 +11,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
@@ -25,6 +26,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
+        Log.d("XYZ", "message received");
         Intent mainIntent = new Intent(this, MainActivity.class);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         Random random = new Random();
