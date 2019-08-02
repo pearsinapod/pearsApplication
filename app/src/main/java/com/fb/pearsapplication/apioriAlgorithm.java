@@ -115,8 +115,8 @@ public class apioriAlgorithm {
         }
     }
 
-    public JSONObject fileToJSON(String filename){
-        String filePath = "/Users/angcast/AndroidStudioProjects/pearsApplication/app/src/main/assets/"+filename;
+    public JSONObject fileToJSON(String user, String filename){
+        String filePath = "/Users/"+user+"/AndroidStudioProjects/pearsApplication/app/src/main/assets/"+filename;
         File file = new File(filePath);
 
         BufferedReader br = null;
@@ -133,6 +133,7 @@ public class apioriAlgorithm {
                 JSONObject json = null;
                 try {
                     json = (JSONObject) parser.parse(st);
+                    //System.out.println(json);
                 } catch (org.json.simple.parser.ParseException e) {
                     e.printStackTrace();
                 }
@@ -148,7 +149,7 @@ public class apioriAlgorithm {
     public static void main(String args[]){
 
         apioriAlgorithm a = new apioriAlgorithm();
-        a.fileToJSON("JSONObject.json");
+        a.fileToJSON("angcast","JSONObject.json");
     }
 
 /**/
