@@ -19,11 +19,18 @@ public class Powerset {
         }
         solution.add(new ArrayList<>(temp_list));
         for(int i=index; i<groups.length;i++){
+            System.out.println("a");
             temp_list.add(groups[i]);
             recursion(solution, temp_list, i+1, groups);
             temp_list.remove(temp_list.size()-1);
         }
     }
+
+    public static void main(String args[]){
+        System.out.println("yer");
+        System.out.println("yer2");
+    }
+
 
 }
 
