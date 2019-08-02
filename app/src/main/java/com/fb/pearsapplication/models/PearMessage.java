@@ -17,6 +17,7 @@ public class PearMessage extends ParseObject implements Serializable {
     private int status = STATUS_SENT;
     private Date date;
     private String sender;
+    public String receiver;
 
 
     public PearMessage(String body, Date createdAt, String messageAuthor) {
@@ -25,6 +26,9 @@ public class PearMessage extends ParseObject implements Serializable {
         this.date = createdAt;
         this.sender = messageAuthor;
     }
+
+
+
 
     public PearMessage(){
     }
@@ -40,6 +44,7 @@ public class PearMessage extends ParseObject implements Serializable {
     public boolean isSent() {
         return user.getUsername().equals(sender);
     }
+
 
     public Date getDate() {
         return date;

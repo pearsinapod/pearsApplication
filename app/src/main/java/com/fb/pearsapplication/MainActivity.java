@@ -1,6 +1,7 @@
 package com.fb.pearsapplication;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
@@ -25,19 +26,20 @@ import com.fb.pearsapplication.fragments.groupFragment;
 import com.fb.pearsapplication.fragments.profileFragment;
 import com.fb.pearsapplication.fragments.searchFragment;
 import com.fb.pearsapplication.models.GroupUserRelation;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.List;
-
-//import com.facebook.AccessToken;
-
-//import com.facebook.AccessToken;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -45,9 +47,7 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
     final FragmentManager fragmentManager = getSupportFragmentManager();
     androidx.appcompat.widget.Toolbar toolbar;
-    LocationManager locationManager;
     Location location;
-    LocationListener locationListener;
     String provider;
     ParseUser user;
 
@@ -64,8 +64,23 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("p e a r s");
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                String newToken = instanceIdResult.getToken();
+                ParseUser.getCurrentUser().put("deviceToken", newToken);
+                ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        Log.d("XYZ", "device token saved");
+                    }
+                });
+            }
+        });
+        locationFinder();
+    }
 
-
+    public void locationFinder() {
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         provider = locationManager.getBestProvider(criteria, true);
@@ -86,21 +101,18 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onStatusChanged(String s, int i, Bundle bundle) {
-
             }
 
             @Override
             public void onProviderEnabled(String s) {
-
             }
 
             @Override
             public void onProviderDisabled(String s) {
-
             }
         };
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60000, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 0, locationListener);
     }
 
     @Override
@@ -186,7 +198,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickLogout(MenuItem item) {
-        Log.d("Main Activity", "Logged out");
         LoginManager.getInstance().logOut();
         ParseUser.logOut();
         Intent logoutIntent = new Intent(MainActivity.this, LoginActivity.class);
@@ -195,11 +206,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickMessages(MenuItem item) {
-        Log.d("Main Activity", "went to messages");
         Intent messageIntent = new Intent(MainActivity.this, conversationsActivity.class);
         startActivity(messageIntent);
     }
 
+    private void cleanDatabase() {
+        ParseQuery<GroupUserRelation> gurQuery = new ParseQuery<GroupUserRelation>(GroupUserRelation.class);
+        gurQuery.whereEqualTo("user", ParseUser.getCurrentUser());
+        gurQuery.findInBackground(new FindCallback<GroupUserRelation>() {
+            @Override
+            public void done(List<GroupUserRelation> objects, ParseException e) {
+                ParseObject.deleteAllInBackground(objects, new DeleteCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        Log.d("XYZ", "successfully deleted");
+                    }
+                });
+            }
+        });
+    }
 
 }
 
