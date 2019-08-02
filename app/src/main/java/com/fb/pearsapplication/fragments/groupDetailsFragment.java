@@ -116,7 +116,7 @@ public class groupDetailsFragment extends Fragment {
         ParseQuery<Pear> pearQuery = new ParseQuery<Pear>(Pear.class);
         pearQuery.whereEqualTo("user", currentUser);
         pearQuery.whereEqualTo("group", group);
-        pearQuery.findInBackground(new FindCallback<Pear>() {
+        pearQuery.findInBackground( new FindCallback<Pear>() {
             @Override
             public void done(List<Pear> objects, ParseException e) {
                 if (e != null) {
