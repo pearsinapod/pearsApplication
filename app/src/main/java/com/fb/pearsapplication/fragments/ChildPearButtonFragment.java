@@ -20,6 +20,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
@@ -67,6 +68,12 @@ public class ChildPearButtonFragment extends Fragment {
     GroupUserRelation gur;
     GroupUserRelation otherGUR;
 
+    // notification variables
+    private String FCM_API = "https://fcm.googleapis.com/fcm/send";
+    private String server_key = "key=" + "AAAAQloNcoI:APA91bHwJdFHHyenaqjfw5DlNE00qcOVSgDAcWVEsMRlSGpgaF--ALmA9y5A2LMdRbivgtYivlu20GHvILC1qTQcbxiOcUtOAPzhwS0QqFB8pFdfJmMFKLL7j3pq1gXsgFzJ3kMElqaa\n";
+    private String contentType = "application/json";
+    private RequestQueue requestQueue;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -78,6 +85,7 @@ public class ChildPearButtonFragment extends Fragment {
         this.view = view;
         btnPear = (Button) view.findViewById(R.id.btnPear);
         groupDetailsFragment parentFrag = ((groupDetailsFragment)ChildPearButtonFragment.this.getParentFragment());
+        requestQueue = Volley.newRequestQueue(getContext());
         swPear = parentFrag.swPear;
         currentUser = ParseUser.getCurrentUser();
         if (gur.getPearRequest()) {
@@ -182,6 +190,49 @@ public class ChildPearButtonFragment extends Fragment {
                 }
             }
         });
+        JSONObject notification = createNotification();
+        sendNotification(notification);
+    }
+
+    private JSONObject createNotification() {
+        String user = pearUser.getString("deviceToken");
+        JSONObject notification = new JSONObject();
+        JSONObject notificationBody = new JSONObject();
+        try {
+            notificationBody.put("title", "New Pear Found");
+            notificationBody.put("body", "You have a new pear in your group!");
+
+            notification.put("to", user);
+            notification.put("data", notificationBody);
+            notification.put("priority", "high");
+        } catch (JSONException e) {
+            Log.e("XYZ", "onCreate: " + e.getMessage());
+        }
+        return notification;
+    }
+
+    private void sendNotification(JSONObject notification) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, FCM_API, notification, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("XYZ", "good?");
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                Log.d("XYZ", "volley error");
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", server_key);
+                params.put("Content-Type", contentType);
+                return params;
+            }
+        };
+        requestQueue.add(jsonObjectRequest);
     }
 
     public void popupPear(View view) {
@@ -205,7 +256,7 @@ public class ChildPearButtonFragment extends Fragment {
         TextView tvCurrentPear = view.findViewById(R.id.tvCurrentPear);
         ImageView ivPearPic = view.findViewById(R.id.ivPearPic);
         TextView tvPearName = view.findViewById(R.id.tvPearName);
-        Button btnMessage = view.findViewById(R.id.btnMessage); // TODO set onclick listeners here
+        Button btnMessage = view.findViewById(R.id.btnMessage);
         Button btnViewProfile = view.findViewById(R.id.btnViewProfile);
         setOnClickListeners(btnViewProfile, btnMessage);
 
