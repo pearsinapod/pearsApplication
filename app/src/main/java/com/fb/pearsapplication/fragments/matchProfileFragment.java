@@ -65,12 +65,6 @@ public class matchProfileFragment extends Fragment {
     public Button btnUnpear;
     public Button btnMessage;
 
-    // notification variables
-    private String FCM_API = "https://fcm.googleapis.com/fcm/send";
-    private String server_key = "key=" + "AAAAQloNcoI:APA91bHwJdFHHyenaqjfw5DlNE00qcOVSgDAcWVEsMRlSGpgaF--ALmA9y5A2LMdRbivgtYivlu20GHvILC1qTQcbxiOcUtOAPzhwS0QqFB8pFdfJmMFKLL7j3pq1gXsgFzJ3kMElqaa\n";
-    private String contentType = "application/json";
-    private RequestQueue requestQueue;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -94,7 +88,6 @@ public class matchProfileFragment extends Fragment {
 //                }
 //            }
 //        });
-        requestQueue = Volley.newRequestQueue(getContext());
 
         ParseFile profileImage = pearUser.getParseFile("profileImage");
         String profileImageString = pearUser.getString("profilePicString");
@@ -122,25 +115,6 @@ public class matchProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 queryUnpear();
-            }
-        });
-
-        btnMessage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String user = getActivity().getPreferences(Context.MODE_PRIVATE).getString(pearUser.getObjectId(), null);
-                JSONObject notification = new JSONObject();
-                JSONObject notificationBody = new JSONObject();
-                try {
-                    notificationBody.put("title", "hello from pears!");
-                    notificationBody.put("message", "new notification");
-
-                    notification.put("to", user);
-                    notification.put("data", notificationBody);
-                } catch (JSONException e) {
-                    Log.e("XYZ", "onCreate: " + e.getMessage());
-                }
-                sendNotification(notification);
             }
         });
     }
@@ -213,34 +187,6 @@ public class matchProfileFragment extends Fragment {
                 }
             }
         });
-    }
-
-    private void sendNotification(JSONObject notification) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, FCM_API, notification, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("XYZ", "good?");
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-                Log.d("XYZ", "volley error");
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> params = new HashMap<>();
-                try {
-                    params.put("Authorization", URLEncoder.encode(server_key, "UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                params.put("Content-Type", contentType);
-                return params;
-            }
-        };
-        requestQueue.add(jsonObjectRequest);
     }
 
     public double calculateDistance() {
