@@ -195,7 +195,12 @@ public class ChildPearButtonFragment extends Fragment {
     }
 
     private JSONObject createNotification() {
-        String user = pearUser.getString("deviceToken");
+        String user = "";
+        try {
+            user = pearUser.fetchIfNeeded().getString("deviceToken");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         JSONObject notification = new JSONObject();
         JSONObject notificationBody = new JSONObject();
         try {
