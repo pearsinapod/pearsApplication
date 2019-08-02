@@ -4,41 +4,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.adapters.ChatAdapter;
 import com.fb.pearsapplication.models.PearMessage;
-import com.fb.pearsapplication.models.User;
 import com.parse.FindCallback;
-import com.parse.LogInCallback;
-import com.parse.Parse;
-import com.parse.ParseAnonymousUtils;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
-import com.parse.livequery.ParseLiveQueryClient;
-import com.parse.livequery.SubscriptionHandling;
-
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -120,6 +104,7 @@ public class ChatActivity extends AppCompatActivity {
     public void loadMessages() {
         gettingMessagesFromParse(contactingParse());
     }
+
 
     public ParseQuery contactingParse() {
         ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("Message");
