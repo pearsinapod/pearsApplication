@@ -20,21 +20,40 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Group;
 import com.fb.pearsapplication.models.GroupUserRelation;
 import com.fb.pearsapplication.models.Pear;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseInstallation;
+import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.parse.SendCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class ChildPearButtonFragment extends Fragment {
@@ -49,6 +68,12 @@ public class ChildPearButtonFragment extends Fragment {
     GroupUserRelation gur;
     GroupUserRelation otherGUR;
 
+    // notification variables
+    private String FCM_API = "https://fcm.googleapis.com/fcm/send";
+    private String server_key = "key=" + "AAAAQloNcoI:APA91bHwJdFHHyenaqjfw5DlNE00qcOVSgDAcWVEsMRlSGpgaF--ALmA9y5A2LMdRbivgtYivlu20GHvILC1qTQcbxiOcUtOAPzhwS0QqFB8pFdfJmMFKLL7j3pq1gXsgFzJ3kMElqaa\n";
+    private String contentType = "application/json";
+    private RequestQueue requestQueue;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -60,6 +85,7 @@ public class ChildPearButtonFragment extends Fragment {
         this.view = view;
         btnPear = (Button) view.findViewById(R.id.btnPear);
         groupDetailsFragment parentFrag = ((groupDetailsFragment)ChildPearButtonFragment.this.getParentFragment());
+        requestQueue = Volley.newRequestQueue(getContext());
         swPear = parentFrag.swPear;
         currentUser = ParseUser.getCurrentUser();
         if (gur.getPearRequest()) {
@@ -106,8 +132,6 @@ public class ChildPearButtonFragment extends Fragment {
         btnPear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<ParseUser> pearUsers = group.getPears();
-
                 ParseQuery<GroupUserRelation> query = ParseQuery.getQuery(GroupUserRelation.class);
                 query.whereNotEqualTo("user", currentUser);
                 query.whereNear("userLocation", currentUser.getParseGeoPoint("location"));
@@ -166,6 +190,54 @@ public class ChildPearButtonFragment extends Fragment {
                 }
             }
         });
+        JSONObject notification = createNotification();
+        sendNotification(notification);
+    }
+
+    private JSONObject createNotification() {
+        String user = "";
+        try {
+            user = pearUser.fetchIfNeeded().getString("deviceToken");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        JSONObject notification = new JSONObject();
+        JSONObject notificationBody = new JSONObject();
+        try {
+            notificationBody.put("title", "New Pear Found");
+            notificationBody.put("body", "You have a new pear in your group!");
+
+            notification.put("to", user);
+            notification.put("data", notificationBody);
+            notification.put("priority", "high");
+        } catch (JSONException e) {
+            Log.e("XYZ", "onCreate: " + e.getMessage());
+        }
+        return notification;
+    }
+
+    private void sendNotification(JSONObject notification) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, FCM_API, notification, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("XYZ", "good?");
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                Log.d("XYZ", "volley error");
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", server_key);
+                params.put("Content-Type", contentType);
+                return params;
+            }
+        };
+        requestQueue.add(jsonObjectRequest);
     }
 
     public void popupPear(View view) {
@@ -189,7 +261,7 @@ public class ChildPearButtonFragment extends Fragment {
         TextView tvCurrentPear = view.findViewById(R.id.tvCurrentPear);
         ImageView ivPearPic = view.findViewById(R.id.ivPearPic);
         TextView tvPearName = view.findViewById(R.id.tvPearName);
-        Button btnMessage = view.findViewById(R.id.btnMessage); // TODO set onclick listeners here
+        Button btnMessage = view.findViewById(R.id.btnMessage);
         Button btnViewProfile = view.findViewById(R.id.btnViewProfile);
         setOnClickListeners(btnViewProfile, btnMessage);
 
@@ -268,9 +340,5 @@ public class ChildPearButtonFragment extends Fragment {
         fragmentManager.beginTransaction().replace(R.id.child_fragment_container, fragment).addToBackStack(null).commit();
     }
 
-    private void goToWaitingFragment() {
-        FragmentManager fragmentManager = getFragmentManager();
-        Fragment fragment = new ChildWaitingFragment();
-        fragmentManager.beginTransaction().replace(R.id.child_fragment_container, fragment).addToBackStack(null).commit();
-    }
+
 }

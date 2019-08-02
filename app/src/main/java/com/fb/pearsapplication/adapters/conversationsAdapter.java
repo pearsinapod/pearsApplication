@@ -83,6 +83,7 @@ public class conversationsAdapter extends RecyclerView.Adapter<conversationsAdap
             context.startActivity(chatIntent);
         }
 
+
         public void bind(ParseUser otherUser) {
             String name = "";
             try {

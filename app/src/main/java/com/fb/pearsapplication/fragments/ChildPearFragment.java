@@ -82,7 +82,8 @@ public class ChildPearFragment extends Fragment {
                 groupDetailsFragment parentFrag = ((groupDetailsFragment)ChildPearFragment.this.getParentFragment());
                 FragmentManager fragmentManager = parentFrag.getFragmentManager();
                 Fragment fragment = new matchProfileFragment();
-                ((matchProfileFragment) fragment).setPearUser(pearUser);
+                ((matchProfileFragment) fragment).setPearUser(parentFrag.getOtherUser());
+                ((matchProfileFragment) fragment).setGroup(pear.getGroup());
                 fragmentManager.beginTransaction().replace(R.id.flContainter, fragment).addToBackStack(null).commit();
             }
         });
