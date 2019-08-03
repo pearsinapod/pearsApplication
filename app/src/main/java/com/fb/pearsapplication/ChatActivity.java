@@ -4,41 +4,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.adapters.ChatAdapter;
 import com.fb.pearsapplication.models.PearMessage;
-import com.fb.pearsapplication.models.User;
 import com.parse.FindCallback;
-import com.parse.LogInCallback;
-import com.parse.Parse;
-import com.parse.ParseAnonymousUtils;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
-import com.parse.livequery.ParseLiveQueryClient;
-import com.parse.livequery.SubscriptionHandling;
-
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,7 +36,7 @@ public class ChatActivity extends AppCompatActivity {
     private ChatAdapter mAdapter;
     private EditText etMessage;
     private Button btSend;
-    private String receiver;
+    public String receiver;
     private Date lastMessageDate;
     private RecyclerView rvChat;
     private Boolean isRunning;
@@ -65,6 +50,7 @@ public class ChatActivity extends AppCompatActivity {
             loadMessages();
             myHandler.postDelayed(this, POLL_INTERVAL);
         }
+
     };
 
     @Override
@@ -86,13 +72,27 @@ public class ChatActivity extends AppCompatActivity {
         etMessage = (EditText) findViewById(R.id.etMessage);
         etMessage.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
 
-        rvChat.setLayoutManager(new LinearLayoutManager(this));
+        rvChat.setLayoutManager(new WrapContentLinearLayoutManager(this));
 
 //        loadMessages();
         setUpSend();
         receiver = getIntent().getStringExtra(Intent.EXTRA_DATA_REMOVED);
 //        getActionBar().setTitle(receiver);
 
+    }
+
+    public class WrapContentLinearLayoutManager extends LinearLayoutManager {
+        public WrapContentLinearLayoutManager(Context context) {
+            super(context);
+        }
+        @Override
+        public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+            try {
+                super.onLayoutChildren(recycler, state);
+            } catch (IndexOutOfBoundsException e) {
+                Log.e("TAG", "meet a IOOBE in RecyclerView");
+            }
+        }
     }
 
     @Override
@@ -122,6 +122,22 @@ public class ChatActivity extends AppCompatActivity {
         gettingMessagesFromParse(contactingParse());
     }
 
+    public void contactingParseforBody() {
+        ParseQuery<PearMessage> bodyQuery = ParseQuery.getQuery(PearMessage.class);
+        bodyQuery.orderByDescending("body");
+        bodyQuery.findInBackground(new FindCallback<PearMessage>() {
+            @Override
+            public void done(List<PearMessage> objects, ParseException e) {
+                String[] words = new String[objects.size()];
+                if (objects != null && objects.size() > 0) {
+                    for (int i = objects.size() - 1; i >= 0 ; i--) {
+                        String body = objects.get(i).getBody();
+                        words[i] = body;
+                    }
+                }
+            }
+        });
+    }
     public ParseQuery contactingParse() {
         ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("Message");
         if (mMessages.size() == 0) {
@@ -141,7 +157,7 @@ public class ChatActivity extends AppCompatActivity {
 
     public void gettingMessagesFromParse(ParseQuery parseQuery) {
         parseQuery.orderByDescending("createdAt");
-        parseQuery.setLimit(30);
+//        parseQuery.setLimit(30);
         parseQuery.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
