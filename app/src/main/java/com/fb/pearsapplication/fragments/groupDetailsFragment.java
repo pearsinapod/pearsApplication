@@ -71,7 +71,9 @@ public class groupDetailsFragment extends Fragment {
         tvGroupName.setText(group.getGroupName());
         ParseFile image = group.getGroupImage();
         if (image != null) {
-            Glide.with(getContext()).load(image.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivGroupImage);
+            Glide.with(getContext()).load(image.getUrl()).into(ivGroupImage);
+        } else {
+            Glide.with(getContext()).load(R.drawable.people).into(ivGroupImage);
         }
         if (group.getUsers() != null) {
             Integer size = group.getUsers().size();
