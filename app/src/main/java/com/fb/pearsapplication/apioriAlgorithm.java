@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+//import org.json.simple.JSONObject;
+
 
 public class apioriAlgorithm {
     static int size;
@@ -30,6 +32,9 @@ public class apioriAlgorithm {
         --output JSONObject.txt
 */
 
+    public static void populatingHobbies(JSONObject jsonObj){
+
+    }
     public static void populatingHobbies() {
         System.out.println("Initiating populating hobbies");
         final ParseQuery<Group> groupQuery = new ParseQuery<Group>(Group.class);
@@ -114,7 +119,6 @@ public class apioriAlgorithm {
             hobby.setThreshold(hobby.getOccurences()/size);
         }
     }
-
     public JSONObject fileToJSON(String user, String filename){
         String filePath = "/Users/"+user+"/AndroidStudioProjects/pearsApplication/app/src/main/assets/"+filename;
         File file = new File(filePath);
@@ -134,22 +138,31 @@ public class apioriAlgorithm {
                 try {
                     json = (JSONObject) parser.parse(st);
                     //System.out.println(json);
+                    //System.out.println(json);
                 } catch (org.json.simple.parser.ParseException e) {
                     e.printStackTrace();
                 }
                 return json;
-                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
 
     }
+    public static org.json.simple.JSONArray convertJSONObjectToArray(JSONObject JSONObj){
+        Object results = JSONObj.get("results");
+        org.json.simple.JSONArray JSONarr = (org.json.simple.JSONArray) results;
+        System.out.println(JSONarr);
+        return JSONarr;
+
+    }
 
     public static void main(String args[]){
 
         apioriAlgorithm a = new apioriAlgorithm();
-        a.fileToJSON("angcast","JSONObject.json");
+       JSONObject lol = a.fileToJSON("angcast","JSONObject.json");
+       convertJSONObjectToArray(lol);
     }
 
 /**/
