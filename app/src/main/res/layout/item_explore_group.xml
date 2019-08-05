@@ -64,7 +64,6 @@
                 android:textAlignment="center"
                 android:textColor="#919191"
                 android:textSize="18sp" />
-
         </FrameLayout>
     </androidx.cardview.widget.CardView>
 
