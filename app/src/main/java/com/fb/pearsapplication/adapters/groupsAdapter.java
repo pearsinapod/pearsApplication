@@ -2,7 +2,6 @@ package com.fb.pearsapplication.adapters;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,14 +19,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.fragments.groupDetailsFragment;
 import com.fb.pearsapplication.models.Group;
-import com.parse.Parse;
-import com.parse.ParseACL;
-import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class groupsAdapter extends RecyclerView.Adapter<groupsAdapter.ViewHolder>{
@@ -113,10 +106,10 @@ public class groupsAdapter extends RecyclerView.Adapter<groupsAdapter.ViewHolder
             tvGroupName.setText(group.getGroupName());
             ParseFile image = group.getGroupImage();
             if (image != null) {
-                Glide.with(context)
-                        .load(image.getUrl())
-                        .apply(RequestOptions.circleCropTransform())
-                        .into(ivGroupImage);
+                Glide.with(context).load(image.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivGroupImage);
+            }
+            else{
+                Glide.with(context).load(R.drawable.group_search_placeholder).apply(RequestOptions.circleCropTransform()).into(ivGroupImage);
             }
         }
 
