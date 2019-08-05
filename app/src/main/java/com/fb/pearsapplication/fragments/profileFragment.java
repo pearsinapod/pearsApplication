@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -21,18 +22,27 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.fb.pearsapplication.R;
+import com.fb.pearsapplication.models.Question;
+import com.fb.pearsapplication.models.UserQuestion;
+import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 public class profileFragment extends Fragment {
 
@@ -44,8 +54,10 @@ public class profileFragment extends Fragment {
     public ImageButton btnDone;
     public ImageButton btnAddPhoto;
 
+
     ParseUser user;
     Uri photoUri;
+    Question dailyQuestion;
 
     public final static int PICK_PHOTO_CODE = 1046;
 
@@ -59,20 +71,11 @@ public class profileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         user = ParseUser.getCurrentUser();
-
-        ivImage = view.findViewById(R.id.ivProfileOther);
-        tvName = view.findViewById(R.id.tvName);
-        tvDescription = view.findViewById(R.id.tvDescription);
-        etDescription = view.findViewById(R.id.etDescription);
-        btnEdit = view.findViewById(R.id.btnEdit);
-        btnDone = view.findViewById(R.id.btnDone);
-        btnAddPhoto = view.findViewById(R.id.btnAddPhoto);
-
+        findViews(view);
+        bindViews();
+        findDailyQuestion();
         etDescription.setVisibility(View.GONE);
         btnDone.setVisibility(View.GONE);
-
-        bindViews();
-
         btnAddPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -96,6 +99,16 @@ public class profileFragment extends Fragment {
                 });
             }
         });
+    }
+
+    private void findViews(View view) {
+        ivImage = view.findViewById(R.id.ivProfileOther);
+        tvName = view.findViewById(R.id.tvName);
+        tvDescription = view.findViewById(R.id.tvDescription);
+        etDescription = view.findViewById(R.id.etDescription);
+        btnEdit = view.findViewById(R.id.btnEdit);
+        btnDone = view.findViewById(R.id.btnDone);
+        btnAddPhoto = view.findViewById(R.id.btnAddPhoto);
     }
 
     private void bindViews() {
@@ -192,4 +205,57 @@ public class profileFragment extends Fragment {
             }
         });
     }
+
+    public void findDailyQuestion() {
+        Calendar cal = new GregorianCalendar();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        Date today = cal.getTime();
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+        Date tomorrow = cal.getTime();
+
+        ParseQuery<Question> questionQuery = new ParseQuery<Question>(Question.class);
+        questionQuery.whereGreaterThanOrEqualTo("targetDate", today);
+        questionQuery.whereLessThan("targetDate", tomorrow);
+        questionQuery.findInBackground(new FindCallback<Question>() {
+            @Override
+            public void done(List<Question> objects, ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                } else {
+                    dailyQuestion = objects.get(0);
+                    userQuestionQuery(dailyQuestion);
+                }
+            }
+        });
+    }
+
+    public void userQuestionQuery(Question question) {
+        ParseQuery<UserQuestion> userQuestionQuery = new ParseQuery<UserQuestion>(UserQuestion.class);
+        userQuestionQuery.whereEqualTo("user", user);
+        userQuestionQuery.whereEqualTo("question", question);
+        userQuestionQuery.findInBackground(new FindCallback<UserQuestion>() {
+            @Override
+            public void done(List<UserQuestion> objects, ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                } else if (objects.isEmpty()) {
+                    insertNestedQuestionFragment();
+                } else {
+                    // figure out
+                }
+            }
+        });
+    }
+
+    public void insertNestedQuestionFragment() {
+        Fragment childFragment = new ChildQuestionFragment();
+        ((ChildQuestionFragment) childFragment).setDailyQuestion(dailyQuestion);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.child_fragment_container, childFragment).commit();
+    }
+
 }
