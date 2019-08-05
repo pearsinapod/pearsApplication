@@ -138,7 +138,7 @@ public class WordTree implements Comparable<Object> {
             Collections.sort(suggestions);
             return suggestions;
         } else {
-                return this.map.get(new WordTree(chunks.remove(0))).suggestNext(chunks);
+            return this.map.get(new WordTree(chunks.remove(0))).suggestNext(chunks);
 
         }
 

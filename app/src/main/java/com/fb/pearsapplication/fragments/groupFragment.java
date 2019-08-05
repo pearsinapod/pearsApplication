@@ -23,6 +23,7 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,8 +93,11 @@ public class groupFragment extends Fragment {
 
     protected void queryGroups() {
         ParseQuery<Group> groupQuery = new ParseQuery<Group>(Group.class);
+        ArrayList Users = new ArrayList<>();
+        Users.add(ParseUser.getCurrentUser());
         groupQuery.include(Group.KEY_USERS);
         groupQuery.setLimit(20);
+        groupQuery.whereContainedIn(Group.KEY_USERS, Users);
 //        ArrayList<ParseUser> currentUser = new ArrayList<>();
 //        currentUser.add(ParseUser.getCurrentUser());
 //        groupQuery.whereContainedIn("users", currentUser);
