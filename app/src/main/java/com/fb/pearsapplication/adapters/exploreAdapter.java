@@ -41,9 +41,10 @@ public class exploreAdapter extends ArrayAdapter<Group> {
 
 
         tvExploreDescription.setText(group.getDescription());
-        tvExploreDescription.setBackgroundColor(0000);
         tvExploreName.setText(group.getGroupName());
         cardViewExplore.setCardBackgroundColor(Color.parseColor("#F0F0F0"));
+        tvExploreDescription.setBackgroundColor(Color.parseColor("#F0F0F0"));
+        tvExploreName.setBackgroundColor(Color.parseColor("#F0F0F0"));
 
 
         ParseFile image = group.getGroupImage();

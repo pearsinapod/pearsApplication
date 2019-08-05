@@ -31,6 +31,13 @@
             android:layout_height="599dp"
             android:layout_gravity="center">
 
+            <ImageView
+                android:id="@+id/ivExploreImage"
+                android:layout_width="450dp"
+                android:layout_height="500dp"
+                android:layout_gravity="center"
+                android:scaleType="fitXY"
+                tools:srcCompat="@tools:sample/avatars[0]" />
             <TextView
                 android:id="@+id/tvExploreName"
                 android:layout_width="wrap_content"
@@ -44,7 +51,6 @@
                 android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="@id/tvExploreDescription"
                 tools:text="hello" />
-
             <TextView
                 android:id="@+id/tvExploreDescription"
                 android:layout_width="match_parent"
@@ -58,14 +64,6 @@
                 android:textAlignment="center"
                 android:textColor="#919191"
                 android:textSize="18sp" />
-
-            <ImageView
-                android:id="@+id/ivExploreImage"
-                android:layout_width="450dp"
-                android:layout_height="500dp"
-                android:layout_gravity="center"
-                android:scaleType="fitXY"
-                tools:srcCompat="@tools:sample/avatars[0]" />
 
         </FrameLayout>
     </androidx.cardview.widget.CardView>
