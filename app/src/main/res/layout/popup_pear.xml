@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="#8BC34A">
+    android:background="@drawable/my_gradient_drawable">
 
     <ImageView
         android:id="@+id/ivPearPic"
@@ -14,6 +14,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:padding="4dp"
+        android:background="@drawable/imageview_border"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,6 +50,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="TextView"
+        android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivPearPic" />
@@ -55,12 +58,16 @@
     <Button
         android:id="@+id/btnViewProfile"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:layout_marginStart="88dp"
         android:layout_marginLeft="88dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/round_button"
         android:text="Profile"
+        android:textColor="#ff8264"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnMessage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvPearName" />
@@ -68,12 +75,16 @@
     <Button
         android:id="@+id/btnMessage"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:layout_marginStart="59dp"
         android:layout_marginLeft="59dp"
         android:layout_marginEnd="88dp"
         android:layout_marginRight="88dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/round_button"
         android:text="Message"
+        android:textColor="#ff8264"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btnViewProfile"
         app:layout_constraintTop_toBottomOf="@+id/tvPearName" />

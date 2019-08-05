@@ -1,6 +1,8 @@
 package com.fb.pearsapplication.fragments;
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
@@ -39,6 +42,7 @@ import com.parse.SaveCallback;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -58,12 +62,14 @@ public class profileFragment extends Fragment {
     ParseUser user;
     Uri photoUri;
     Question dailyQuestion;
+    FragmentManager childFragmentManager;
 
     public final static int PICK_PHOTO_CODE = 1046;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        childFragmentManager = getChildFragmentManager();
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
@@ -156,12 +162,12 @@ public class profileFragment extends Fragment {
             Bitmap selectedImage = null;
             try {
                 selectedImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), photoUri);
+//                selectedImage = getCorrectlyOrientedImage(getContext(), photoUri);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
             // Load the selected image into a preview
-            ivImage.setImageBitmap(selectedImage);
+            Glide.with(getContext()).load(selectedImage).apply(RequestOptions.circleCropTransform()).into(ivImage);
 
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             selectedImage.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
@@ -169,6 +175,38 @@ public class profileFragment extends Fragment {
             ParseFile parseFile = new ParseFile("image_file" + user.getObjectId() + ".jpeg", imageByte);
             saveUser(parseFile);
         }
+    }
+
+    public static int getOrientation(Context context, Uri photoUri) {
+        /* it's on the external media. */
+        Cursor cursor = context.getContentResolver().query(photoUri,
+                new String[] { MediaStore.Images.ImageColumns.ORIENTATION }, null, null, null);
+
+        if (cursor.getCount() != 1) {
+            return -1;
+        }
+
+        cursor.moveToFirst();
+        return cursor.getInt(0);
+    }
+
+    public static Bitmap getCorrectlyOrientedImage(Context context, Uri photoUri) throws IOException {
+        InputStream is = context.getContentResolver().openInputStream(photoUri);
+        BitmapFactory.Options dbo = new BitmapFactory.Options();
+        dbo.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(is, null, dbo);
+        Bitmap srcBitmap = BitmapFactory.decodeStream(is);
+        is.close();
+
+        int orientation = getOrientation(context, photoUri);
+        if (orientation > 0) {
+            Matrix matrix = new Matrix();
+            matrix.postRotate(orientation);
+
+            srcBitmap = Bitmap.createBitmap(srcBitmap, 0, 0, srcBitmap.getWidth(),
+                    srcBitmap.getHeight(), matrix, true);
+        }
+        return srcBitmap;
     }
 
     private void saveUser(ParseFile file) {
@@ -244,7 +282,7 @@ public class profileFragment extends Fragment {
                 } else if (objects.isEmpty()) {
                     insertNestedQuestionFragment();
                 } else {
-                    // figure out
+                    insertNestedSubmittedFragment();
                 }
             }
         });
@@ -253,9 +291,16 @@ public class profileFragment extends Fragment {
     public void insertNestedQuestionFragment() {
         Fragment childFragment = new ChildQuestionFragment();
         ((ChildQuestionFragment) childFragment).setDailyQuestion(dailyQuestion);
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        FragmentTransaction transaction = childFragmentManager.beginTransaction();
         transaction.addToBackStack(null);
-        transaction.replace(R.id.child_fragment_container, childFragment).commit();
+        transaction.replace(R.id.child_fragment_container, childFragment).commitAllowingStateLoss();
+    }
+
+    public void insertNestedSubmittedFragment() {
+        Fragment childFragment = new ChildSubmittedFragment();
+        FragmentTransaction transaction = childFragmentManager.beginTransaction();
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.child_fragment_container, childFragment).commitAllowingStateLoss();
     }
 
 }
