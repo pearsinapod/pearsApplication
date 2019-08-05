@@ -22,11 +22,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Question;
+import com.fb.pearsapplication.models.UserQuestion;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -51,9 +53,7 @@ public class profileFragment extends Fragment {
     public EditText etDescription;
     public ImageButton btnDone;
     public ImageButton btnAddPhoto;
-    public TextView tvQuestion;
-    public EditText etAnswer;
-    public Button btnSubmit;
+
 
     ParseUser user;
     Uri photoUri;
@@ -73,7 +73,7 @@ public class profileFragment extends Fragment {
         user = ParseUser.getCurrentUser();
         findViews(view);
         bindViews();
-        setDailyQuestion();
+        findDailyQuestion();
         etDescription.setVisibility(View.GONE);
         btnDone.setVisibility(View.GONE);
         btnAddPhoto.setOnClickListener(new View.OnClickListener() {
@@ -109,9 +109,6 @@ public class profileFragment extends Fragment {
         btnEdit = view.findViewById(R.id.btnEdit);
         btnDone = view.findViewById(R.id.btnDone);
         btnAddPhoto = view.findViewById(R.id.btnAddPhoto);
-        tvQuestion = view.findViewById(R.id.tvQuestion);
-        etAnswer = view.findViewById(R.id.etAnswer);
-        btnSubmit = view.findViewById(R.id.btnSubmit);
     }
 
     private void bindViews() {
@@ -209,7 +206,7 @@ public class profileFragment extends Fragment {
         });
     }
 
-    public void setDailyQuestion() {
+    public void findDailyQuestion() {
         Calendar cal = new GregorianCalendar();
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
@@ -229,11 +226,36 @@ public class profileFragment extends Fragment {
                     e.printStackTrace();
                 } else {
                     dailyQuestion = objects.get(0);
-                    tvQuestion.setText(dailyQuestion.getQuestion());
+                    userQuestionQuery(dailyQuestion);
                 }
             }
         });
     }
 
+    public void userQuestionQuery(Question question) {
+        ParseQuery<UserQuestion> userQuestionQuery = new ParseQuery<UserQuestion>(UserQuestion.class);
+        userQuestionQuery.whereEqualTo("user", user);
+        userQuestionQuery.whereEqualTo("question", question);
+        userQuestionQuery.findInBackground(new FindCallback<UserQuestion>() {
+            @Override
+            public void done(List<UserQuestion> objects, ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                } else if (objects.isEmpty()) {
+                    insertNestedQuestionFragment();
+                } else {
+                    // figure out
+                }
+            }
+        });
+    }
+
+    public void insertNestedQuestionFragment() {
+        Fragment childFragment = new ChildQuestionFragment();
+        ((ChildQuestionFragment) childFragment).setDailyQuestion(dailyQuestion);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.child_fragment_container, childFragment).commit();
+    }
 
 }
