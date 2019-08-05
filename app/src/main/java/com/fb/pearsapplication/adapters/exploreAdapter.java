@@ -1,6 +1,7 @@
 package com.fb.pearsapplication.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,41 +35,37 @@ public class exploreAdapter extends ArrayAdapter<Group> {
         }
 
         TextView tvExploreName = convertView.findViewById(R.id.tvExploreName);
-        TextView tvExploreDescription = convertView.findViewById(R.id.tvExploreDescription);
+        final TextView tvExploreDescription = convertView.findViewById(R.id.tvExploreDescription);
         final CardView cardViewExplore = convertView.findViewById(R.id.cardViewExplore);
         ImageView ivExploreImage = convertView.findViewById(R.id.ivExploreImage);
-        //cardViewExplore.setBackground
 
 
         tvExploreDescription.setText(group.getDescription());
-        tvExploreDescription.setBackgroundColor(0000);
         tvExploreName.setText(group.getGroupName());
-        tvExploreName.setBackgroundColor(0000);
-
-
-       // ivExploreImage.setVisibility(View.GONE);
+        cardViewExplore.setCardBackgroundColor(Color.parseColor("#F0F0F0"));
+        tvExploreDescription.setBackgroundColor(Color.parseColor("#F0F0F0"));
+        tvExploreName.setBackgroundColor(Color.parseColor("#F0F0F0"));
 
 
         ParseFile image = group.getGroupImage();
-        if (image!=null){
-            Glide.with(getContext()).load(image.getUrl()).into(ivExploreImage);
-/*            Glide.with(getContext()).load(image.getUrl()).into(new SimpleTarget<Drawable>() {
+/*        if (image!=null){
+           // Glide.with(getContext()).load(image.getUrl()).into(ivExploreImage);
+            Glide.with(getContext()).load(image.getUrl()).into(new SimpleTarget<Drawable>() {
                 @Override
                 public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         cardViewExplore.setBackground(resource);
                     }
                 }
-            });*/
-        }
-
-/*        ParseFile image = group.getGroupImage();
-        if (image!=null){
-            Glide.with(getContext())
-                    .load(group.getGroupImage().getUrl())
-                    .apply(RequestOptions.circleCropTransform())
-                    .into(ivExploreImage);
+            });
         }*/
+    if (image!=null){
+            Glide.with(getContext()).load(group.getGroupImage().getUrl()).into(ivExploreImage);
+
+        }
+        else{
+            Glide.with(getContext()) .load(R.drawable.group_search_placeholder) .into(ivExploreImage);
+        }
         return convertView;
 
     }
