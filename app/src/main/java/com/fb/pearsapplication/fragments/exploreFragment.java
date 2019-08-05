@@ -112,9 +112,9 @@ public class exploreFragment extends Fragment {
         exploreGroups.clear();
         exploreArrayAdapter.notifyDataSetChanged();
         final ParseQuery<Group> groupQuery = new ParseQuery<Group>(Group.class);
-        ArrayList currentuser = new ArrayList(); //will change to make more efficient
-        currentuser.add(ParseUser.getCurrentUser());
-        groupQuery.whereNotContainedIn(Group.KEY_USERS, currentuser);
+        ArrayList currentUser = new ArrayList(); //will change to make more efficient
+        currentUser.add(ParseUser.getCurrentUser());
+        groupQuery.whereNotContainedIn(Group.KEY_USERS, currentUser);
         groupQuery.addDescendingOrder(Group.KEY_CREATED_AT);
         groupQuery.findInBackground(new FindCallback<Group>() {
             @Override

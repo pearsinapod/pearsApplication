@@ -118,10 +118,9 @@ public class searchFragment extends Fragment {
 
    protected ParseQuery getQuerySearch(){
        Group.Query groupsQuery = new Group.Query();
-       ArrayList currentuser = new ArrayList();
-       currentuser.add(ParseUser.getCurrentUser());
-
-       groupsQuery.whereNotContainedIn(Group.KEY_USERS, currentuser);
+       ArrayList currentUser = new ArrayList();
+       currentUser.add(ParseUser.getCurrentUser());
+       groupsQuery.whereNotContainedIn(Group.KEY_USERS, currentUser);
        groupsQuery.addDescendingOrder(Group.KEY_CREATED_AT);
        if (!getSearchedText().equals("")){
            groupsQuery.whereMatches(Group.KEY_GROUP_NAME, "(?i)^"+getSearchedText()+"| (?i).*\\b"+getSearchedText()+"\\b.*");
@@ -157,16 +156,6 @@ public class searchFragment extends Fragment {
                if (e == null) {
                    searchGroups.addAll(objects);
                    searchAdapter.notifyDataSetChanged();
-/*                   for (int i = 0; i < objects.size(); i++) {
-                       Log.d("words", objects.get(i).getGroupName());
-                       Group group = objects.get(i);
-                       Log.d("yer", group.getUsers().toString());
-                       Log.d("ME",ParseUser.getCurrentUser().toString());
-                           Log.d("this",Boolean.toString(group.getUsers().contains(ParseUser.getCurrentUser())));
-                           searchGroups.add(group);
-                           searchAdapter.notifyDataSetChanged();
-                       }
-                   }*/
 
                }
                else{
