@@ -14,12 +14,12 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewExplore"
-        android:layout_width="409dp"
-        android:layout_height="585dp"
+        android:layout_width="396dp"
+        android:layout_height="584dp"
         android:layout_marginTop="150dp"
         android:layout_marginBottom="120dp"
-        android:elevation="3dp"
         android:background="@drawable/colorgroupicon"
+        android:elevation="3dp"
         app:cardCornerRadius="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,30 +35,37 @@
                 android:id="@+id/tvExploreName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="center|center_horizontal|top"
                 android:fontFamily="@font/montserrat_alternates"
-                android:gravity="center"
-                android:textColor="@android:color/black"
-                android:textSize="36sp"
+                android:paddingLeft="25dp"
+                android:paddingTop="10dp"
+                android:paddingRight="25dp"
+                android:textColor="#919191"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="@id/tvExploreDescription"
                 tools:text="hello" />
 
             <TextView
                 android:id="@+id/tvExploreDescription"
-                android:layout_width="397dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|left"
+                android:layout_gravity="bottom|center"
                 android:fontFamily="@font/montserrat_alternates"
-                android:paddingLeft="100sp"
-                android:paddingBottom="50sp"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp"
+                android:paddingBottom="10dp"
                 android:text="hellooooooooooooo"
-                android:textColor="@android:color/black"
-                android:textSize="24sp" />
+                android:textAlignment="center"
+                android:textColor="#919191"
+                android:textSize="18sp" />
 
             <ImageView
                 android:id="@+id/ivExploreImage"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:srcCompat="@tools:sample/avatars[5]" />
+                android:layout_width="450dp"
+                android:layout_height="500dp"
+                android:layout_gravity="center"
+                android:scaleType="fitXY"
+                tools:srcCompat="@tools:sample/avatars[0]" />
 
         </FrameLayout>
     </androidx.cardview.widget.CardView>
