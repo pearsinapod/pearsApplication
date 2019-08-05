@@ -38,20 +38,12 @@ public class exploreAdapter extends ArrayAdapter<Group> {
         final TextView tvExploreDescription = convertView.findViewById(R.id.tvExploreDescription);
         final CardView cardViewExplore = convertView.findViewById(R.id.cardViewExplore);
         ImageView ivExploreImage = convertView.findViewById(R.id.ivExploreImage);
-        //cardViewExplore.setBackground
 
 
         tvExploreDescription.setText(group.getDescription());
         tvExploreDescription.setBackgroundColor(0000);
         tvExploreName.setText(group.getGroupName());
-        //cardViewExplore.setCardBackgroundColor(Color.parseColor("#F0F8FF"));
-         cardViewExplore.setCardBackgroundColor(Color.parseColor("#F0F0F0"));
-
-         // good text color: ADAAAA
-        //#A3A2A2
-
-
-       // ivExploreImage.setVisibility(View.GONE);
+        cardViewExplore.setCardBackgroundColor(Color.parseColor("#F0F0F0"));
 
 
         ParseFile image = group.getGroupImage();
@@ -66,12 +58,12 @@ public class exploreAdapter extends ArrayAdapter<Group> {
                 }
             });
         }*/
+    if (image!=null){
+            Glide.with(getContext()).load(group.getGroupImage().getUrl()).into(ivExploreImage);
 
-        //ParseFile image = group.getGroupImage();
-        if (image!=null){
-            Glide.with(getContext())
-                    .load(group.getGroupImage().getUrl())
-                    .into(ivExploreImage);
+        }
+        else{
+            Glide.with(getContext()) .load(R.drawable.group_search_placeholder) .into(ivExploreImage);
         }
         return convertView;
 
