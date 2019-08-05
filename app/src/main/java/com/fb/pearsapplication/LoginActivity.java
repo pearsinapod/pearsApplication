@@ -15,10 +15,13 @@ import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.fb.pearsapplication.models.Group;
+import com.fb.pearsapplication.models.Question;
+import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
@@ -32,6 +35,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
 
@@ -235,6 +241,29 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }
             });
+        }
+    }
+
+    public void populateQuestionDatabase(ArrayList<String> questions) {
+        Calendar cal = Calendar.getInstance();
+        Date targetDay = cal.getTime();
+        for (String q: questions) {
+            Question newQuestion = new Question();
+            newQuestion.setQuestion(q);
+            newQuestion.setTargetDate(targetDay);
+
+            newQuestion.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e != null) {
+                        e.printStackTrace();
+                    } else {
+                        Log.d("XYZ", "question save");
+                    }
+                }
+            });
+            cal.add(Calendar.DATE, 1);
+            targetDay = cal.getTime();
         }
     }
 

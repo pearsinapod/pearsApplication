@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Group;
 import com.fb.pearsapplication.models.GroupUserRelation;
@@ -71,8 +70,16 @@ public class groupDetailsFragment extends Fragment {
         tvGroupName.setText(group.getGroupName());
         ParseFile image = group.getGroupImage();
         if (image != null) {
-            Glide.with(getContext()).load(image.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivGroupImage);
+            Glide.with(getContext()).load(image.getUrl()).into(ivGroupImage);
+        } else {
+            Glide.with(getContext()).load(R.drawable.people).into(ivGroupImage);
         }
+/*        else{
+            Glide.with(getContext()) //for some reason placeholder and error doesn't work for me: if it works for you lmk! - ang
+                    .load(R.drawable.group_search_placeholder)
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(ivGroupImage);
+        }*/
         if (group.getUsers() != null) {
             Integer size = group.getUsers().size();
             String sizeString = size.toString();
@@ -116,7 +123,7 @@ public class groupDetailsFragment extends Fragment {
         ParseQuery<Pear> pearQuery = new ParseQuery<Pear>(Pear.class);
         pearQuery.whereEqualTo("user", currentUser);
         pearQuery.whereEqualTo("group", group);
-        pearQuery.findInBackground(new FindCallback<Pear>() {
+        pearQuery.findInBackground( new FindCallback<Pear>() {
             @Override
             public void done(List<Pear> objects, ParseException e) {
                 if (e != null) {
