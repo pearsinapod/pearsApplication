@@ -95,7 +95,7 @@ public class searchFragment extends Fragment {
                android.R.color.holo_red_light);
    }
 
-   public void hideSoftKeyboard(Activity activity) {
+   public static void hideSoftKeyboard(Activity activity) {
        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
    }

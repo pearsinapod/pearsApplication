@@ -204,6 +204,11 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
+    public void onClickCreateGroup (MenuItem item){
+        Intent createGroupIntent = new Intent (MainActivity.this, createGroup.class);
+        startActivity(createGroupIntent);
+    }
+
     public void onClickMessages(MenuItem item) {
         Intent messageIntent = new Intent(MainActivity.this, conversationsActivity.class);
         startActivity(messageIntent);
