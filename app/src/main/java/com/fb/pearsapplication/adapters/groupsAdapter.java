@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -68,7 +67,7 @@ public class groupsAdapter extends RecyclerView.Adapter<groupsAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         //track view objects
-        private ImageView ivGroupImage;
+        private de.hdodenhof.circleimageview.CircleImageView ivGroupImage;
         private TextView tvGroupName;
         //private TextView tvGroupNumber;
         //private TextView tvGroupDescription;
@@ -106,7 +105,7 @@ public class groupsAdapter extends RecyclerView.Adapter<groupsAdapter.ViewHolder
             tvGroupName.setText(group.getGroupName());
             ParseFile image = group.getGroupImage();
             if (image != null) {
-                Glide.with(context).load(image.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivGroupImage);
+                Glide.with(context).load(image.getUrl()).into(ivGroupImage);
             }
             else{
                 Glide.with(context).load(R.drawable.group_search_placeholder).apply(RequestOptions.circleCropTransform()).into(ivGroupImage);
