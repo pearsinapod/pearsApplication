@@ -41,6 +41,7 @@ public class searchFragment extends Fragment {
     private RecyclerView rvSearchAdapter;
     private SwipeRefreshLayout searchSwipeContainer;
     EditText etSearch;
+    ParseUser user;
 
    @Nullable
    @Override
@@ -60,6 +61,7 @@ public class searchFragment extends Fragment {
 
        searchSwipeContainer = view.findViewById(R.id.searchSwipeContainer);
        etSearch = view.findViewById(R.id.etSearch);
+       user = ParseUser.getCurrentUser();
 
        updatingListAdapterSearch(getQuerySearch());
        setUpEditorListener();
@@ -95,7 +97,7 @@ public class searchFragment extends Fragment {
                android.R.color.holo_red_light);
    }
 
-   public void hideSoftKeyboard(Activity activity) {
+   public static void hideSoftKeyboard(Activity activity) {
        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
    }
@@ -116,6 +118,10 @@ public class searchFragment extends Fragment {
 
    protected ParseQuery getQuerySearch(){
        Group.Query groupsQuery = new Group.Query();
+       ArrayList currentuser = new ArrayList();
+       currentuser.add(ParseUser.getCurrentUser());
+
+       groupsQuery.whereNotContainedIn(Group.KEY_USERS, currentuser);
        groupsQuery.addDescendingOrder(Group.KEY_CREATED_AT);
        if (!getSearchedText().equals("")){
            groupsQuery.whereMatches(Group.KEY_GROUP_NAME, "(?i)^"+getSearchedText()+"| (?i).*\\b"+getSearchedText()+"\\b.*");
@@ -149,22 +155,27 @@ public class searchFragment extends Fragment {
            @Override
            public void done(List<Group> objects, ParseException e) {
                if (e == null) {
-                   for (int i = 0; i < objects.size(); i++) {
+                   searchGroups.addAll(objects);
+                   searchAdapter.notifyDataSetChanged();
+/*                   for (int i = 0; i < objects.size(); i++) {
                        Log.d("words", objects.get(i).getGroupName());
                        Group group = objects.get(i);
-                       if(!group.getUsers().contains(ParseUser.getCurrentUser())) {
+                       Log.d("yer", group.getUsers().toString());
+                       Log.d("ME",ParseUser.getCurrentUser().toString());
+                           Log.d("this",Boolean.toString(group.getUsers().contains(ParseUser.getCurrentUser())));
                            searchGroups.add(group);
                            searchAdapter.notifyDataSetChanged();
                        }
-                   }
+                   }*/
 
                }
                else{
-                   Log.d("Explore Fragment","Loading items failed");
+                   Log.d("Search Fragment","Loading items failed");
                }
            }
        });
    }
+
 /*   TODO:
        get top should be fixed+ endless scorlling
 

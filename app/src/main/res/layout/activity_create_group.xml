@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".createGroup">
+
+    <include layout="@layout/activity_toolbar"/>
+
+    <EditText
+        android:id="@+id/createGroupName"
+        android:layout_width="283dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/edit_text_background"
+        android:ems="10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/createGroupPrivate" />
+
+    <EditText
+        android:id="@+id/createGroupDescription"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="92dp"
+        android:background="@drawable/edit_text_background"
+        android:ems="10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/createGroupName" />
+
+    <Switch
+        android:id="@+id/createGroupPrivate"
+        android:layout_width="189dp"
+        android:layout_height="29dp"
+        android:layout_marginTop="76dp"
+        android:layout_marginEnd="92dp"
+        android:layout_marginRight="92dp"
+        android:text="Private"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/createGroupNameTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:fontFamily="@font/montserrat_alternates"
+        android:text="Name"
+        android:imeOptions="actionGo"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toStartOf="@+id/createGroupName"
+        app:layout_constraintHorizontal_bias="0.222"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/createGroupPrivate" />
+
+    <TextView
+        android:id="@+id/createGroupDescriptionTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="96dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:fontFamily="@font/montserrat_alternates"
+        android:text="Description"
+        android:imeOptions="actionGo"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toStartOf="@+id/createGroupDescription"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/createGroupNameTitle" />
+
+    <Button
+        android:id="@+id/createGroupSubmit"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="44dp"
+        android:layout_marginRight="44dp"
+        android:layout_marginBottom="108dp"
+        android:background="@drawable/login_buttons"
+        android:fontFamily="@font/montserrat_alternates"
+        android:text="Create Group"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
