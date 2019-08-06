@@ -98,10 +98,9 @@ public class groupFragment extends Fragment {
         Users.add(ParseUser.getCurrentUser());
         groupQuery.include(Group.KEY_USERS);
         groupQuery.setLimit(20);
-        groupQuery.whereContainedIn(Group.KEY_USERS, Users);
-//        ArrayList<ParseUser> currentUser = new ArrayList<>();
-//        currentUser.add(ParseUser.getCurrentUser());
-//        groupQuery.whereContainedIn("users", currentUser);
+        ArrayList<ParseUser> currentUser = new ArrayList<>();
+        currentUser.add(ParseUser.getCurrentUser());
+        groupQuery.whereContainedIn("users", currentUser);
         groupQuery.addDescendingOrder(Group.KEY_CREATED_AT);
         if (mGroups.size()>0){
             groupQuery.whereLessThan(Group.KEY_CREATED_AT, mGroups.get(mGroups.size()-1).getCreatedAt());

@@ -16,12 +16,10 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.fb.pearsapplication.models.Group;
 import com.fb.pearsapplication.models.Question;
-import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
@@ -37,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
 
@@ -55,6 +52,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etEmail;
     private EditText etPassword;
     private Button btnLogin;
+    private Button btnSignUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
         FBloginButton = findViewById(R.id.login);
+        btnSignUp = findViewById(R.id.btnSignup);
         persistenceCheck();
         btnLogin.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -75,6 +74,15 @@ public class LoginActivity extends AppCompatActivity {
                     login(email, password);
                 }
             });
+
+        btnSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent signupIntent = new Intent(LoginActivity.this, SignupActivity.class);
+                startActivity(signupIntent);
+                finish();
+            }
+        });
 
         final List<String> permissions = Arrays.asList("public_profile", "email");
         FBloginButton.setOnClickListener(new View.OnClickListener() {

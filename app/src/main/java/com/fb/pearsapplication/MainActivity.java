@@ -77,6 +77,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         locationFinder();
+
+        //TO CLEAR GROUP USER RELATIONS
+       // clearUserRelations();
+
+        // TO CLEAN CURRENT GROUPS
+        //cleanGroupsUp();
+
+    }
+
+    public void clearUserRelations(){
+        modifyParseData clear = new modifyParseData();
+        clear.clearGroupUserRelations();
+        clear.clearGroupUsers();
+        clear.clearPears();
+    }
+
+    public void cleanGroupsUp(){
+        modifyParseData clean = new modifyParseData();
+        clean.deleteGroupsWithoutReq();
     }
 
     public void locationFinder() {
@@ -202,6 +221,11 @@ public class MainActivity extends AppCompatActivity {
         Intent logoutIntent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(logoutIntent);
         finish();
+    }
+
+    public void onClickCreateGroup (MenuItem item){
+        Intent createGroupIntent = new Intent (MainActivity.this, createGroup.class);
+        startActivity(createGroupIntent);
     }
 
     public void onClickMessages(MenuItem item) {

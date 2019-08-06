@@ -59,7 +59,6 @@ public class Group extends ParseObject implements Serializable {
         }
         return (ArrayList) getList(KEY_USERS);
     }
-
     public void addUser(ParseUser user) {
         ArrayList users = (ArrayList) getUsers();
         users.add(user);

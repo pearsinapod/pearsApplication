@@ -17,6 +17,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -28,9 +30,11 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.fb.pearsapplication.R;
+import com.fb.pearsapplication.adapters.QuestionAdapter;
 import com.fb.pearsapplication.models.Group;
 import com.fb.pearsapplication.models.GroupUserRelation;
 import com.fb.pearsapplication.models.Pear;
+import com.fb.pearsapplication.models.UserQuestion;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -64,6 +68,8 @@ public class matchProfileFragment extends Fragment {
     public TextView tvDistance;
     public Button btnUnpear;
     public Button btnMessage;
+    public RecyclerView rvQuestions;
+    public List<UserQuestion> uqList;
 
     @Nullable
     @Override
@@ -79,16 +85,13 @@ public class matchProfileFragment extends Fragment {
         tvDistance = view.findViewById(R.id.tvDistance);
         btnUnpear = view.findViewById(R.id.btnUnpear);
         btnMessage = view.findViewById(R.id.btnMessage);
+        rvQuestions = view.findViewById(R.id.rvQuestions);
+        bindViews();
+        queryUserQuestions();
+        btnUnpearClick();
+    }
 
-//        FirebaseMessaging.getInstance().subscribeToTopic("new_pear_notification").addOnCompleteListener(new OnCompleteListener<Void>() {
-//            @Override
-//            public void onComplete(@NonNull Task<Void> task) {
-//                if (task.isSuccessful()) {
-//                    Log.d("XYZ", "subscribed successfully!");
-//                }
-//            }
-//        });
-
+    public void bindViews() {
         ParseFile profileImage = pearUser.getParseFile("profileImage");
         String profileImageString = pearUser.getString("profilePicString");
         if (profileImage != null) {
@@ -107,7 +110,6 @@ public class matchProfileFragment extends Fragment {
         } else {
             tvDescription.setVisibility(View.GONE);
         }
-        btnUnpearClick();
     }
 
     public void btnUnpearClick() {
@@ -194,21 +196,35 @@ public class matchProfileFragment extends Fragment {
         return Math.round(distance * 10) / 10.0;
     }
 
-    public void querySameGroups() {
-        ParseQuery<Group> groupQuery = new ParseQuery<Group>(Group.class);
-        groupQuery.include(Group.KEY_USERS);
-        ArrayList<ParseUser> users = new ArrayList<>();
-        users.add(ParseUser.getCurrentUser());
-        users.add(pearUser);
-        groupQuery.whereContainsAll("users", users);
-    }
-
     public void setPearUser(ParseUser pearUser) {
         this.pearUser = pearUser;
     }
 
     public void setGroup(Group group) {
         this.group = group;
+    }
+
+    public void queryUserQuestions() {
+        ParseQuery<UserQuestion> uqQuery = new ParseQuery<UserQuestion>(UserQuestion.class);
+//        uqQuery.whereEqualTo("user", pearUser);
+//        uqQuery.orderByDescending("targetDate");
+        uqQuery.findInBackground(new FindCallback<UserQuestion>() {
+            @Override
+            public void done(List<UserQuestion> objects, ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                } else if (!objects.isEmpty()) {
+                    uqList = objects;
+                    createAdapter();
+                }
+            }
+        });
+    }
+
+    public void createAdapter() {
+        QuestionAdapter adapter = new QuestionAdapter(uqList);
+        rvQuestions.setAdapter(adapter);
+        rvQuestions.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
 }
