@@ -29,6 +29,7 @@ public class conversationsActivity extends AppCompatActivity {
 
     private List<ParseUser> pearList;
     public static ParseUser user;
+    androidx.appcompat.widget.Toolbar toolbar;
 
     static final String TAG = conversationsActivity.class.getSimpleName();
 
@@ -42,6 +43,11 @@ public class conversationsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversations);
+
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Conversations with Pears");
+
 
         pearList = new ArrayList<ParseUser>();
         final ArrayList<String> pearID = new ArrayList<>();
@@ -57,9 +63,9 @@ public class conversationsActivity extends AppCompatActivity {
 
         user = ParseUser.getCurrentUser();
 
-        ParseQuery<Pear> parseQuery = ParseQuery.getQuery("Pear");
-        parseQuery.whereEqualTo("user", user);
-        parseQuery.findInBackground(new FindCallback<Pear>() {
+        ParseQuery<Pear> pearQuery = ParseQuery.getQuery("Pear");
+        pearQuery.whereEqualTo("user", user);
+        pearQuery.findInBackground(new FindCallback<Pear>() {
 
             @Override
             public void done(List<Pear> objects, ParseException e) {
