@@ -81,13 +81,21 @@ public class MainActivity extends AppCompatActivity {
         //TO CLEAR GROUP USER RELATIONS
        // clearUserRelations();
 
+        // TO CLEAN CURRENT GROUPS
+        //cleanGroupsUp();
+
     }
 
     public void clearUserRelations(){
-        clearParseData clear = new clearParseData();
+        modifyParseData clear = new modifyParseData();
         clear.clearGroupUserRelations();
         clear.clearGroupUsers();
         clear.clearPears();
+    }
+
+    public void cleanGroupsUp(){
+        modifyParseData clean = new modifyParseData();
+        clean.deleteGroupsWithoutReq();
     }
 
     public void locationFinder() {
