@@ -1,5 +1,6 @@
 package com.fb.pearsapplication.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,9 @@ import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.fb.pearsapplication.ChatActivity;
 import com.fb.pearsapplication.R;
+import com.fb.pearsapplication.conversationsActivity;
 import com.fb.pearsapplication.models.Pear;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -91,7 +94,8 @@ public class ChildPearFragment extends Fragment {
         btnMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent chatIntent = new Intent(getActivity(), conversationsActivity.class);
+                startActivity(chatIntent);
             }
         });
     }

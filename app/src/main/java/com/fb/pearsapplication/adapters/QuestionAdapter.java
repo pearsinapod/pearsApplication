@@ -32,7 +32,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         UserQuestion userQ = UQList.get(position);
-        holder.tvDate.setText(DateFormat.getDateInstance().format(userQ.getQuestion().getTargetDate()));
+        holder.tvDate.setText(DateFormat.getDateInstance().format(userQ.getDate()));
         holder.tvQuestion.setText(userQ.getQuestion().getQuestion());
         holder.tvAnswer.setText(userQ.getAnswer());
     }
