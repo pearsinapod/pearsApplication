@@ -23,6 +23,7 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,11 +50,18 @@ public class groupFragment extends Fragment {
 
         setParameters();
 
-
-
         queryGroups();
 
+        recyclerViewConfig(view);
 
+    }
+
+    public void loadNextDataFromApi(int offset) {
+        queryGroups();
+
+    }
+
+    public void recyclerViewConfig(View view) {
         // Configure the RecyclerView
         RecyclerView rvGroups = (RecyclerView) view.findViewById(R.id.rvGroups);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
@@ -69,14 +77,8 @@ public class groupFragment extends Fragment {
         };
         // Adds the scroll listener to RecyclerView
         rvGroups.addOnScrollListener(scrollListener);
-
     }
 
-
-    public void loadNextDataFromApi(int offset) {
-        queryGroups();
-
-    }
 
     private void setParameters() {
         // create the data source
@@ -92,6 +94,8 @@ public class groupFragment extends Fragment {
 
     protected void queryGroups() {
         ParseQuery<Group> groupQuery = new ParseQuery<Group>(Group.class);
+        ArrayList Users = new ArrayList<>();
+        Users.add(ParseUser.getCurrentUser());
         groupQuery.include(Group.KEY_USERS);
         groupQuery.setLimit(20);
         ArrayList<ParseUser> currentUser = new ArrayList<>();

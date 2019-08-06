@@ -7,6 +7,8 @@
     android:layout_height="match_parent"
     tools:context=".conversationsActivity">
 
+    <include layout="@layout/activity_toolbar"/>
+
     <EditText
         android:id="@+id/etMessage"
         android:layout_width="0dp"
@@ -42,10 +44,12 @@
         app:layout_constraintStart_toEndOf="@+id/etMessage"
         app:layout_constraintTop_toTopOf="@+id/etMessage"></Button>
 
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvChat"
-        android:layout_width="395dp"
-        android:layout_height="661dp"
+        android:layout_width="394dp"
+        android:layout_height="610dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
@@ -54,7 +58,9 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/btSend"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

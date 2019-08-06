@@ -53,6 +53,11 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return mMessages.get(pos);
     }
 
+    public void clear() {
+        mMessages.clear();
+        notifyDataSetChanged();
+    }
+
 
     @NonNull
     @Override
@@ -65,11 +70,11 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         switch (viewType) {
             case SEND:
                 View view1 = inflater.inflate(R.layout.item_chat_sent, parent, false);
-                viewHolder = new ViewHolder1(view1);
+                viewHolder = new SendViewHolder(view1);
                 break;
             default:
                 View view2 = inflater.inflate(R.layout.item_chat_received, parent, false);
-                viewHolder = new ViewHolder2(view2);
+                viewHolder = new ReceiveViewHolder(view2);
                 break;
         }
         return viewHolder;
@@ -82,12 +87,12 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         switch (holder.getItemViewType()) {
             case SEND:
-                ViewHolder1 viewHolder1 = (ViewHolder1) holder;
-                viewHolder1.bind(mMessages.get(position));
+                SendViewHolder sendView = (SendViewHolder) holder;
+                sendView.bind(mMessages.get(position));
                 break;
             case RECEIVE:
-                ViewHolder2 viewHolder2 = (ViewHolder2) holder;
-                viewHolder2.bind(mMessages.get(position));
+                ReceiveViewHolder receiveView = (ReceiveViewHolder) holder;
+                receiveView.bind(mMessages.get(position));
         }
     }
 
@@ -116,12 +121,12 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     return view;
     }
 
-    public class ViewHolder1 extends RecyclerView.ViewHolder {
+    public class SendViewHolder extends RecyclerView.ViewHolder {
 
         TextView tvBody;
         TextView tvUsername;
 
-        public ViewHolder1(@NonNull View itemView) {
+        public SendViewHolder(@NonNull View itemView) {
             super(itemView);
 
             tvBody = (TextView) itemView.findViewById(R.id.tvBody);
@@ -134,12 +139,12 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    public class ViewHolder2 extends RecyclerView.ViewHolder {
+    public class ReceiveViewHolder extends RecyclerView.ViewHolder {
 
         TextView tvBody;
         TextView tvUsername;
 
-        public ViewHolder2(@NonNull View itemView) {
+        public ReceiveViewHolder(@NonNull View itemView) {
             super(itemView);
 
             tvBody = (TextView) itemView.findViewById(R.id.tvBody);

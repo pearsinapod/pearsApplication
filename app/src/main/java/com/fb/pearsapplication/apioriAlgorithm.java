@@ -28,6 +28,8 @@ public class apioriAlgorithm {
 
     /*
         curl -X GET \-H "X-Parse-Application-Id: fbu-pears" \ -H "X-Parse-Master-Key: AngelicaAarushiJaleel" \http://fbu-pears.herokuapp.com/parse/classes/Group
+                curl -X GET \-H "X-Parse-Application-Id: fbu-pears" \ -H "X-Parse-Master-Key: AngelicaAarushiJaleel" \http://fbu-pears.herokuapp.com/parse/classes/Message
+
 
         --output JSONObject.txt
 */
@@ -137,7 +139,7 @@ public class apioriAlgorithm {
                 JSONObject json = null;
                 try {
                     json = (JSONObject) parser.parse(st);
-                    //System.out.println(json);
+                    System.out.println(json);
                     //System.out.println(json);
                 } catch (org.json.simple.parser.ParseException e) {
                     e.printStackTrace();
@@ -161,7 +163,7 @@ public class apioriAlgorithm {
     public static void main(String args[]){
 
         apioriAlgorithm a = new apioriAlgorithm();
-       JSONObject lol = a.fileToJSON("angcast","JSONObject.json");
+       JSONObject lol = a.fileToJSON("jaleelismail","JaleelMessages.json");
        convertJSONObjectToArray(lol);
     }
 
