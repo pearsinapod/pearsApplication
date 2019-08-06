@@ -1,6 +1,7 @@
 package com.fb.pearsapplication.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -26,6 +27,7 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.fb.pearsapplication.R;
+import com.fb.pearsapplication.conversationsActivity;
 import com.fb.pearsapplication.models.Group;
 import com.fb.pearsapplication.models.GroupUserRelation;
 import com.fb.pearsapplication.models.Pear;
@@ -250,12 +252,12 @@ public class ChildPearButtonFragment extends Fragment {
         boolean focusable = true;
         popupWindow = new PopupWindow(popupView, width, height, focusable);
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-//        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-//            @Override
-//            public void onDismiss() {
-//                goToPearFragment();
-//            }
-//        });
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                goToPearFragment();
+            }
+        });
     }
 
     public void bindPopupPearViews(View view) {
@@ -300,7 +302,9 @@ public class ChildPearButtonFragment extends Fragment {
         message.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                popupWindow.dismiss();
+                Intent chatIntent = new Intent(getActivity(), conversationsActivity.class);
+                startActivity(chatIntent);
             }
         });
     }
