@@ -6,16 +6,13 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -40,7 +37,6 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
@@ -123,10 +119,11 @@ public class profileFragment extends Fragment {
             tvName.setText(user.getUsername());
         }
         String description = user.getString("description");
-        if (!description.equals("")) {
-            tvDescription.setText(description);
-        } else {
+
+        if ( description==null ||description.equals("")) {
             tvDescription.setText("Add a description!");
+        } else {
+            tvDescription.setText(description);
         }
 
         ParseFile profileImage = user.getParseFile("profileImage");
