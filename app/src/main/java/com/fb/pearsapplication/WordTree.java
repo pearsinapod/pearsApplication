@@ -68,7 +68,7 @@ public class WordTree implements Comparable<Object> {
         WordTree t = new WordTree();
         t.addToTree(ngrams(1));
         System.out.println("hey pls work");
-        System.out.println(t.suggestNext(chunkLastN(3, "Red-Black tree based")));
+        System.out.println(t.suggestNext(chunkLastN(3, "hi i'm jaleel")));
     }
 
     public static List<List<String>> ngrams(int a) {
@@ -159,8 +159,8 @@ public class WordTree implements Comparable<Object> {
 
         final WordTree other = (WordTree) obj;
 
-        // also check the equality of frequency of two words
-        // since 'frequency' is also a field
+
+
         return (!"".equals(word) && word.equals(other.word)) &&
                 (this.frequency == other.frequency);
     }
@@ -175,7 +175,7 @@ public class WordTree implements Comparable<Object> {
 
     @Override
     public String toString() {
-        return " \"" + word + "\":" + frequency; //To change body of generated methods, choose Tools | Templates.
+        return " \"" + word + "\":" + frequency;
     }
 
 }
