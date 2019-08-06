@@ -68,7 +68,31 @@ public class createGroup extends AppCompatActivity {
     }
 
     public boolean  possibleToasts(){
-        if (descriptionCount<0 && nameCount<0){
+        if (descriptionCount==200 && nameCount==30){
+            Toast.makeText(createGroup.this, "You must have a name and description", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        if (descriptionCount == 200){
+            Toast.makeText(createGroup.this, "You must have a description", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        else if (nameCount == 30){
+            Toast.makeText(createGroup.this, "You must have a name", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        String[] arrDescription = tvDescriptionCount.getText().toString().split("\\s+");
+        String [] arrName = tvNameCount.getText().toString().split("\\s+");
+
+        if (arrDescription.length==0){
+            Toast.makeText(createGroup.this, "Invalid Description", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        else if (arrName.length==0){
+            Toast.makeText(createGroup.this, "Invalid Name", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        else if (descriptionCount<0 && nameCount<0){
             Toast.makeText(createGroup.this, "Description and Name is too long", Toast.LENGTH_SHORT).show();
             return true;
         }
