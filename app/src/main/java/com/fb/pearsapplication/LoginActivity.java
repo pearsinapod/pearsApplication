@@ -55,6 +55,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etEmail;
     private EditText etPassword;
     private Button btnLogin;
+    private Button btnSignUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,7 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
         FBloginButton = findViewById(R.id.login);
+        btnSignUp = findViewById(R.id.btnSignup);
         persistenceCheck();
         btnLogin.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -75,6 +77,15 @@ public class LoginActivity extends AppCompatActivity {
                     login(email, password);
                 }
             });
+
+        btnSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent signupIntent = new Intent(LoginActivity.this, SignupActivity.class);
+                startActivity(signupIntent);
+                finish();
+            }
+        });
 
         final List<String> permissions = Arrays.asList("public_profile", "email");
         FBloginButton.setOnClickListener(new View.OnClickListener() {

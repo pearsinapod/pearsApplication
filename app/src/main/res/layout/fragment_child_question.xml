@@ -37,11 +37,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
 
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginLeft="12dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginRight="12dp"
                 android:foregroundGravity="center_horizontal"
                 android:gravity="center_horizontal"
                 android:text="TextView"
@@ -54,13 +54,13 @@
 
             <EditText
                 android:id="@+id/etAnswer"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
                 android:layout_marginTop="48dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp"
                 android:ems="10"
                 android:hint="What do you think?"
                 android:inputType="textPersonName"
@@ -72,13 +72,18 @@
             <Button
                 android:id="@+id/btnSubmit"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="40dp"
                 android:layout_marginRight="40dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/gradient_round_button"
                 android:text="Share!"
+                android:textColor="@android:color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etAnswer" />
+                app:layout_constraintTop_toBottomOf="@+id/etAnswer"
+                app:layout_constraintVertical_bias="0.05" />
 
             <TextView
                 android:id="@+id/tvDate"
@@ -92,8 +97,7 @@
                 android:foregroundGravity="center"
                 android:gravity="center_horizontal"
                 android:text="TextView"
-                app:layout_constraintEnd_toEndOf="@+id/tvQuestion"
-                app:layout_constraintHorizontal_bias="0.515"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView5"
                 app:layout_constraintTop_toTopOf="parent" />
 

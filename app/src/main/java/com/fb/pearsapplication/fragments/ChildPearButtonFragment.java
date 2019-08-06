@@ -67,6 +67,7 @@ public class ChildPearButtonFragment extends Fragment {
     Pear pear;
     GroupUserRelation gur;
     GroupUserRelation otherGUR;
+    PopupWindow popupWindow;
 
     // notification variables
     private String FCM_API = "https://fcm.googleapis.com/fcm/send";
@@ -243,18 +244,18 @@ public class ChildPearButtonFragment extends Fragment {
     public void popupPear(View view) {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.popup_pear, null);
-        int width = ConstraintLayout.LayoutParams.WRAP_CONTENT;
-        int height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+        int width = ConstraintLayout.LayoutParams.MATCH_PARENT;
+        int height = ConstraintLayout.LayoutParams.MATCH_PARENT;
         bindPopupPearViews(popupView);
         boolean focusable = true;
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+        popupWindow = new PopupWindow(popupView, width, height, focusable);
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                goToPearFragment();
-            }
-        });
+//        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+//            @Override
+//            public void onDismiss() {
+//                goToPearFragment();
+//            }
+//        });
     }
 
     public void bindPopupPearViews(View view) {
@@ -287,6 +288,7 @@ public class ChildPearButtonFragment extends Fragment {
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                popupWindow.dismiss();
                 groupDetailsFragment parentFrag = ((groupDetailsFragment)ChildPearButtonFragment.this.getParentFragment());
                 FragmentManager fragmentManager = parentFrag.getFragmentManager();
                 Fragment fragment = new matchProfileFragment();

@@ -79,16 +79,15 @@ public class profileFragment extends Fragment {
         user = ParseUser.getCurrentUser();
         findViews(view);
         bindViews();
-        findDailyQuestion();
         etDescription.setVisibility(View.GONE);
         btnDone.setVisibility(View.GONE);
+        findDailyQuestion();
         btnAddPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onPickPhoto(view);
             }
         });
-
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -124,10 +123,10 @@ public class profileFragment extends Fragment {
             tvName.setText(user.getUsername());
         }
         String description = user.getString("description");
-        if (description != null) {
+        if (!description.equals("")) {
             tvDescription.setText(description);
         } else {
-            tvDescription.setText("How would your best friend describe you?");
+            tvDescription.setText("Add a description!");
         }
 
         ParseFile profileImage = user.getParseFile("profileImage");
