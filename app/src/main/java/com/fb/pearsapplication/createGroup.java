@@ -9,12 +9,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.fb.pearsapplication.models.Group;
 
 public class createGroup extends AppCompatActivity {
@@ -27,6 +29,8 @@ public class createGroup extends AppCompatActivity {
     int descriptionCount;
     TextView tvNameCount;
     int nameCount;
+    de.hdodenhof.circleimageview.CircleImageView createPlaceholder;
+    ImageButton createGroupAddImage;
 
     androidx.appcompat.widget.Toolbar toolbar;
 
@@ -41,17 +45,26 @@ public class createGroup extends AppCompatActivity {
         submitGroup = findViewById(R.id.createGroupSubmit);
         tvDescriptionCount = findViewById(R.id.createDescriptionCount);
         tvNameCount = findViewById(R.id.createNameCount);
+        createPlaceholder= findViewById(R.id.createPlaceholder);
+        createGroupAddImage = findViewById(R.id.createGroupAddImage);
         nameCount= 30;
         descriptionCount = 200;
         tvDescriptionCount.setText(String.valueOf(descriptionCount));
         tvNameCount.setText(String.valueOf(nameCount));
         textChangeDescription();
         textChangeName();
+        setPlaceholder();
+        //profileFragment photo= new profileFragment();
+       // photo.onPickPhoto(createGroupAddImage);
 
         onClickSubmitGroup();
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("p e a r s");
+    }
+
+    public void setPlaceholder(){
+        Glide.with(this).load(R.drawable.group_search_placeholder).into(createPlaceholder);
     }
 
     public boolean  possibleToasts(){
