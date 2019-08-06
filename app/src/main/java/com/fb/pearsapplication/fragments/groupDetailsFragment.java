@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Group;
 import com.fb.pearsapplication.models.GroupUserRelation;
@@ -74,15 +75,10 @@ public class groupDetailsFragment extends Fragment {
         ParseFile image = group.getGroupImage();
         if (image != null) {
             Glide.with(getContext()).load(image.getUrl()).into(ivGroupImage);
-        } else {
-            Glide.with(getContext()).load(R.drawable.people).into(ivGroupImage);
         }
-/*        else{
-            Glide.with(getContext()) //for some reason placeholder and error doesn't work for me: if it works for you lmk! - ang
-                    .load(R.drawable.group_search_placeholder)
-                    .apply(RequestOptions.circleCropTransform())
-                    .into(ivGroupImage);
-        }*/
+        else{
+            Glide.with(getContext()).load(R.drawable.group_search_placeholder).apply(RequestOptions.circleCropTransform()).into(ivGroupImage);
+        }
         if (group.getUsers() != null) {
             Integer size = group.getUsers().size();
             String sizeString = size.toString();

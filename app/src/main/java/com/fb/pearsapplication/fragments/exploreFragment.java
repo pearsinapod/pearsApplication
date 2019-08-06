@@ -53,7 +53,6 @@ public class exploreFragment extends Fragment {
     public void setUpExploreFlingContainer(){
         flingContainer.setBackgroundColor(0000);
         flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
-            //Group currentGroup = exploreGroups.get(0);
             @Override
             public void removeFirstObjectInAdapter() {
                 exploreGroups.remove(0);
@@ -88,8 +87,7 @@ public class exploreFragment extends Fragment {
 
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
-                // So it never ends
-               // addGroupNames();?
+                addGroupNames();
             }
 
             @Override
@@ -111,17 +109,28 @@ public class exploreFragment extends Fragment {
 
 
     public void addGroupNames(){
+        exploreGroups.clear();
+        exploreArrayAdapter.notifyDataSetChanged();
         final ParseQuery<Group> groupQuery = new ParseQuery<Group>(Group.class);
+        ArrayList currentUser = new ArrayList(); //will change to make more efficient
+        currentUser.add(ParseUser.getCurrentUser());
+        groupQuery.whereNotContainedIn(Group.KEY_USERS, currentUser);
         groupQuery.addDescendingOrder(Group.KEY_CREATED_AT);
         groupQuery.findInBackground(new FindCallback<Group>() {
             @Override
             public void done(List<Group> objects, ParseException e) {
-                if(e==null){
-                    exploreGroups.addAll(objects);
-                    exploreArrayAdapter.notifyDataSetChanged();
+                if (e == null) {
+                    for (int i = 0; i < objects.size(); i++) {
+                        Group group = objects.get(i);
+                        if(!group.getUsers().contains(ParseUser.getCurrentUser())) {
+                            exploreGroups.add(group);
+                            exploreArrayAdapter.notifyDataSetChanged();
+                        }
+                    }
+
                 }
                 else{
-                    e.printStackTrace();
+                    Log.d("Explore Fragment","Loading items failed");
                 }
             }
         });
