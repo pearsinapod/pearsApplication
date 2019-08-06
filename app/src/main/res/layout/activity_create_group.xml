@@ -6,13 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".createGroup">
 
-    <include layout="@layout/activity_toolbar"/>
+    <include
+        android:id="@+id/include"
+        layout="@layout/activity_toolbar"
+        tools:layout_editor_absoluteX="-44dp"
+        tools:layout_editor_absoluteY="16dp" />
 
     <EditText
         android:id="@+id/createGroupName"
-        android:layout_width="283dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="64dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:background="@drawable/edit_text_background"
@@ -25,6 +29,8 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="92dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:background="@drawable/edit_text_background"
         android:ems="10"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,10 +40,12 @@
         android:id="@+id/createGroupPrivate"
         android:layout_width="189dp"
         android:layout_height="29dp"
-        android:layout_marginTop="76dp"
-        android:layout_marginEnd="92dp"
-        android:layout_marginRight="92dp"
+        android:layout_marginTop="68dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:fontFamily="@font/montserrat_alternates"
         android:text="Private"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -47,15 +55,15 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="68dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:fontFamily="@font/montserrat_alternates"
-        android:text="Name"
         android:imeOptions="actionGo"
+        android:text="Name"
         android:textColor="@android:color/black"
         app:layout_constraintEnd_toStartOf="@+id/createGroupName"
-        app:layout_constraintHorizontal_bias="0.222"
+        app:layout_constraintHorizontal_bias="0.583"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/createGroupPrivate" />
 
@@ -63,14 +71,17 @@
         android:id="@+id/createGroupDescriptionTitle"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginTop="96dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="92dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
         android:fontFamily="@font/montserrat_alternates"
-        android:text="Description"
         android:imeOptions="actionGo"
+        android:text="Description"
         android:textColor="@android:color/black"
         app:layout_constraintEnd_toStartOf="@+id/createGroupDescription"
+        app:layout_constraintHorizontal_bias="0.666"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/createGroupNameTitle" />
 
@@ -89,5 +100,67 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/createDescriptionCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:paddingRight="10dp"
+        android:hint="count description"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/createGroupDescription" />
+
+    <TextView
+        android:id="@+id/createNameCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:hint="count name"
+        android:textColor="#000000"
+        android:paddingRight="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/createGroupName" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/createPlaceholder"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginBottom="60dp"
+        app:civ_border_color="#ffaa64"
+        app:civ_border_width="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/createGroupSubmit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/createGroupImageTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginLeft="36dp"
+        android:layout_marginTop="120dp"
+        android:fontFamily="@font/montserrat_alternates"
+        android:text="Image"
+        android:textColor="@android:color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/createGroupDescriptionTitle" />
+
+    <ImageButton
+        android:id="@+id/createGroupAddImage"
+        android:layout_width="27dp"
+        android:layout_height="26dp"
+        android:layout_marginEnd="150dp"
+        android:layout_marginRight="150dp"
+        android:layout_marginBottom="76dp"
+        android:adjustViewBounds="true"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        android:tint="#ffffff"
+        app:layout_constraintBottom_toTopOf="@+id/createGroupSubmit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/add" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

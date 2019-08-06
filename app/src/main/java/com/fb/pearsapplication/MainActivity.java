@@ -77,6 +77,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         locationFinder();
+
+        //TO CLEAR GROUP USER RELATIONS
+       // clearUserRelations();
+
+    }
+
+    public void clearUserRelations(){
+        clearParseData clear = new clearParseData();
+        clear.clearGroupUserRelations();
+        clear.clearGroupUsers();
+        clear.clearPears();
     }
 
     public void locationFinder() {
