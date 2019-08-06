@@ -50,11 +50,18 @@ public class groupFragment extends Fragment {
 
         setParameters();
 
-
-
         queryGroups();
 
+        recyclerViewConfig(view);
 
+    }
+
+    public void loadNextDataFromApi(int offset) {
+        queryGroups();
+
+    }
+
+    public void recyclerViewConfig(View view) {
         // Configure the RecyclerView
         RecyclerView rvGroups = (RecyclerView) view.findViewById(R.id.rvGroups);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
@@ -70,14 +77,8 @@ public class groupFragment extends Fragment {
         };
         // Adds the scroll listener to RecyclerView
         rvGroups.addOnScrollListener(scrollListener);
-
     }
 
-
-    public void loadNextDataFromApi(int offset) {
-        queryGroups();
-
-    }
 
     private void setParameters() {
         // create the data source

@@ -68,7 +68,7 @@ public class WordTree implements Comparable<Object> {
         WordTree t = new WordTree();
         t.addToTree(ngrams(1));
         System.out.println("hey pls work");
-        System.out.println(t.suggestNext(chunkLastN(3, "Red-Black  tree based hello hey yer")));
+        System.out.println(t.suggestNext(chunkLastN(3, "Red-Black tree based")));
     }
 
     public static List<List<String>> ngrams(int a) {

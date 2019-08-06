@@ -40,7 +40,7 @@ public class exploreFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         exploreGroups = new ArrayList<>();
-        exploreArrayAdapter = new exploreAdapter(getContext(), R.layout.item_explore_group, exploreGroups);
+        //exploreArrayAdapter = new exploreAdapter(getContext(), R.layout.item_explore_group, exploreGroups);
         flingContainer = view.findViewById(R.id.frame);
         flingContainer.setAdapter(exploreArrayAdapter);
 
