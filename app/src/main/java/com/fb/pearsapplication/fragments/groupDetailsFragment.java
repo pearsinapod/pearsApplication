@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
@@ -47,11 +48,13 @@ public class groupDetailsFragment extends Fragment {
     ParseUser pearUser;
     Pear pear;
     GroupUserRelation gur;
+    FragmentManager childFragmentManager;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         group = (Group) getArguments().getSerializable("anything");
+        childFragmentManager = getChildFragmentManager();
         return inflater.inflate(R.layout.fragment_group_details, container, false);
     }
 
@@ -83,8 +86,6 @@ public class groupDetailsFragment extends Fragment {
         }
         tvDescription.setText(group.getDescription());
         String timeAgo = group.getRelativeTimeAgo();
-
-
 
         if (currentUser.getList("pearRequests").contains(group)) {
             swPear.setChecked(true);
@@ -165,32 +166,32 @@ public class groupDetailsFragment extends Fragment {
     public void insertNestedPearFragment() {
         Fragment childFragment = new ChildPearFragment();
         ((ChildPearFragment) childFragment).setPear(pear);
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        FragmentTransaction transaction = childFragmentManager.beginTransaction();
         transaction.addToBackStack(null);
-        transaction.replace(R.id.child_fragment_container, childFragment).commit();
+        transaction.replace(R.id.child_fragment_container, childFragment).commitAllowingStateLoss();
     }
 
     public void insertNestedAddFragment() {
         Fragment childFragment = new ChildAddFragment();
         ((ChildAddFragment) childFragment).setGroup(group);
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        FragmentTransaction transaction = childFragmentManager.beginTransaction();
         transaction.addToBackStack(null);
-        transaction.replace(R.id.child_fragment_container, childFragment).commit();
+        transaction.replace(R.id.child_fragment_container, childFragment).commitAllowingStateLoss();
     }
 
     public void insertNestedPearButtonFragment() {
         Fragment childFragment = new ChildPearButtonFragment();
         ((ChildPearButtonFragment) childFragment).setGUR(gur);
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        FragmentTransaction transaction = childFragmentManager.beginTransaction();
         transaction.addToBackStack(null);
-        transaction.replace(R.id.child_fragment_container, childFragment).commit();
+        transaction.replace(R.id.child_fragment_container, childFragment).commitAllowingStateLoss();
     }
 
     public void insertNestedWaitingFragment() {
         Fragment childFragment = new ChildWaitingFragment();
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        FragmentTransaction transaction = childFragmentManager.beginTransaction();
         transaction.addToBackStack(null);
-        transaction.replace(R.id.child_fragment_container, childFragment).commit();
+        transaction.replace(R.id.child_fragment_container, childFragment).commitAllowingStateLoss();
     }
 
     public ParseUser getOtherUser() {

@@ -17,6 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -64,6 +65,7 @@ public class matchProfileFragment extends Fragment {
     public TextView tvDistance;
     public Button btnUnpear;
     public Button btnMessage;
+    public RecyclerView rvQuestions;
 
     @Nullable
     @Override
@@ -79,16 +81,8 @@ public class matchProfileFragment extends Fragment {
         tvDistance = view.findViewById(R.id.tvDistance);
         btnUnpear = view.findViewById(R.id.btnUnpear);
         btnMessage = view.findViewById(R.id.btnMessage);
-
-//        FirebaseMessaging.getInstance().subscribeToTopic("new_pear_notification").addOnCompleteListener(new OnCompleteListener<Void>() {
-//            @Override
-//            public void onComplete(@NonNull Task<Void> task) {
-//                if (task.isSuccessful()) {
-//                    Log.d("XYZ", "subscribed successfully!");
-//                }
-//            }
-//        });
-
+        rvQuestions = view.findViewById(R.id.rvQuestions);
+        
         ParseFile profileImage = pearUser.getParseFile("profileImage");
         String profileImageString = pearUser.getString("profilePicString");
         if (profileImage != null) {
