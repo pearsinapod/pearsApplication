@@ -157,7 +157,7 @@ public class ChatActivity extends AppCompatActivity {
 
     public void gettingMessagesFromParse(ParseQuery parseQuery) {
         parseQuery.orderByDescending("createdAt");
-//        parseQuery.setLimit(30);
+        parseQuery.setLimit(5);
         parseQuery.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {

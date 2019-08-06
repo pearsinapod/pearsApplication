@@ -1,6 +1,7 @@
 package com.fb.pearsapplication.models;
 
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 
 import java.util.Date;
@@ -11,11 +12,23 @@ public class Question extends ParseObject {
     public static final String KEY_DATE = "targetDate";
 
     public String getQuestion() {
-        return getString(KEY_QUESTION);
+        String question = "";
+        try {
+            question = fetchIfNeeded().getString("question");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return question;
     }
 
     public Date getTargetDate() {
-        return getDate("targetDate");
+        Date date = new Date();
+        try {
+            date = fetchIfNeeded().getDate("targetDate");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
     }
 
     public void setQuestion(String question) {
