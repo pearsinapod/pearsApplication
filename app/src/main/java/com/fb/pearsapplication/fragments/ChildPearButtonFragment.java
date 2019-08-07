@@ -8,6 +8,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -251,6 +253,7 @@ public class ChildPearButtonFragment extends Fragment {
         bindPopupPearViews(popupView);
         boolean focusable = true;
         popupWindow = new PopupWindow(popupView, width, height, focusable);
+        popupWindow.setAnimationStyle(R.style.Animation);
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
@@ -315,7 +318,8 @@ public class ChildPearButtonFragment extends Fragment {
         int width = ConstraintLayout.LayoutParams.MATCH_PARENT;
         int height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
         boolean focusable = true;
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+        popupWindow = new PopupWindow(popupView, width, height, focusable);
+        popupWindow.setAnimationStyle(R.style.Animation);
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 
     }
