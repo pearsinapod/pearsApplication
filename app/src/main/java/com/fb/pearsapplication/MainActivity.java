@@ -217,15 +217,14 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean loadFragment(Fragment fragment, int pos) {
         if (fragment != null) {
-            if (startingPosition > pos) {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right );
-                transaction.replace(R.id.flContainter, fragment);
-                transaction.commit();
-            }
             if (startingPosition < pos) {
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left );
+                transaction.replace(R.id.flContainter, fragment);
+                transaction.commit();
+            } else {
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right );
                 transaction.replace(R.id.flContainter, fragment);
                 transaction.commit();
             }
@@ -233,6 +232,17 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        int selectedItemId = bottomNavigationView.getSelectedItemId();
+        if (R.id.groupFragment != selectedItemId) {
+            loadFragment(new groupFragment(),1);
+            bottomNavigationView.setSelectedItemId(R.id.groupFragment);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

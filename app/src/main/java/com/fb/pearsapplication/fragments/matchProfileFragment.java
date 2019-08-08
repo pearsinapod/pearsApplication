@@ -181,7 +181,9 @@ public class matchProfileFragment extends Fragment {
         queryGUR(pearUser);
         FragmentManager fragmentManager = getFragmentManager();
         Fragment fragment = new groupFragment();
-        fragmentManager.beginTransaction().replace(R.id.flContainter, fragment).addToBackStack(null).commit();
+        fragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right)
+                .replace(R.id.flContainter, fragment).addToBackStack(null).commit();
     }
 
     private void queryGUR(ParseUser user) {

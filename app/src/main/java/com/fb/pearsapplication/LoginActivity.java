@@ -80,7 +80,6 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent signupIntent = new Intent(LoginActivity.this, SignupActivity.class);
                 startActivity(signupIntent);
-                finish();
             }
         });
 

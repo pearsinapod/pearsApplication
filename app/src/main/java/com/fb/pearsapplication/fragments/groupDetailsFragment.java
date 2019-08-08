@@ -165,6 +165,7 @@ public class groupDetailsFragment extends Fragment {
         Fragment childFragment = new ChildPearFragment();
         ((ChildPearFragment) childFragment).setPear(pear);
         FragmentTransaction transaction = childFragmentManager.beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         transaction.addToBackStack(null);
         transaction.replace(R.id.child_fragment_container, childFragment).commitAllowingStateLoss();
     }
@@ -180,13 +181,6 @@ public class groupDetailsFragment extends Fragment {
     public void insertNestedPearButtonFragment() {
         Fragment childFragment = new ChildPearButtonFragment();
         ((ChildPearButtonFragment) childFragment).setGUR(gur);
-        FragmentTransaction transaction = childFragmentManager.beginTransaction();
-        transaction.addToBackStack(null);
-        transaction.replace(R.id.child_fragment_container, childFragment).commitAllowingStateLoss();
-    }
-
-    public void insertNestedWaitingFragment() {
-        Fragment childFragment = new ChildWaitingFragment();
         FragmentTransaction transaction = childFragmentManager.beginTransaction();
         transaction.addToBackStack(null);
         transaction.replace(R.id.child_fragment_container, childFragment).commitAllowingStateLoss();

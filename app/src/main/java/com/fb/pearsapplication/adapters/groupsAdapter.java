@@ -95,7 +95,9 @@ public class groupsAdapter extends RecyclerView.Adapter<groupsAdapter.ViewHolder
                         Fragment fragment = new groupDetailsFragment();
                         fragment.setArguments(bundle);
 
-                        fragmentManager.beginTransaction().replace(R.id.flContainter, fragment).addToBackStack(null).commit();
+                        fragmentManager.beginTransaction()
+                                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, 0, 0)
+                                .replace(R.id.flContainter, fragment).addToBackStack(null).commit();
                     }
                 }
             });

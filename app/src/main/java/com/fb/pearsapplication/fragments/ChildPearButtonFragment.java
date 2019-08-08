@@ -347,7 +347,9 @@ public class ChildPearButtonFragment extends Fragment {
         swPear.setChecked(false);
         swPear.setEnabled(false);
         swPear.setClickable(false);
-        fragmentManager.beginTransaction().replace(R.id.child_fragment_container, fragment).addToBackStack(null).commit();
+        fragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left )
+                .replace(R.id.child_fragment_container, fragment).addToBackStack(null).commit();
     }
 
 
