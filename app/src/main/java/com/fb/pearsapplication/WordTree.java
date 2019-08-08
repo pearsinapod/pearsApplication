@@ -39,26 +39,54 @@ public class WordTree implements Comparable<Object> {
     }
 
     public void addToTree(List<List<String>> ngrams) {
+        System.out.println("about to insert the ngrams");
+        System.out.println(ngrams);
         for (List ngram : ngrams) {
+            System.out.println("about to add an ngram set");
+            System.out.println(ngram);
             addNgrams(ngram);
         }
     }
 
     private void addNgrams(List<String> ngram) {
+        System.out.println("adding");
+        System.out.println(ngram);
+        System.out.println("done adding");
+
         System.out.println(ngram); // printed
         if (ngram == null || ngram.isEmpty()) {
+            System.out.println("no ngrams found");
             return;
         }
-        WordTree t = new WordTree(ngram.remove(0).toLowerCase());
+        for ( String word: ngram) {
+
+        }
+        String word = ngram.remove(0).toLowerCase();
+        System.out.println("word being evaluated");
+        System.out.println(word);
+        WordTree t = new WordTree(word);
+
         if (this.map.containsKey(t)) {
+            System.out.println("-------NOT adding to map");
+            System.out.println(this.map);
             t = this.map.get(t);
             t.frequency++;
             this.map.put(t, t);
         } else {
+
+            System.out.println("-------adding to map");
+            System.out.println("before");
+            System.out.println(this.map);
             this.map.put(t, t);
+            System.out.println("after");
+            System.out.println(this.map);
         }
+        System.out.println("map printing again!!!!!!!");
+        System.out.println(this.map.get(t));
         try {
-            this.map.get(t).addNgrams(ngram);
+            WordTree tree = this.map.get(t);
+            System.out.println(ngram);
+            this.addNgrams(ngram);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,8 +94,11 @@ public class WordTree implements Comparable<Object> {
 
     public static void main(String[] args) {
         WordTree t = new WordTree();
-        t.addToTree(ngrams(1));
+        List<List<String>> listOfngrams = ngrams(1);
+        t.addToTree(listOfngrams);
+
         System.out.println("hey pls work");
+        System.out.println(t.map);
         System.out.println(t.suggestNext(chunkLastN(3, "hi i'm jaleel")));
     }
 
@@ -78,6 +109,7 @@ public class WordTree implements Comparable<Object> {
         bodyQuery.findInBackground(new FindCallback<PearMessage>() {
             @Override
             public void done(List<PearMessage> objects, ParseException e) {
+                System.out.println("running method");
                 String[] words = new String[objects.size()];
                 if (objects != null && objects.size() > 0) {
                     for (int i = objects.size() - 1; i >= 0 ; i--) {
@@ -85,28 +117,35 @@ public class WordTree implements Comparable<Object> {
                         words[i] = body;
                     }
                     parts = body.split(" ");
+                    System.out.println(parts);
                     for ( String ss : parts) {
                         System.out.println(ss);
                     }
                 }
                 wordList = Arrays.asList(parts);
 
+
             }
         });
+        wordList = new ArrayList<String>();
+        wordList.add("Hello");
+        wordList.add("good");
         List<List<String>> newList = new ArrayList<>();
-        newList.add(wordList);
+        if(wordList.size() != 0 && wordList != null) {
+            newList.add(wordList);
+        }
         return newList;
     }
 
-    public static List<String> chunkLastN(int n,String string){ // takes away the last n words
+    public static List<String> chunkLastN(int n,String nGramMinus){ // takes away the last n words
         List<String> chunks = new ArrayList<>();
-        if(string!=null && string.lastIndexOf(" ")==-1){
-            chunks.add(string);
+        if(nGramMinus!=null && nGramMinus.lastIndexOf(" ")==-1){
+            chunks.add(nGramMinus);
         }
-        while(string!=null && n>0 && string.lastIndexOf(" ")>0){
-            chunks.add(0,string.substring(string.lastIndexOf(" ")).trim());
-            string = string.substring(0, string.lastIndexOf(" "));
-            System.out.println(n+" : " +string);
+        while(nGramMinus!=null && n>0 && nGramMinus.lastIndexOf(" ")>0){
+            chunks.add(0,nGramMinus.substring(nGramMinus.lastIndexOf(" ")).trim());
+            nGramMinus = nGramMinus.substring(0, nGramMinus.lastIndexOf(" "));
+            System.out.println(n+" : " +nGramMinus);
             n--;
         }
         System.out.println(chunks);
@@ -119,27 +158,33 @@ public class WordTree implements Comparable<Object> {
             throw new ClassCastException("The object must be compared with WordTree type");
         }
         WordTree w = (WordTree) o;
-        if (this.frequency < w.frequency) {
-            return 1;
-        } else if (this.frequency == w.frequency) {
-            return  0;
-        } else {
-            return -1;
-        }
+        System.out.println("Comparing words");
+        return this.word.compareTo(w.word);
     }
 
     public List<WordTree> suggestNext(List<String> chunks) {
         List<String> lst = new ArrayList<>();
         if (chunks == null || chunks.isEmpty()) {
             return Collections.EMPTY_LIST;
-        } else if (chunks.size() == 1) {
+        }
+
+        if (chunks.size() == 1) {
             Set<WordTree> keySet = this.map.get(new WordTree(chunks.remove(0))).map.keySet();
             ArrayList<WordTree> suggestions = new ArrayList<>(keySet);
             Collections.sort(suggestions);
             return suggestions;
         } else {
-            return this.map.get(new WordTree(chunks.remove(0))).suggestNext(chunks);
+            WordTree tree = new WordTree(chunks.remove(0));
+            WordTree nextTree = this.map.get(tree);
+            System.out.println("printing map");
+            System.out.println(this.map);
+            if(nextTree == null) {
+                System.out.println("null next tree");
+            } else {
+                System.out.println("not null next tree");
+            }
 
+            return nextTree.suggestNext(chunks);
         }
 
     }
@@ -170,7 +215,6 @@ public class WordTree implements Comparable<Object> {
         for (Map.Entry e : this.map.entrySet()) {
             ((WordTree) e.getValue()).print();
         }
-
     }
 
     @Override
