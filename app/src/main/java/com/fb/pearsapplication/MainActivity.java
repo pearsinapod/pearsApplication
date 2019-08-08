@@ -251,11 +251,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickLogout(MenuItem item) {
-        LoginManager.getInstance().logOut();
-        ParseUser.logOut();
-        Intent logoutIntent = new Intent(MainActivity.this, LoginActivity.class);
-        startActivity(logoutIntent);
-        finish();
+        ParseUser.getCurrentUser().put("deviceToken", "");
+        ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                } else {
+                    LoginManager.getInstance().logOut();
+                    ParseUser.logOut();
+                    Intent logoutIntent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(logoutIntent);
+                    finish();
+                }
+            }
+        });
     }
 
     public void onClickCreateGroup (MenuItem item){
