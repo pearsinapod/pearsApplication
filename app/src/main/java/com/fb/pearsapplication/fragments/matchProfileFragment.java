@@ -218,8 +218,8 @@ public class matchProfileFragment extends Fragment {
 
     public void queryUserQuestions() {
         ParseQuery<UserQuestion> uqQuery = new ParseQuery<UserQuestion>(UserQuestion.class);
-        uqQuery.whereEqualTo("user", pearUser);
-        uqQuery.orderByDescending("targetDate");
+//        uqQuery.whereEqualTo("user", pearUser);
+//        uqQuery.orderByDescending("targetDate");
         uqQuery.findInBackground(new FindCallback<UserQuestion>() {
             @Override
             public void done(List<UserQuestion> objects, ParseException e) {
@@ -236,7 +236,7 @@ public class matchProfileFragment extends Fragment {
     public void createAdapter() {
         QuestionAdapter adapter = new QuestionAdapter(uqList);
         rvQuestions.setAdapter(adapter);
-        rvQuestions.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvQuestions.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
     }
 
 }

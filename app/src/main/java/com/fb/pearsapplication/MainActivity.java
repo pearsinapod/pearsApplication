@@ -202,7 +202,9 @@ public class MainActivity extends AppCompatActivity {
                         fragment = new searchFragment();
                         break;
                 }
-                fragmentManager.beginTransaction().replace(R.id.flContainter, fragment).commit();
+                fragmentManager.beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, 0, 0)
+                        .replace(R.id.flContainter, fragment).commit();
                 return true;
             }
         });
