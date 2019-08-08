@@ -84,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
         // TO CLEAN CURRENT GROUPS
         //cleanGroupsUp();
 
+        // TO CLEAN CURRENT HOBBIES
+       // cleanHobbies();
+
     }
 
     public void clearUserRelations(){
@@ -96,6 +99,11 @@ public class MainActivity extends AppCompatActivity {
     public void cleanGroupsUp(){
         modifyParseData clean = new modifyParseData();
         clean.deleteGroupsWithoutReq();
+    }
+
+    public void cleanHobbies(){
+        modifyParseData clean = new modifyParseData();
+        clean.clearHobbies();
     }
 
     public void locationFinder() {

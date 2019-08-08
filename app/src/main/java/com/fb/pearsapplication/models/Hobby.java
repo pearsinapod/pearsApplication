@@ -5,7 +5,7 @@ import com.parse.ParseObject;
 
 import java.util.ArrayList;
 
-@ParseClassName("Hobby")
+@ParseClassName("Hobbies")
 public class Hobby extends ParseObject {
     public static final String KEY_SUBSET = "groupSubsets";
     public static final String KEY_THRESHOLD = "supportThreshold";

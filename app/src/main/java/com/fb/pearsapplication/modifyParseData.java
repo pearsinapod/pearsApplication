@@ -72,13 +72,15 @@ public class modifyParseData {
                 for (int h=0; h<objects.size(); h++){
                     Hobby hobby = objects.get(h);
                     hobby.deleteInBackground();
+                    Log.d("Cleared Hobby "+(h+1) +" out of " + objects.size(),"done");
+
                 }
             }
         });
     }
+
     // deletes groups that have descriptions with character count greater than 200, names with character count count greater than 30,
     // and groups that have no name and/or no description
-
     public void deleteGroupsWithoutReq(){
         Log.d("Deleting groups w/o req", "entered");
         final ParseQuery<Group> groupQuery = new ParseQuery<Group>(Group.class);
