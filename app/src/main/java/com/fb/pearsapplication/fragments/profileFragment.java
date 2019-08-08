@@ -120,7 +120,7 @@ public class profileFragment extends Fragment {
         }
         String description = user.getString("description");
 
-        if ( description==null ||description.equals("")) {
+        if ( description == null ||description.equals("")) {
             tvDescription.setText("Add a description!");
         } else {
             tvDescription.setText(description);
