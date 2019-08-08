@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.fb.pearsapplication.models.Group;
 import com.fb.pearsapplication.models.GroupUserRelation;
+import com.fb.pearsapplication.models.Hobby;
 import com.fb.pearsapplication.models.Pear;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -62,6 +63,19 @@ public class modifyParseData {
         });
     }
 
+    // clears ALL existing Hobbies
+    public void clearHobbies(){
+        final ParseQuery<Hobby> hobbyQuery = new ParseQuery<Hobby>(Hobby.class);
+        hobbyQuery.findInBackground(new FindCallback<Hobby>() {
+            @Override
+            public void done(List<Hobby> objects, ParseException e) {
+                for (int h=0; h<objects.size(); h++){
+                    Hobby hobby = objects.get(h);
+                    hobby.deleteInBackground();
+                }
+            }
+        });
+    }
     // deletes groups that have descriptions with character count greater than 200, names with character count count greater than 30,
     // and groups that have no name and/or no description
 

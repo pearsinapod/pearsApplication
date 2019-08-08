@@ -13,9 +13,6 @@ public class Tuple<X, Y> {
         this.group = y;
     }
 
-
-
-
     public String getX(){
         return user;
     }
