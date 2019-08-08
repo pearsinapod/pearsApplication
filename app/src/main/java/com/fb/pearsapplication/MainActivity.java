@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.facebook.login.LoginManager;
 import com.fb.pearsapplication.fragments.exploreFragment;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     Location location;
     String provider;
     ParseUser user;
+    int startingPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,30 +186,53 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 Fragment fragment = new groupFragment();
+                int newPosition = 0;
                 switch (menuItem.getItemId()) {
                     case R.id.groupFragment:
                         Log.d("groupFragment", "groupFragment clicked");
                         fragment = new groupFragment();
+                        newPosition = 1;
                         break;
                     case R.id.profileFragment:
                         Log.d("profileFragment", "profileFragment clicked");
                         fragment = new profileFragment();
+                        newPosition = 4;
                         break;
                     case R.id.exploreFragment:
                         Log.d("exploreFragment", "searchFragment clicked");
                         fragment = new exploreFragment();
+                        newPosition = 2;
                         break;
                     case R.id.searchFragment:
                         Log.d("searchFragment", "searchFragment clicked");
                         fragment = new searchFragment();
+                        newPosition = 3;
                         break;
                 }
-                fragmentManager.beginTransaction().replace(R.id.flContainter, fragment).commit();
-                return true;
+                return loadFragment(fragment, newPosition);
             }
         });
-
         bottomNavigationView.setSelectedItemId(R.id.groupFragment);
+    }
+
+    private boolean loadFragment(Fragment fragment, int pos) {
+        if (fragment != null) {
+            if (startingPosition > pos) {
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right );
+                transaction.replace(R.id.flContainter, fragment);
+                transaction.commit();
+            }
+            if (startingPosition < pos) {
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left );
+                transaction.replace(R.id.flContainter, fragment);
+                transaction.commit();
+            }
+            startingPosition = pos;
+            return true;
+        }
+        return false;
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -17,6 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +32,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.adapters.QuestionAdapter;
+import com.fb.pearsapplication.conversationsActivity;
 import com.fb.pearsapplication.models.Group;
 import com.fb.pearsapplication.models.GroupUserRelation;
 import com.fb.pearsapplication.models.Pear;
@@ -119,6 +121,13 @@ public class matchProfileFragment extends Fragment {
                 queryUnpear();
             }
         });
+        btnMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent chatIntent = new Intent(getActivity(), conversationsActivity.class);
+                startActivity(chatIntent);
+            }
+        });
     }
 
     private void queryUnpear() {
@@ -170,6 +179,9 @@ public class matchProfileFragment extends Fragment {
 
         queryGUR(ParseUser.getCurrentUser());
         queryGUR(pearUser);
+        FragmentManager fragmentManager = getFragmentManager();
+        Fragment fragment = new groupFragment();
+        fragmentManager.beginTransaction().replace(R.id.flContainter, fragment).addToBackStack(null).commit();
     }
 
     private void queryGUR(ParseUser user) {
@@ -224,7 +236,7 @@ public class matchProfileFragment extends Fragment {
     public void createAdapter() {
         QuestionAdapter adapter = new QuestionAdapter(uqList);
         rvQuestions.setAdapter(adapter);
-        rvQuestions.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvQuestions.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
     }
 
 }

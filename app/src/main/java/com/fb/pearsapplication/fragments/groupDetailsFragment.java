@@ -82,11 +82,9 @@ public class groupDetailsFragment extends Fragment {
         if (group.getUsers() != null) {
             Integer size = group.getUsers().size();
             String sizeString = size.toString();
-            tvGroupNumber.setText(sizeString);
+            tvGroupNumber.setText(sizeString + " members");
         }
         tvDescription.setText(group.getDescription());
-        String timeAgo = group.getRelativeTimeAgo();
-
         if (currentUser.getList("pearRequests").contains(group)) {
             swPear.setChecked(true);
         }
