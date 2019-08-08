@@ -46,8 +46,7 @@ public class conversationsActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Conversations with Pears");
-
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         pearList = new ArrayList<ParseUser>();
         final ArrayList<String> pearID = new ArrayList<>();

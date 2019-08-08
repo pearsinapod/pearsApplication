@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fontFamily="@font/montserrat_alternates">
 
 
@@ -9,21 +9,21 @@
         android:icon="@drawable/logout"
         android:iconTint="#ffffff"
         android:onClick="onClickLogout"
-        android:orderInCategory="2"
+        android:orderInCategory="3"
         android:title="Logout"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/message"
-        android:icon="@drawable/message"
+        android:icon="@drawable/messages"
         android:iconTint="#ffffff"
         android:onClick="onClickMessages"
         android:title="Messages"
         app:showAsAction="always" />
     <item
-        android:id = "@+id/createGroup"
-        android:title="Create Group"
+        android:id="@+id/createGroup"
         android:onClick="onClickCreateGroup"
         android:orderInCategory="1"
-        app:showAsAction="never"/>
+        android:title="Create Group"
+        app:showAsAction="never" />
 </menu>

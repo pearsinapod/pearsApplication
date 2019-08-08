@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -46,6 +47,7 @@ public class ChatActivity extends AppCompatActivity {
     public String receiver;
     private Date lastMessageDate;
     private RecyclerView rvChat;
+    private TextView tvReceiver;
     private Boolean isRunning;
     androidx.appcompat.widget.Toolbar toolbar;
     private EndlessRecyclerViewScrollListener scrollListener;
@@ -101,6 +103,8 @@ public class ChatActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(receiver);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
 
     }
 
