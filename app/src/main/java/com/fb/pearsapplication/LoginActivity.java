@@ -305,7 +305,7 @@ public class LoginActivity extends AppCompatActivity {
         return list;
     }
 
-
+    // makes file into JSON Object
     public org.json.simple.JSONObject fileToJSONObj(String filename) {
         AssetManager assetManager = getResources().getAssets();
         InputStream inputStream = null;
@@ -333,10 +333,12 @@ public class LoginActivity extends AppCompatActivity {
         return null;
     }
 
+    // Connects apriori algorithm to parse
+
     public void aprioriToParse( org.json.simple.JSONObject jsonObject){
         aprioriAlgorithm apriori = new aprioriAlgorithm();
         JSONArray arr = apriori.convertJSONObjToArr( jsonObject);
-        Log.d("ARRRR", arr.toJSONString());
+        // Log.d("ARRRR", arr.toJSONString()); check size to test once u clear again
         int arrSize = arr.size();
         for (int object = 0; object < arrSize; object++) {
             org.json.simple.JSONObject object_info = apriori.convertObjtoJSONObj(arr.get(object));
@@ -351,7 +353,5 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     }
-
-
 
 }
