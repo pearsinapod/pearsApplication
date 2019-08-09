@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fb.pearsapplication.EndlessRecyclerViewScrollListener;
 import com.fb.pearsapplication.adapters.ChatAdapter;
+import com.fb.pearsapplication.adapters.conversationsAdapter;
 import com.fb.pearsapplication.models.Group;
 import com.fb.pearsapplication.models.PearMessage;
 import com.parse.FindCallback;
@@ -86,6 +88,7 @@ public class ChatActivity extends AppCompatActivity {
 
         etMessage = (EditText) findViewById(R.id.etMessage);
         etMessage.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+
 
 
 
