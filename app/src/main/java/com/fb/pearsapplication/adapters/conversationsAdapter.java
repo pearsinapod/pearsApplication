@@ -11,10 +11,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.fb.pearsapplication.ChatActivity;
 import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.models.Pear;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 
 import java.util.List;
@@ -92,6 +95,15 @@ public class conversationsAdapter extends RecyclerView.Adapter<conversationsAdap
                 e.printStackTrace();
             }
             tvUsername.setText(otherUser.getUsername());
+            ParseFile profileImage = otherUser.getParseFile("profileImage");
+            String profileImageString = otherUser.getString("profilePicString");
+            if (profileImage != null) {
+                Glide.with(context).load(profileImage.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfileOther);
+            } else if (profileImageString != null) {
+                Glide.with(context).load(profileImageString).apply(RequestOptions.circleCropTransform()).into(ivProfileOther);
+            } else {
+                Glide.with(context).load(R.drawable.user).apply(RequestOptions.circleCropTransform()).into(ivProfileOther);
+            }
         }
     }
 }

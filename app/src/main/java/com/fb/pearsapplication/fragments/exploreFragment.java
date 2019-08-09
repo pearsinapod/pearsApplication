@@ -15,6 +15,7 @@ import com.fb.pearsapplication.R;
 import com.fb.pearsapplication.adapters.exploreAdapter;
 import com.fb.pearsapplication.models.Group;
 import com.fb.pearsapplication.models.GroupUserRelation;
+import com.fb.pearsapplication.models.Hobby;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -49,7 +50,6 @@ public class exploreFragment extends Fragment {
         setUpExploreFlingContainer();
         setOnClickListenerFling();
         addGroupNames();
-
     }
 
     public void setUpExploreFlingContainer(){
@@ -64,8 +64,6 @@ public class exploreFragment extends Fragment {
 
             @Override
             public void onLeftCardExit(Object dataObject) {
-                //Do something on the left!
-                //You also have access to the original object.
                 //If you want to use it just cast it (String) dataObject
                 Log.d("Explore Fragment:", "Left");
             }
@@ -86,17 +84,48 @@ public class exploreFragment extends Fragment {
                 });
 
             }
-
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 addGroupNames();
             }
-
             @Override
             public void onScroll(float scrollProgressPercent) {
             }
         });
 
+    }
+
+    public int pearRating(double threshold){
+        if (threshold<25){
+            return 0;
+        }
+        if(threshold<50){
+            return 1;
+        }
+        if(threshold<75){
+            return 2;
+        }
+        return 3;
+    }
+
+    public double gettingThreshold(String objectId, String userId) {
+        final ParseQuery<GroupUserRelation> GUR = new ParseQuery<GroupUserRelation>(GroupUserRelation.class);
+        ArrayList current_user = new ArrayList();
+        current_user.add(ParseUser.getCurrentUser());
+        GUR.whereContainedIn(GroupUserRelation.KEY_USER,current_user);
+        final ArrayList user_groups = new ArrayList();
+        GUR.findInBackground(new FindCallback<GroupUserRelation>() {
+            @Override
+            public void done(List<GroupUserRelation> objects, ParseException e) {
+                user_groups.addAll(objects);
+            }
+        });
+
+        final ParseQuery<Hobby> hobbyQuery = new ParseQuery<Hobby>(Hobby.class);
+        ArrayList currentObjectId = new ArrayList();
+        currentObjectId.add(objectId);
+        hobbyQuery.whereContainedIn(Hobby.KEY_SUBSET,currentObjectId );
+        return 1.0;
     }
 
     public void setOnClickListenerFling(){
@@ -107,8 +136,6 @@ public class exploreFragment extends Fragment {
             }
         });
     }
-
-
 
     public void addGroupNames(){
         exploreGroups.clear();
@@ -137,7 +164,6 @@ public class exploreFragment extends Fragment {
             }
         });
     }
-
 
 }
 

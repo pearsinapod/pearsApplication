@@ -82,6 +82,7 @@ public class createGroup extends AppCompatActivity {
         }
         String[] arrDescription = tvDescriptionCount.getText().toString().split("\\s+");
         String [] arrName = tvNameCount.getText().toString().split("\\s+");
+
         if (arrName.length==0 && arrDescription.length==0){
             Toast.makeText(createGroup.this, "Invalid Name and Description", Toast.LENGTH_SHORT).show();
             return true;

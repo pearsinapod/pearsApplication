@@ -15,6 +15,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.fb.pearsapplication.models.Group;
+import com.fb.pearsapplication.models.Hobby;
 import com.fb.pearsapplication.models.Question;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
@@ -26,6 +27,8 @@ import com.parse.SignUpCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -105,6 +108,9 @@ public class LoginActivity extends AppCompatActivity {
                 });
             }
         });
+
+        //TO ADD THE HOBBIES
+       // aprioriToParse(fileToJSONObj("AprioriResultsTesting.json"));
     }
 
     private void persistenceCheck() {
@@ -275,6 +281,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
+
     // used to populate the database
     public ArrayList<String> fileToStringArray(String filename) {
         ArrayList<String> list = new ArrayList<String>();
@@ -295,6 +302,55 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return list;
+    }
+
+    // makes file into JSON Object
+    public org.json.simple.JSONObject fileToJSONObj(String filename) {
+        AssetManager assetManager = getResources().getAssets();
+        InputStream inputStream = null;
+        try {
+            inputStream = assetManager.open(filename);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        BufferedReader bf = new BufferedReader(new InputStreamReader(inputStream));
+        String item;
+        try {
+            while ((item = bf.readLine()) != null) {
+                JSONParser parser = new JSONParser();
+                org.json.simple.JSONObject json = null;
+                try {
+                    json = (org.json.simple.JSONObject) parser.parse(item);
+                } catch (org.json.simple.parser.ParseException e) {
+                    e.printStackTrace();
+                }
+                return json;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Connects apriori algorithm to parse
+
+    public void aprioriToParse( org.json.simple.JSONObject jsonObject){
+        aprioriAlgorithm apriori = new aprioriAlgorithm();
+        JSONArray arr = apriori.convertJSONObjToArr( jsonObject);
+        // Log.d("ARRRR", arr.toJSONString()); check size to test once u clear again
+        int arrSize = arr.size();
+        for (int object = 0; object < arrSize; object++) {
+            org.json.simple.JSONObject object_info = apriori.convertObjtoJSONObj(arr.get(object));
+            Hobby h = new Hobby();
+            ArrayList subset = (ArrayList) object_info.get("subset");
+            int occurrences =((Long) object_info.get("occurrences")).intValue();
+            double threshold = (double)object_info.get("threshold");
+            h.newSubset(subset);
+            h.setOccurences(occurrences);
+            h.setThreshold(threshold);
+            h.saveInBackground();
+        }
+
     }
 
 }
