@@ -23,7 +23,7 @@ public class Hobby extends ParseObject {
         return getInt(KEY_THRESHOLD);
     }
 
-    public void setThreshold(int threshold) {
+    public void setThreshold(double threshold) {
         put(KEY_THRESHOLD, threshold);
     }
 

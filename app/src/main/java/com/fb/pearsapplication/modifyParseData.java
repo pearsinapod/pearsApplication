@@ -10,13 +10,14 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class modifyParseData {
 
     // makes all group users empty
-
     public void clearGroupUsers(){
         final ParseQuery<Group> groupQuery = new ParseQuery<Group>(Group.class);
         groupQuery.findInBackground(new FindCallback<Group>() {
@@ -146,6 +147,13 @@ public class modifyParseData {
             Log.d("Description too big: ",  group.getGroupName() + " d: "+group.getDescription());
             group.deleteInBackground();
         }
+    }
+
+    public void aprioriToParse(JSONObject final_object , String user,  String filename){
+        aprioriAlgorithm a = new aprioriAlgorithm();
+        org.json.simple.JSONObject aprioriJSONResults = a.fileToJSON(user, filename);
+
+
     }
 
 

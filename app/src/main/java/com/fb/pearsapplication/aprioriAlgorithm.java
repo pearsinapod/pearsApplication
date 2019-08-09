@@ -117,7 +117,7 @@ public class aprioriAlgorithm {
             }
 
         }
-        double threshold = calculatingThreshold(occurrencesCount, 0, userGroupMap);
+        double threshold = calculatingThreshold(occurrencesCount, 15, userGroupMap);
         ArrayList subOccurThresh = new ArrayList();
         subOccurThresh.add(powerset);
         subOccurThresh.add(occurrencesCount);
@@ -195,10 +195,13 @@ public class aprioriAlgorithm {
         for (int subset = 0 ; subset<powersetGroups.size(); subset++){
             ArrayList subset_info = gettingOccurrences(powersetGroups.get(subset), userGroupMap);
             JSONObject one_object = new JSONObject();
-            one_object.put("subset", subset_info.get(0));
-            one_object.put("occurrences", subset_info.get(1));
-            one_object.put("threshold", subset_info.get(2));
-            allSubsetsInfo.add(one_object);
+            double threshold = (double)subset_info.get(2);
+            if (threshold!=-1){
+                one_object.put("subset", subset_info.get(0));
+                one_object.put("occurrences", subset_info.get(1));
+                one_object.put("threshold", subset_info.get(2));
+                allSubsetsInfo.add(one_object);
+            }
         }
         JSONObject final_object = new JSONObject();
         final_object.put("results", allSubsetsInfo);
@@ -206,9 +209,11 @@ public class aprioriAlgorithm {
     }
 
     public static void main(java.lang.String args[]) {
-        String groupFileName = "JSONGroupTESTING.json";
-        String GURFileName = "GroupUserRelationsTESTING.json";
-        System.out.println(creatingJSON(groupFileName, GURFileName));
+        String groupFileName = "JSONParseGroups.json";
+        String GURFileName = "JSONParseGroupUserRelations.json";
+        //System.out.println(creatingJSON(groupFileName, GURFileName)); //fix occurrences, limit powerset, also write code that adds it to parse
+        //String [] arrName = "             ".split("\\s+");
+       // System.out.println(arrName.length);
         //JSONObject jsonAllGUR = apriori.fileToJSON("angcast", "JSONParseGroupUserRelations.jsonAllGroups");
         //JSONObject jsonAllGroups = apriori.fileToJSON("angcast", "JSONParseGroups.jsonAllGroups");
     }
