@@ -4,10 +4,13 @@ import android.util.Log;
 
 import com.fb.pearsapplication.models.Group;
 import com.fb.pearsapplication.models.GroupUserRelation;
+import com.fb.pearsapplication.models.Hobby;
 import com.fb.pearsapplication.models.Pear;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +18,6 @@ import java.util.List;
 public class modifyParseData {
 
     // makes all group users empty
-
     public void clearGroupUsers(){
         final ParseQuery<Group> groupQuery = new ParseQuery<Group>(Group.class);
         groupQuery.findInBackground(new FindCallback<Group>() {
@@ -62,9 +64,24 @@ public class modifyParseData {
         });
     }
 
+    // clears ALL existing Hobbies
+    public void clearHobbies(){
+        final ParseQuery<Hobby> hobbyQuery = new ParseQuery<Hobby>(Hobby.class);
+        hobbyQuery.findInBackground(new FindCallback<Hobby>() {
+            @Override
+            public void done(List<Hobby> objects, ParseException e) {
+                for (int h=0; h<objects.size(); h++){
+                    Hobby hobby = objects.get(h);
+                    hobby.deleteInBackground();
+                    Log.d("Cleared Hobby "+(h+1) +" out of " + objects.size(),"done");
+
+                }
+            }
+        });
+    }
+
     // deletes groups that have descriptions with character count greater than 200, names with character count count greater than 30,
     // and groups that have no name and/or no description
-
     public void deleteGroupsWithoutReq(){
         Log.d("Deleting groups w/o req", "entered");
         final ParseQuery<Group> groupQuery = new ParseQuery<Group>(Group.class);
@@ -130,6 +147,13 @@ public class modifyParseData {
             Log.d("Description too big: ",  group.getGroupName() + " d: "+group.getDescription());
             group.deleteInBackground();
         }
+    }
+
+    public void aprioriToParse(JSONObject final_object , String user,  String filename){
+        aprioriAlgorithm a = new aprioriAlgorithm();
+        org.json.simple.JSONObject aprioriJSONResults = a.fileToJSON(user, filename);
+
+
     }
 
 

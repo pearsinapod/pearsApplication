@@ -5,7 +5,7 @@ import com.parse.ParseObject;
 
 import java.util.ArrayList;
 
-@ParseClassName("Hobby")
+@ParseClassName("Hobbies")
 public class Hobby extends ParseObject {
     public static final String KEY_SUBSET = "groupSubsets";
     public static final String KEY_THRESHOLD = "supportThreshold";
@@ -23,7 +23,7 @@ public class Hobby extends ParseObject {
         return getInt(KEY_THRESHOLD);
     }
 
-    public void setThreshold(int threshold) {
+    public void setThreshold(double threshold) {
         put(KEY_THRESHOLD, threshold);
     }
 
