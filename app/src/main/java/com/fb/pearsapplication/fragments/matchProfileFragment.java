@@ -220,8 +220,8 @@ public class matchProfileFragment extends Fragment {
 
     public void queryUserQuestions() {
         ParseQuery<UserQuestion> uqQuery = new ParseQuery<UserQuestion>(UserQuestion.class);
-//        uqQuery.whereEqualTo("user", pearUser);
-//        uqQuery.orderByDescending("targetDate");
+        uqQuery.whereEqualTo("user", pearUser);
+        uqQuery.orderByDescending("targetDate");
         uqQuery.findInBackground(new FindCallback<UserQuestion>() {
             @Override
             public void done(List<UserQuestion> objects, ParseException e) {
