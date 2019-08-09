@@ -64,6 +64,12 @@
                 android:textAlignment="center"
                 android:textColor="#919191"
                 android:textSize="18sp" />
+
+            <ImageButton
+                android:id="@+id/btnDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@android:drawable/ic_dialog_info" />
         </FrameLayout>
     </androidx.cardview.widget.CardView>
 
