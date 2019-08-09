@@ -206,6 +206,11 @@ public class ChildPearButtonFragment extends Fragment {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+        if (user == null || user.equals("")) {
+            return null;
+        }
+
         JSONObject notification = new JSONObject();
         JSONObject notificationBody = new JSONObject();
         try {
@@ -222,6 +227,9 @@ public class ChildPearButtonFragment extends Fragment {
     }
 
     private void sendNotification(JSONObject notification) {
+        if (notification == null) {
+            return;
+        }
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, FCM_API, notification, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -347,7 +355,9 @@ public class ChildPearButtonFragment extends Fragment {
         swPear.setChecked(false);
         swPear.setEnabled(false);
         swPear.setClickable(false);
-        fragmentManager.beginTransaction().replace(R.id.child_fragment_container, fragment).addToBackStack(null).commit();
+        fragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left )
+                .replace(R.id.child_fragment_container, fragment).addToBackStack(null).commit();
     }
 
 

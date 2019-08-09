@@ -185,13 +185,6 @@ public class groupDetailsFragment extends Fragment {
         transaction.replace(R.id.child_fragment_container, childFragment).commitAllowingStateLoss();
     }
 
-    public void insertNestedWaitingFragment() {
-        Fragment childFragment = new ChildWaitingFragment();
-        FragmentTransaction transaction = childFragmentManager.beginTransaction();
-        transaction.addToBackStack(null);
-        transaction.replace(R.id.child_fragment_container, childFragment).commitAllowingStateLoss();
-    }
-
     public ParseUser getOtherUser() {
         return pear.getOtherUser();
     }
