@@ -118,6 +118,7 @@ public class aprioriAlgorithm {
 
         }
         double threshold = calculatingThreshold(occurrencesCount, 15, userGroupMap);
+
         ArrayList subOccurThresh = new ArrayList();
         subOccurThresh.add(powerset);
         subOccurThresh.add(occurrencesCount);
@@ -209,11 +210,9 @@ public class aprioriAlgorithm {
     }
 
     public static void main(java.lang.String args[]) {
-        String groupFileName = "JSONParseGroups.json";
-        String GURFileName = "JSONParseGroupUserRelations.json";
-        //System.out.println(creatingJSON(groupFileName, GURFileName)); //fix occurrences, limit powerset, also write code that adds it to parse
-        //String [] arrName = "             ".split("\\s+");
-       // System.out.println(arrName.length);
+        String groupFileName = "JSONGroupTESTING.json";
+        String GURFileName = "GroupUserRelationsTESTING.json";
+       // System.out.println(creatingJSON(groupFileName, GURFileName));
         //JSONObject jsonAllGUR = apriori.fileToJSON("angcast", "JSONParseGroupUserRelations.jsonAllGroups");
         //JSONObject jsonAllGroups = apriori.fileToJSON("angcast", "JSONParseGroups.jsonAllGroups");
     }
