@@ -11,7 +11,10 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -20,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fb.pearsapplication.EndlessRecyclerViewScrollListener;
 import com.fb.pearsapplication.adapters.ChatAdapter;
+import com.fb.pearsapplication.adapters.conversationsAdapter;
 import com.fb.pearsapplication.models.Group;
 import com.fb.pearsapplication.models.PearMessage;
 import com.parse.FindCallback;
@@ -42,10 +46,11 @@ public class ChatActivity extends AppCompatActivity {
     public static ParseUser user;
     private ChatAdapter mAdapter;
     private EditText etMessage;
-    private Button btSend;
+    private ImageButton btSend;
     public String receiver;
     private Date lastMessageDate;
     private RecyclerView rvChat;
+    private TextView tvReceiver;
     private Boolean isRunning;
     androidx.appcompat.widget.Toolbar toolbar;
     private EndlessRecyclerViewScrollListener scrollListener;
@@ -79,10 +84,11 @@ public class ChatActivity extends AppCompatActivity {
         rvChat = (RecyclerView) findViewById(R.id.rvChat);
         mAdapter = new ChatAdapter(mMessages);
         rvChat.setAdapter(mAdapter);
-        btSend = (Button) findViewById(R.id.btSend);
+        btSend = (ImageButton) findViewById(R.id.btSend);
 
         etMessage = (EditText) findViewById(R.id.etMessage);
         etMessage.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+
 
 
 
@@ -101,6 +107,8 @@ public class ChatActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(receiver);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
 
     }
 

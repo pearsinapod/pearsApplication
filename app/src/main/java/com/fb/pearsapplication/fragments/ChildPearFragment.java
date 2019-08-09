@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -87,7 +88,9 @@ public class ChildPearFragment extends Fragment {
                 Fragment fragment = new matchProfileFragment();
                 ((matchProfileFragment) fragment).setPearUser(pear.getOtherUser());
                 ((matchProfileFragment) fragment).setGroup(pear.getGroup());
-                fragmentManager.beginTransaction().replace(R.id.flContainter, fragment).addToBackStack(null).commit();
+                fragmentManager.beginTransaction()
+                        .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left )
+                        .replace(R.id.flContainter, fragment).addToBackStack(null).commit();
             }
         });
 

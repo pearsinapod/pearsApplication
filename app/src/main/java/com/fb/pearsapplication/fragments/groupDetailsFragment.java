@@ -82,11 +82,9 @@ public class groupDetailsFragment extends Fragment {
         if (group.getUsers() != null) {
             Integer size = group.getUsers().size();
             String sizeString = size.toString();
-            tvGroupNumber.setText(sizeString);
+            tvGroupNumber.setText(sizeString + " members");
         }
         tvDescription.setText(group.getDescription());
-        String timeAgo = group.getRelativeTimeAgo();
-
         if (currentUser.getList("pearRequests").contains(group)) {
             swPear.setChecked(true);
         }
@@ -182,13 +180,6 @@ public class groupDetailsFragment extends Fragment {
     public void insertNestedPearButtonFragment() {
         Fragment childFragment = new ChildPearButtonFragment();
         ((ChildPearButtonFragment) childFragment).setGUR(gur);
-        FragmentTransaction transaction = childFragmentManager.beginTransaction();
-        transaction.addToBackStack(null);
-        transaction.replace(R.id.child_fragment_container, childFragment).commitAllowingStateLoss();
-    }
-
-    public void insertNestedWaitingFragment() {
-        Fragment childFragment = new ChildWaitingFragment();
         FragmentTransaction transaction = childFragmentManager.beginTransaction();
         transaction.addToBackStack(null);
         transaction.replace(R.id.child_fragment_container, childFragment).commitAllowingStateLoss();

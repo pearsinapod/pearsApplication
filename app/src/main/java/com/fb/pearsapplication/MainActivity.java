@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.facebook.login.LoginManager;
 import com.fb.pearsapplication.fragments.exploreFragment;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     Location location;
     String provider;
     ParseUser user;
+    int startingPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +62,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         toolbar = findViewById(R.id.toolbar);
+        TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("p e a r s");
+        mTitle.setText(toolbar.getTitle());
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, new OnSuccessListener<InstanceIdResult>() {
             @Override
             public void onSuccess(InstanceIdResult instanceIdResult) {
@@ -135,8 +141,8 @@ public class MainActivity extends AppCompatActivity {
             public void onProviderDisabled(String s) {
             }
         };
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60000, 0, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 30000, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 0, locationListener);
     }
 
     @Override
@@ -190,30 +196,63 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 Fragment fragment = new groupFragment();
+                int newPosition = 0;
                 switch (menuItem.getItemId()) {
                     case R.id.groupFragment:
                         Log.d("groupFragment", "groupFragment clicked");
                         fragment = new groupFragment();
+                        newPosition = 1;
                         break;
                     case R.id.profileFragment:
                         Log.d("profileFragment", "profileFragment clicked");
                         fragment = new profileFragment();
+                        newPosition = 4;
                         break;
                     case R.id.exploreFragment:
                         Log.d("exploreFragment", "searchFragment clicked");
                         fragment = new exploreFragment();
+                        newPosition = 2;
                         break;
                     case R.id.searchFragment:
                         Log.d("searchFragment", "searchFragment clicked");
                         fragment = new searchFragment();
+                        newPosition = 3;
                         break;
                 }
-                fragmentManager.beginTransaction().replace(R.id.flContainter, fragment).commit();
-                return true;
+                return loadFragment(fragment, newPosition);
             }
         });
-
         bottomNavigationView.setSelectedItemId(R.id.groupFragment);
+    }
+
+    private boolean loadFragment(Fragment fragment, int pos) {
+        if (fragment != null) {
+            if (startingPosition < pos) {
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left );
+                transaction.replace(R.id.flContainter, fragment);
+                transaction.commit();
+            } else {
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right );
+                transaction.replace(R.id.flContainter, fragment);
+                transaction.commit();
+            }
+            startingPosition = pos;
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        int selectedItemId = bottomNavigationView.getSelectedItemId();
+        if (R.id.groupFragment != selectedItemId) {
+            loadFragment(new groupFragment(),1);
+            bottomNavigationView.setSelectedItemId(R.id.groupFragment);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -222,11 +261,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickLogout(MenuItem item) {
-        LoginManager.getInstance().logOut();
-        ParseUser.logOut();
-        Intent logoutIntent = new Intent(MainActivity.this, LoginActivity.class);
-        startActivity(logoutIntent);
-        finish();
+        ParseUser.getCurrentUser().put("deviceToken", "");
+        ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                } else {
+                    LoginManager.getInstance().logOut();
+                    ParseUser.logOut();
+                    Intent logoutIntent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(logoutIntent);
+                    finish();
+                }
+            }
+        });
     }
 
     public void onClickCreateGroup (MenuItem item){

@@ -3,9 +3,27 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">#ffaa64</item>
-        <item name="colorPrimaryDark">#ff8e31</item>
-        <item name="colorAccent">#fff5a5</item>
+        <item name="colorPrimary">#ff8264</item>
+        <item name="colorPrimaryDark">#ff6d4b</item>
+        <item name="colorAccent">#FFD064</item>
+    </style>
+
+    <style name="Animation">
+        <item name="android:windowEnterAnimation">@anim/fade_in</item>
+        <item name="android:windowExitAnimation">@anim/fade_out</item>
+    </style>
+
+    <style name="Theme.AppCompat.Transparent" parent="Theme.AppCompat.NoActionBar">
+        <item name = "android:background">#1D808080</item>
+        <item name = "android:windowNoTitle">true</item>
+        <item name = "android:windowBackground">@android:color/transparent</item>
+        <item name = "android:colorBackgroundCacheHint">@null</item>
+        <item name = "android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="customRatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/circle</item>
+        <item name="android:indeterminateDrawable">@drawable/circle</item>
     </style>
 
 </resources>

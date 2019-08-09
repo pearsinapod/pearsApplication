@@ -20,13 +20,17 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.fb.pearsapplication.R;
+import com.fb.pearsapplication.adapters.QuestionAdapter;
 import com.fb.pearsapplication.models.Question;
 import com.fb.pearsapplication.models.UserQuestion;
 import com.parse.FindCallback;
@@ -53,6 +57,8 @@ public class profileFragment extends Fragment {
     public EditText etDescription;
     public ImageButton btnDone;
     public ImageButton btnAddPhoto;
+    public RecyclerView rvQuestions;
+    public List<UserQuestion> uqList;
 
 
     ParseUser user;
@@ -66,6 +72,7 @@ public class profileFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         childFragmentManager = getChildFragmentManager();
+        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
@@ -78,6 +85,7 @@ public class profileFragment extends Fragment {
         etDescription.setVisibility(View.GONE);
         btnDone.setVisibility(View.GONE);
         findDailyQuestion();
+        queryUserQuestions();
         btnAddPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -110,6 +118,7 @@ public class profileFragment extends Fragment {
         btnEdit = view.findViewById(R.id.btnEdit);
         btnDone = view.findViewById(R.id.btnDone);
         btnAddPhoto = view.findViewById(R.id.btnAddPhoto);
+        rvQuestions = view.findViewById(R.id.rvQuestions);
     }
 
     private void bindViews() {
@@ -120,7 +129,7 @@ public class profileFragment extends Fragment {
         }
         String description = user.getString("description");
 
-        if ( description==null ||description.equals("")) {
+        if ( description == null ||description.equals("")) {
             tvDescription.setText("Add a description!");
         } else {
             tvDescription.setText(description);
@@ -282,6 +291,29 @@ public class profileFragment extends Fragment {
                 }
             }
         });
+    }
+
+    public void queryUserQuestions() {
+        ParseQuery<UserQuestion> uqQuery = new ParseQuery<UserQuestion>(UserQuestion.class);
+        uqQuery.whereEqualTo("user", user);
+        uqQuery.orderByDescending("targetDate");
+        uqQuery.findInBackground(new FindCallback<UserQuestion>() {
+            @Override
+            public void done(List<UserQuestion> objects, ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                } else if (!objects.isEmpty()) {
+                    uqList = objects;
+                    createAdapter();
+                }
+            }
+        });
+    }
+
+    public void createAdapter() {
+        QuestionAdapter adapter = new QuestionAdapter(uqList);
+        rvQuestions.setAdapter(adapter);
+        rvQuestions.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
     }
 
     public void insertNestedQuestionFragment() {

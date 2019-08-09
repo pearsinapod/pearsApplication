@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -126,6 +127,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         TextView tvBody;
         TextView tvUsername;
 
+
         public SendViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -143,6 +145,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         TextView tvBody;
         TextView tvUsername;
+        ImageView ivProfileOther;
 
         public ReceiveViewHolder(@NonNull View itemView) {
             super(itemView);

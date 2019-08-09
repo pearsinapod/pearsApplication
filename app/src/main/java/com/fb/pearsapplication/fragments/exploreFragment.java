@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.fb.pearsapplication.R;
@@ -40,6 +41,7 @@ public class exploreFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
         exploreGroups = new ArrayList<>();
         exploreArrayAdapter = new exploreAdapter(getContext(), R.layout.item_explore_group, exploreGroups);
         flingContainer = view.findViewById(R.id.frame);

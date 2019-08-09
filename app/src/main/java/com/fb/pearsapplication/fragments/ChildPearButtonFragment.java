@@ -1,12 +1,15 @@
 package com.fb.pearsapplication.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -26,6 +29,7 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.fb.pearsapplication.R;
+import com.fb.pearsapplication.conversationsActivity;
 import com.fb.pearsapplication.models.Group;
 import com.fb.pearsapplication.models.GroupUserRelation;
 import com.fb.pearsapplication.models.Pear;
@@ -202,6 +206,11 @@ public class ChildPearButtonFragment extends Fragment {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+        if (user == null || user.equals("")) {
+            return null;
+        }
+
         JSONObject notification = new JSONObject();
         JSONObject notificationBody = new JSONObject();
         try {
@@ -218,6 +227,9 @@ public class ChildPearButtonFragment extends Fragment {
     }
 
     private void sendNotification(JSONObject notification) {
+        if (notification == null) {
+            return;
+        }
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, FCM_API, notification, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -249,13 +261,14 @@ public class ChildPearButtonFragment extends Fragment {
         bindPopupPearViews(popupView);
         boolean focusable = true;
         popupWindow = new PopupWindow(popupView, width, height, focusable);
+        popupWindow.setAnimationStyle(R.style.Animation);
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-//        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-//            @Override
-//            public void onDismiss() {
-//                goToPearFragment();
-//            }
-//        });
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                goToPearFragment();
+            }
+        });
     }
 
     public void bindPopupPearViews(View view) {
@@ -300,7 +313,9 @@ public class ChildPearButtonFragment extends Fragment {
         message.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                popupWindow.dismiss();
+                Intent chatIntent = new Intent(getActivity(), conversationsActivity.class);
+                startActivity(chatIntent);
             }
         });
     }
@@ -311,7 +326,8 @@ public class ChildPearButtonFragment extends Fragment {
         int width = ConstraintLayout.LayoutParams.MATCH_PARENT;
         int height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
         boolean focusable = true;
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+        popupWindow = new PopupWindow(popupView, width, height, focusable);
+        popupWindow.setAnimationStyle(R.style.Animation);
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 
     }
@@ -339,7 +355,9 @@ public class ChildPearButtonFragment extends Fragment {
         swPear.setChecked(false);
         swPear.setEnabled(false);
         swPear.setClickable(false);
-        fragmentManager.beginTransaction().replace(R.id.child_fragment_container, fragment).addToBackStack(null).commit();
+        fragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left )
+                .replace(R.id.child_fragment_container, fragment).addToBackStack(null).commit();
     }
 
 
