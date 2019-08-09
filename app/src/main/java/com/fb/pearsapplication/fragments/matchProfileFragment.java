@@ -181,7 +181,9 @@ public class matchProfileFragment extends Fragment {
         queryGUR(pearUser);
         FragmentManager fragmentManager = getFragmentManager();
         Fragment fragment = new groupFragment();
-        fragmentManager.beginTransaction().replace(R.id.flContainter, fragment).addToBackStack(null).commit();
+        fragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right)
+                .replace(R.id.flContainter, fragment).addToBackStack(null).commit();
     }
 
     private void queryGUR(ParseUser user) {
@@ -218,8 +220,8 @@ public class matchProfileFragment extends Fragment {
 
     public void queryUserQuestions() {
         ParseQuery<UserQuestion> uqQuery = new ParseQuery<UserQuestion>(UserQuestion.class);
-//        uqQuery.whereEqualTo("user", pearUser);
-//        uqQuery.orderByDescending("targetDate");
+        uqQuery.whereEqualTo("user", pearUser);
+        uqQuery.orderByDescending("targetDate");
         uqQuery.findInBackground(new FindCallback<UserQuestion>() {
             @Override
             public void done(List<UserQuestion> objects, ParseException e) {

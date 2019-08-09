@@ -135,8 +135,8 @@ public class MainActivity extends AppCompatActivity {
             public void onProviderDisabled(String s) {
             }
         };
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60000, 0, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 30000, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 0, locationListener);
     }
 
     @Override
@@ -221,15 +221,14 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean loadFragment(Fragment fragment, int pos) {
         if (fragment != null) {
-            if (startingPosition > pos) {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right );
-                transaction.replace(R.id.flContainter, fragment);
-                transaction.commit();
-            }
             if (startingPosition < pos) {
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left );
+                transaction.replace(R.id.flContainter, fragment);
+                transaction.commit();
+            } else {
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right );
                 transaction.replace(R.id.flContainter, fragment);
                 transaction.commit();
             }
@@ -239,17 +238,38 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    @Override
+    public void onBackPressed() {
+        int selectedItemId = bottomNavigationView.getSelectedItemId();
+        if (R.id.groupFragment != selectedItemId) {
+            loadFragment(new groupFragment(),1);
+            bottomNavigationView.setSelectedItemId(R.id.groupFragment);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_toolbar, menu);
         return true;
     }
 
     public void onClickLogout(MenuItem item) {
-        LoginManager.getInstance().logOut();
-        ParseUser.logOut();
-        Intent logoutIntent = new Intent(MainActivity.this, LoginActivity.class);
-        startActivity(logoutIntent);
-        finish();
+        ParseUser.getCurrentUser().put("deviceToken", "");
+        ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                } else {
+                    LoginManager.getInstance().logOut();
+                    ParseUser.logOut();
+                    Intent logoutIntent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(logoutIntent);
+                    finish();
+                }
+            }
+        });
     }
 
     public void onClickCreateGroup (MenuItem item){

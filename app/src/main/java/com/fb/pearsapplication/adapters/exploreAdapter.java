@@ -6,9 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 
 import com.bumptech.glide.Glide;
@@ -38,6 +41,7 @@ public class exploreAdapter extends ArrayAdapter<Group> {
         final TextView tvExploreDescription = convertView.findViewById(R.id.tvExploreDescription);
         final CardView cardViewExplore = convertView.findViewById(R.id.cardViewExplore);
         ImageView ivExploreImage = convertView.findViewById(R.id.ivExploreImage);
+        ImageButton btnDetails = convertView.findViewById(R.id.btnDetails);
 
 
         tvExploreDescription.setText(group.getDescription());
@@ -45,6 +49,21 @@ public class exploreAdapter extends ArrayAdapter<Group> {
         cardViewExplore.setCardBackgroundColor(Color.parseColor("#F0F0F0"));
         tvExploreDescription.setBackgroundColor(Color.parseColor("#F0F0F0"));
         tvExploreName.setBackgroundColor(Color.parseColor("#F0F0F0"));
+
+        btnDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater factory = LayoutInflater.from(getContext());
+                final View alertView = factory.inflate(R.layout.explore_group_details, null);
+                TextView tvGroupName = alertView.findViewById(R.id.tvGroupName);
+                TextView tvDescription = alertView.findViewById(R.id.tvDescription);
+                tvGroupName.setText(group.getGroupName());
+                tvDescription.setText(group.getDescription());
+                new AlertDialog.Builder(getContext())
+                        .setView(alertView)
+                        .show();
+            }
+        });
 
 
         ParseFile image = group.getGroupImage();
