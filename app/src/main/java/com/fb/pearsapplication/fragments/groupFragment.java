@@ -24,7 +24,6 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
