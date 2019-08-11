@@ -38,17 +38,16 @@ public class exploreAdapter extends ArrayAdapter<Group> {
         }
 
         TextView tvExploreName = convertView.findViewById(R.id.tvExploreName);
-        final TextView tvExploreDescription = convertView.findViewById(R.id.tvExploreDescription);
         final CardView cardViewExplore = convertView.findViewById(R.id.cardViewExplore);
         ImageView ivExploreImage = convertView.findViewById(R.id.ivExploreImage);
         ImageButton btnDetails = convertView.findViewById(R.id.btnDetails);
 
 
-        tvExploreDescription.setText(group.getDescription());
+//        tvExploreDescription.setText(group.getDescription());
         tvExploreName.setText(group.getGroupName());
-        cardViewExplore.setCardBackgroundColor(Color.parseColor("#F0F0F0"));
-        tvExploreDescription.setBackgroundColor(Color.parseColor("#F0F0F0"));
-        tvExploreName.setBackgroundColor(Color.parseColor("#F0F0F0"));
+//        cardViewExplore.setCardBackgroundColor(Color.parseColor("#F0F0F0"));
+//        tvExploreDescription.setBackgroundColor(Color.parseColor("#F0F0F0"));
+//        tvExploreName.setBackgroundColor(Color.parseColor("#F0F0F0"));
 
         btnDetails.setOnClickListener(new View.OnClickListener() {
             @Override
