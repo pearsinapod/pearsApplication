@@ -16,7 +16,9 @@
         android:id="@+id/cardViewExplore"
         android:layout_width="396dp"
         android:layout_height="584dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="150dp"
+        android:layout_marginRight="20dp"
         android:layout_marginBottom="120dp"
         android:background="@drawable/colorgroupicon"
         android:elevation="3dp"
@@ -26,51 +28,75 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <FrameLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="402dp"
             android:layout_height="599dp"
             android:layout_gravity="center">
 
             <ImageView
                 android:id="@+id/ivExploreImage"
-                android:layout_width="450dp"
-                android:layout_height="500dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:scaleType="fitXY"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:srcCompat="@tools:sample/avatars[0]" />
+
+            <View
+                android:id="@+id/view5"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="#D9FF8264"
+                app:layout_constraintBottom_toBottomOf="@+id/ivExploreImage"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent" />
+
             <TextView
                 android:id="@+id/tvExploreName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center|center_horizontal|top"
+                android:layout_gravity="top"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
                 android:fontFamily="@font/montserrat_alternates"
-                android:paddingLeft="25dp"
                 android:paddingTop="10dp"
-                android:paddingRight="25dp"
-                android:textColor="#919191"
-                android:textSize="24sp"
-                app:layout_constraintBottom_toBottomOf="@id/tvExploreDescription"
+                android:textColor="#ffffff"
+                android:textSize="30dp"
+                app:layout_constraintEnd_toStartOf="@+id/btnDetails"
+                app:layout_constraintHorizontal_bias="0.03"
+                app:layout_constraintStart_toStartOf="@+id/view5"
+                app:layout_constraintTop_toTopOf="@+id/view5"
                 tools:text="hello" />
-            <TextView
-                android:id="@+id/tvExploreDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center"
-                android:fontFamily="@font/montserrat_alternates"
-                android:paddingLeft="25dp"
-                android:paddingRight="25dp"
-                android:paddingBottom="10dp"
-                android:text="hellooooooooooooo"
-                android:textAlignment="center"
-                android:textColor="#919191"
-                android:textSize="18sp" />
 
             <ImageButton
                 android:id="@+id/btnDetails"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@android:drawable/ic_dialog_info" />
-        </FrameLayout>
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="364dp"
+                android:layout_marginLeft="364dp"
+                android:layout_marginTop="64dp"
+                android:adjustViewBounds="true"
+                android:background="@null"
+                android:scaleType="fitCenter"
+                android:tint="#ffffff"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/view5"
+                app:srcCompat="@drawable/icon" />
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
