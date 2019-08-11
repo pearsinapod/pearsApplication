@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         //cleanGroupsUp();
 
         // TO CLEAR CURRENT HOBBIES
-       // cleanHobbies();
+      //  cleanHobbies();
 
     }
 

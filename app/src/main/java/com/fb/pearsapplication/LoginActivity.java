@@ -110,7 +110,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         //TO ADD THE HOBBIES
-       // aprioriToParse(fileToJSONObj("AprioriResultsTesting.json"));
+       //aprioriToParse(fileToJSONObj("AprioriResultsTesting.json"));
     }
 
     private void persistenceCheck() {

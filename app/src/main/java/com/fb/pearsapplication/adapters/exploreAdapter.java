@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -59,14 +60,6 @@ public class exploreAdapter extends ArrayAdapter<Group> {
 //        tvExploreName.setBackgroundColor(Color.parseColor("#F0F0F0"));
 
         addingUserGroup();
-        if (userGroups.size()>0){
-            String[] nameThreshold = gettingNameThreshold(userGroups, group);
-            String name = nameThreshold[0];
-            double threshold = Double.parseDouble(nameThreshold[1]); //if -1... don't show anything!
-            int rating = pearRating(threshold);
-            String str = pearRatingString(rating);
-
-        }
 
         btnDetails.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,10 +68,41 @@ public class exploreAdapter extends ArrayAdapter<Group> {
                 final View alertView = factory.inflate(R.layout.explore_group_details, null);
                 TextView tvGroupName = alertView.findViewById(R.id.tvGroupName);
                 TextView tvDescription = alertView.findViewById(R.id.tvDescription);
+                RatingBar rB = alertView.findViewById(R.id.ratingBar);
                 TextView tvExplain = alertView.findViewById(R.id.tvExplain);
                 tvGroupName.setText(group.getGroupName());
                 tvDescription.setText(group.getDescription());
-                tvExplain.setText("");
+
+/*                if (userGroups.size()>0){
+                    String[] nameThreshold = gettingNameThreshold(userGroups, group);
+                    String name = nameThreshold[0];
+                    String strThreshold = nameThreshold[1];
+                    if(strThreshold==null ){
+                        tvExplain.setText("");
+                        rB.setVisibility(View.GONE);
+                    }
+                    else{
+                        double threshold = Double.parseDouble(nameThreshold[1]); //if -1... don't show anything!
+                        int rating = pearRating(threshold);
+                        String ratingStr = pearRatingString(rating);
+                        if (threshold==0 || threshold==-1){
+                            tvExplain.setText("");
+                            rB.setVisibility(View.GONE);
+                        }
+                        else{
+                            rB.setRating(rating);
+                            tvExplain.setText("People who like "+name+" "+ratingStr+" "+group.getGroupName());
+                            rB.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                }
+                else{
+                    tvExplain.setText("");
+                    rB.setVisibility(View.GONE);
+                }*/
+                tvExplain.setText("People who like Baseball really like Kayaking");
+                rB.setRating(3);
                 new AlertDialog.Builder(getContext())
                         .setView(alertView)
                         .show();
