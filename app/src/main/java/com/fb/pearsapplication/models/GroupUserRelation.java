@@ -1,13 +1,10 @@
 package com.fb.pearsapplication.models;
-import java.util.Date;
-
-import com.parse.Parse;
 import com.parse.ParseClassName;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
-import java.io.Serializable;
+import java.util.Date;
 
 @ParseClassName("GroupUserRelation")
 public class GroupUserRelation extends ParseObject {
