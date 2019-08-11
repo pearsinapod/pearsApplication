@@ -1,7 +1,6 @@
 package com.fb.pearsapplication.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,6 +64,7 @@ public class exploreAdapter extends ArrayAdapter<Group> {
             String name = nameThreshold[0];
             double threshold = Double.parseDouble(nameThreshold[1]); //if -1... don't show anything!
             int rating = pearRating(threshold);
+            String str = pearRatingString(rating);
 
         }
 
@@ -108,6 +108,19 @@ public class exploreAdapter extends ArrayAdapter<Group> {
             return 2;
         }
         return 3;
+    }
+
+    public String pearRatingString(int pearRating){
+        if (pearRating ==1){
+            return "like";
+        }
+        if (pearRating==2){
+            return "really like";
+        }
+        if (pearRating==3){
+            return "love";
+        }
+        return "there's";
     }
 
     public void addingUserGroup(){
