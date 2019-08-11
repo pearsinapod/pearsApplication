@@ -56,8 +56,10 @@ public class exploreAdapter extends ArrayAdapter<Group> {
                 final View alertView = factory.inflate(R.layout.explore_group_details, null);
                 TextView tvGroupName = alertView.findViewById(R.id.tvGroupName);
                 TextView tvDescription = alertView.findViewById(R.id.tvDescription);
+                TextView tvExplain = alertView.findViewById(R.id.tvExplain);
                 tvGroupName.setText(group.getGroupName());
                 tvDescription.setText(group.getDescription());
+                tvExplain.setText("");
                 new AlertDialog.Builder(getContext())
                         .setView(alertView)
                         .show();
