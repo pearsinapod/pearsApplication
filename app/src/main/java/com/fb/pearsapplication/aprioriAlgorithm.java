@@ -204,15 +204,16 @@ public class aprioriAlgorithm {
                 allSubsetsInfo.add(one_object);
             }
         }
+        allSubsetsInfo.remove(0);
         JSONObject final_object = new JSONObject();
         final_object.put("results", allSubsetsInfo);
         return final_object;
     }
 
     public static void main(java.lang.String args[]) {
-        String groupFileName = "JSONGroupTESTING.json";
-        String GURFileName = "GroupUserRelationsTESTING.json";
-       // System.out.println(creatingJSON(groupFileName, GURFileName));
+        String groupFileName = "JSONParseGroups.json";
+        String GURFileName = "JSONParseGroupUserRelations.json";
+       System.out.println(creatingJSON(groupFileName, GURFileName));
         //JSONObject jsonAllGUR = apriori.fileToJSON("angcast", "JSONParseGroupUserRelations.jsonAllGroups");
         //JSONObject jsonAllGroups = apriori.fileToJSON("angcast", "JSONParseGroups.jsonAllGroups");
     }
